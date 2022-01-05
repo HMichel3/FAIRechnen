@@ -1,0 +1,30 @@
+ion-fab-button[data-label] {
+  position: relative;
+}
+
+ion-fab-button[data-label]::after {
+  position: absolute;
+  content: attr(data-label);
+  z-index: 1;
+  right: 60px;
+  bottom: 11px;
+  padding: 9px 12px;
+  text-transform: uppercase;
+  color: white;
+}
+
+/* ionic intern class */
+.fab-vertical-bottom {
+  bottom: 24px;
+  right: 16px;
+}
+
+/*  needed, because disabled not working as expected */
+.custom-button-disabled > ion-icon {
+  color: rgba(var(--ion-color-contrast-rgb), 0.6);
+}
+
+/*  needed, because disabled not working as expected */
+.custom-button-disabled[data-label]::after {
+  color: rgba(var(--ion-color-contrast-rgb), 0.6);
+}

@@ -1,10 +1,10 @@
-import { CapacitorConfig } from '@capacitor/cli';
+import { CapacitorConfig } from '@capacitor/cli'
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'split-it-6',
+  appId: 'holsten.split.it',
+  appName: 'split it',
   webDir: 'build',
-  bundledWebRuntime: false
-};
+  bundledWebRuntime: false,
+}
 
-export default config;
+export default config

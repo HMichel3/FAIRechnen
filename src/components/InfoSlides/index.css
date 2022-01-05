@@ -1,0 +1,9 @@
+.swiper {
+  height: 100%;
+}
+
+.info-slide-paragraph {
+  line-height: 1.5;
+  padding: 0 50px;
+  margin-top: 0;
+}

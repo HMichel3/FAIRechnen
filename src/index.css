@@ -1,0 +1,118 @@
+/* Grey Friends */
+/* https://mycolor.space/?hex=%23222428&sub=1 */
+/*  --ion-color-dark 
+    --ion-color-medium
+    --ion-color-light */
+
+/* Custom Styles for Ion-Components */
+.multiple-select-alert .alert-checkbox-group {
+  max-height: unset;
+  --max-height: 80%;
+}
+.delete-alert .alert-button {
+  color: var(--ion-color-danger-shade);
+}
+.save-alert .alert-button {
+  color: var(--ion-color-success-shade);
+}
+/* Resets the cancel-button to its default color, after it gets overwritten by the custom alert-styles) */
+.alert-button-role-cancel.sc-ion-alert-md {
+  color: var(--ion-color-dark);
+}
+.menu-action-sheet {
+  --background: var(--ion-color-medium);
+  --color: #fff;
+  --button-color: #fff;
+}
+.menu-action-sheet .action-sheet-group.sc-ion-action-sheet-md:last-child {
+  padding-bottom: 16px;
+}
+
+/* Utility-Classes */
+.no-background {
+  --background: unset;
+}
+.unselected-color {
+  --color: rgba(var(--ion-color-contrast-rgb), 0.6);
+}
+.detail-icon-opacity-0-5 {
+  --detail-icon-opacity: 0.5;
+}
+.no-padding-start {
+  --padding-start: 0px;
+}
+.small-label-component {
+  font-size: 14px;
+  margin-top: 3px;
+  color: var(--ion-color-light-shade);
+}
+.flex-column-full-height {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+}
+.color-danger {
+  color: var(--ion-color-danger-shade);
+}
+.color-success {
+  color: var(--ion-color-success-shade);
+}
+.list-item-icon-color {
+  color: var(--ion-color-dark);
+}
+.custom-backdrop {
+  opacity: var(--ion-backdrop-opacity);
+  z-index: 11;
+}
+
+body.dark .color-danger {
+  color: var(--ion-color-danger);
+}
+body.dark .color-success {
+  color: var(--ion-color-success);
+}
+body.dark .list-item-icon-color {
+  color: var(--ion-color-light);
+}
+body.dark .item-label-color {
+  color: #fff !important;
+}
+body.dark .item-border-color {
+  --border-color: var(--ion-color-light-shade);
+  --highlight-color-focused: var(--ion-color-light);
+}
+body.dark .checkbox-input {
+  --border-color: rgba(255, 255, 255, 0.33);
+}
+body.dark .text-input {
+  --placeholder-color: currentColor;
+  --placeholder-opacity: 0.33;
+}
+body.dark .alert-input.sc-ion-alert-md:focus {
+  border-color: var(--ion-color-light);
+}
+body.dark .sliding-delete {
+  background: var(--ion-color-danger-shade);
+}
+body.dark .background-success {
+  --ion-color-base: var(--ion-color-success-shade) !important;
+}
+body.dark .delete-alert .alert-button {
+  color: var(--ion-color-danger);
+}
+body.dark .save-alert .alert-button {
+  color: var(--ion-color-success);
+}
+body.dark .alert-button-role-cancel.sc-ion-alert-md {
+  color: var(--ion-color-light);
+}
+body.dark .alert-checkbox-label.sc-ion-alert-md {
+  color: #fff;
+  --border-color-checked: rgba(255, 255, 255, 0.33);
+}
+body.dark .basic-select-alert .select-interface-option .radio-checked {
+  --color-checked: var(--ion-color-light);
+}
+body.dark .slides-bullet-active {
+  --bullet-background-active: var(--ion-color-light);
+}
