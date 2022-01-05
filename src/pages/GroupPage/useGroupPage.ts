@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { Group } from '../../App/types'
 import { getTotalAmountFromArray } from '../../App/utils'
 import { AddGroupModal } from '../../components/AddGroupModal'
-import { useToggle } from '../../hooks/useToggle'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 
 export const useGroupPage = () => {
@@ -14,8 +13,6 @@ export const useGroupPage = () => {
   const getGroupPurchases = usePersistedStore.useGetGroupPurchases()
   const theme = usePersistedStore.useTheme()
   const setTheme = usePersistedStore.useSetTheme()
-  const firstTime = usePersistedStore.useFirstTime()
-  const setFirstTimeFalse = usePersistedStore.useSetFirstTimeFalse()
   const ionRouter = useIonRouter()
   const [showAddGroupModal, dismissAddGroupModal] = useIonModal(AddGroupModal, {
     onDismiss: () => dismissAddGroupModal(),
@@ -48,11 +45,6 @@ export const useGroupPage = () => {
     document.body.classList.add('dark')
   }, [theme])
 
-  // can't use firstTime as defaultValue for showInfoSlides, because it's true for a ms at every refresh
-  useEffect(() => {
-    setShowInfoSlides(firstTime)
-  }, [firstTime, setShowInfoSlides])
-
   const onDeleteGroup = (groupId: Group['id']) => {
     setSelectedGroupId(groupId)
     setShowDeleteGroupAlert(true)
@@ -68,7 +60,6 @@ export const useGroupPage = () => {
 
   const onToggleShowInfoSlides = () => {
     setShowInfoSlides(prevState => !prevState)
-    firstTime && setFirstTimeFalse()
   }
 
   const calculateGroupTotalAmount = (groupId: Group['id']) => getTotalAmountFromArray(getGroupPurchases(groupId))
