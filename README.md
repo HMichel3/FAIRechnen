@@ -30,5 +30,6 @@ This App is created in TypeScript using the Ionic 5 Framework and it contains so
 
 - `dev-browser` (to start the development server in the browser)
 - `build-android` (to build the android project and open android studio)
+- `rebuild-android` (needed for the first time or after deleting the android folder)
 - `start` (needed for ionic)
 - `build` (needed for ionic)
