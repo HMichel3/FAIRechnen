@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">split it</string>
-    <string name="title_activity_main">split it</string>
-    <string name="package_name">holsten.split.it</string>
-    <string name="custom_url_scheme">holsten.split.it</string>
-</resources>
