@@ -7,6 +7,6 @@ export interface ThemeSlice {
 }
 
 export const createThemeSlice = (set: SetState<PersistedState>): ThemeSlice => ({
-  theme: null,
+  theme: 'dark',
   setTheme: theme => set({ theme }),
 })

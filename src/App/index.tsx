@@ -27,10 +27,6 @@ import '../theme/variables.css'
 
 setupIonicReact()
 
-// TODO Android-Folder aus dem Repo nehmen (Easy, da noch nicht gepusht)
-// TODO Problem mit dem Laden der App fixen (soll nicht erst weiß sein und dann erst dunkel werden)
-// TODO Neuerungen von Ionic 6 checken
-
 export const App = (): JSX.Element => {
   const showAnimation = useStore.useShowAnimation()
 
