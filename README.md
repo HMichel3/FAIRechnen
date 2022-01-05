@@ -21,6 +21,7 @@ This App is created in TypeScript using the Ionic 5 Framework and it contains so
 - [Node JS](https://nodejs.org/en/) (Version 16.4.2 LTS is used here)
 - [Android Studio](https://developer.android.com/studio) (if building for android is desired)
 - `npm install -g @ionic/cli`
+- `npm install -g cordova-res`
 
 ## Initialization
 
