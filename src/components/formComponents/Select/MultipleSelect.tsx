@@ -14,10 +14,8 @@ export const MultipleSelect = forwardRef<HTMLIonSelectElement, MultipleSelectPro
   ({ onChange, selectOptions, ...props }, ref): JSX.Element => (
     <IonSelect
       ref={ref}
-      interface='alert'
-      interfaceOptions={{ cssClass: 'multiple-select-alert save-alert' }}
-      okText='Speichern'
-      cancelText='Abbrechen'
+      interface='popover'
+      interfaceOptions={{ cssClass: 'basic-select-popover' }}
       multiple
       onIonChange={onChange}
       {...props}

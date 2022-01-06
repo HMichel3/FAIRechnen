@@ -21,7 +21,12 @@ export const Checkbox = <Type extends FieldValues>({
   return (
     <IonItem lines={lines}>
       <IonLabel>{label}</IonLabel>
-      <IonCheckbox className='checkbox-input' checked={value} onIonChange={({ detail }) => onChange(detail.checked)} />
+      <IonCheckbox
+        className='checkbox-input'
+        color='light'
+        checked={value}
+        onIonChange={({ detail }) => onChange(detail.checked)}
+      />
     </IonItem>
   )
 }

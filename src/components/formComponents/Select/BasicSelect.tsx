@@ -13,9 +13,9 @@ interface BasicSelectProps {
 export const BasicSelect = forwardRef<HTMLIonSelectElement, BasicSelectProps>(
   ({ onChange, selectOptions, ...props }, ref): JSX.Element => (
     <IonSelect
-      interfaceOptions={{ cssClass: 'basic-select-alert' }}
       ref={ref}
       interface='popover'
+      interfaceOptions={{ cssClass: 'basic-select-popover' }}
       onIonChange={onChange}
       {...props}
     >

@@ -5,10 +5,6 @@
     --ion-color-light */
 
 /* Custom Styles for Ion-Components */
-.multiple-select-alert .alert-checkbox-group {
-  max-height: unset;
-  --max-height: 80%;
-}
 .delete-alert .alert-button {
   color: var(--ion-color-danger-shade);
 }
@@ -19,13 +15,8 @@
 .alert-button-role-cancel.sc-ion-alert-md {
   color: var(--ion-color-dark);
 }
-.menu-action-sheet {
-  --background: var(--ion-color-medium);
-  --color: #fff;
-  --button-color: #fff;
-}
-.menu-action-sheet .action-sheet-group.sc-ion-action-sheet-md:last-child {
-  padding-bottom: 16px;
+ion-item-divider {
+  height: 50px;
 }
 
 /* Utility-Classes */
@@ -82,7 +73,9 @@ body.dark .item-border-color {
   --highlight-color-focused: var(--ion-color-light);
 }
 body.dark .checkbox-input {
-  --border-color: rgba(255, 255, 255, 0.33);
+  /* same color as select arrow */
+  --border-color: rgba(155, 162, 171, 1);
+  --checkmark-color: hsl(215, 33%, 20%);
 }
 body.dark .text-input {
   --placeholder-color: currentColor;
@@ -106,12 +99,23 @@ body.dark .save-alert .alert-button {
 body.dark .alert-button-role-cancel.sc-ion-alert-md {
   color: var(--ion-color-light);
 }
-body.dark .alert-checkbox-label.sc-ion-alert-md {
-  color: #fff;
-  --border-color-checked: rgba(255, 255, 255, 0.33);
+body.dark .basic-select-popover .select-interface-option {
+  --color: #fff;
+  --background: var(--ion-color-medium);
+  --background-focused: var(--ion-color-primary, #3880ff);
+  --background-focused-opacity: 0.2;
 }
-body.dark .basic-select-alert .select-interface-option .radio-checked {
-  --color-checked: var(--ion-color-light);
+body.dark .basic-select-popover ion-list {
+  background-color: var(--ion-color-medium);
+}
+body.dark .basic-select-popover .select-interface-option ion-checkbox {
+  /* same color as select arrow */
+  --border-color: rgba(155, 162, 171, 1);
+  --background-checked: rgba(155, 162, 171, 1);
+  --border-color-checked: rgba(155, 162, 171, 1);
+  /* same color as Background */
+  --checkmark-color: var(--ion-color-medium);
+  --background: var(--ion-color-medium);
 }
 body.dark .slides-bullet-active {
   --bullet-background-active: var(--ion-color-light);
