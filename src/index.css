@@ -55,6 +55,12 @@ ion-item-divider {
   opacity: var(--ion-backdrop-opacity);
   z-index: 11;
 }
+.form-input-margin {
+  margin: 8px 16px;
+}
+.form-input-no-margin::part(native) {
+  border-radius: 0;
+}
 
 body.dark .color-danger {
   color: var(--ion-color-danger);
@@ -65,9 +71,6 @@ body.dark .color-success {
 body.dark .list-item-icon-color {
   color: var(--ion-color-light);
 }
-body.dark .item-label-color {
-  color: #fff !important;
-}
 body.dark .item-border-color {
   --border-color: var(--ion-color-light-shade);
   --highlight-color-focused: var(--ion-color-light);
@@ -75,11 +78,8 @@ body.dark .item-border-color {
 body.dark .checkbox-input {
   /* same color as select arrow */
   --border-color: rgba(155, 162, 171, 1);
+  /* same color as background */
   --checkmark-color: hsl(215, 33%, 20%);
-}
-body.dark .text-input {
-  --placeholder-color: currentColor;
-  --placeholder-opacity: 0.33;
 }
 body.dark .alert-input.sc-ion-alert-md:focus {
   border-color: var(--ion-color-light);
@@ -119,4 +119,17 @@ body.dark .basic-select-popover .select-interface-option ion-checkbox {
 }
 body.dark .slides-bullet-active {
   --bullet-background-active: var(--ion-color-light);
+}
+body.dark .text-input-outlined.item-has-focus ion-label {
+  color: #fff !important;
+}
+body.dark .text-input-outlined.ion-activated ion-select {
+  color: #fff !important;
+}
+body.dark ion-select::part(text) {
+  /* doesn't matter what size is set, but it must be width (min-width isn't working!) */
+  width: 16px;
+}
+body.dark ion-card {
+  box-shadow: rgb(0 0 0 / 20%) 0px 0px 5px 0px, rgb(0 0 0 / 14%) 0px 2px 2px 0px, rgb(0 0 0 / 12%) 0px 1px 5px 0px;
 }

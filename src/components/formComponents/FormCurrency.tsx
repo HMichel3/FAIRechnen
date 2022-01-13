@@ -1,16 +1,12 @@
 import { IonInput } from '@ionic/react'
 import { toString } from 'ramda'
 import { useCallback } from 'react'
-import { Control, FieldError, FieldValues, Path, useController } from 'react-hook-form'
-import { displayCurrencyValue } from '../../../App/utils'
-import { FormComponent } from '../FormComponent'
+import { Control, FieldValues, Path, useController } from 'react-hook-form'
+import { displayCurrencyValue } from '../../App/utils'
 
-interface CurrencyInputProps<Type> {
-  label: string
+interface FormCurrencyProps<Type> {
   name: Path<Type>
   control: Control<Type>
-  error?: FieldError
-  lines?: 'full' | 'inset' | 'none'
 }
 
 const VALID_FIRST = /^[1-9]{1}$/
@@ -18,13 +14,7 @@ const VALID_NEXT = /^[0-9]{1}$/
 const DELETE_INPUT = 'deleteContentBackward'
 const MAX = Number.MAX_SAFE_INTEGER
 
-export const CurrencyInput = <Type extends FieldValues>({
-  label,
-  name,
-  control,
-  error,
-  lines = 'inset',
-}: CurrencyInputProps<Type>): JSX.Element => {
+export const FormCurrency = <Type extends FieldValues>({ name, control }: FormCurrencyProps<Type>): JSX.Element => {
   const {
     field: { value, onChange },
   } = useController({ name, control })
@@ -62,9 +52,5 @@ export const CurrencyInput = <Type extends FieldValues>({
     [onChange, value]
   )
 
-  return (
-    <FormComponent label={label} error={error} lines={lines}>
-      <IonInput value={displayCurrencyValue(value)} inputMode='numeric' onIonInput={onKeyDown} />
-    </FormComponent>
-  )
+  return <IonInput value={displayCurrencyValue(value)} inputMode='numeric' onIonInput={onKeyDown} />
 }

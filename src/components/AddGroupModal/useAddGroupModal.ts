@@ -1,11 +1,17 @@
+import { zodResolver } from '@hookform/resolvers/zod'
 import { isEmpty, last, forEach } from 'ramda'
 import { useRef, useEffect } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
+import { z } from 'zod'
 import { AddGroupModalProps } from '.'
 import { Group, Member } from '../../App/types'
-import { useSetFocus } from '../../hooks/useSetFocus'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
+
+const validationSchema = z.object({
+  groupName: z.string().min(1, { message: 'Pflichtfeld!' }),
+  almostMembers: z.object({ name: z.string() }).array(),
+})
 
 interface FormValues {
   groupName: Group['name']
@@ -18,13 +24,12 @@ export const useAddGroupModal = (onDismiss: AddGroupModalProps['onDismiss']) => 
   const addGroup = usePersistedStore.useAddGroup()
   const addMember = usePersistedStore.useAddMember()
   const showAnimationOnce = useStore.useSetShowAnimationOnce()
-  const { register, watch, handleSubmit, control, formState } = useForm({ defaultValues })
+  const { watch, handleSubmit, control, formState } = useForm({
+    resolver: zodResolver(validationSchema),
+    defaultValues,
+  })
   const { fields, append, remove } = useFieldArray({ control, name: 'almostMembers' })
-  const groupNameRef = useRef<HTMLIonInputElement | null>(null)
-  const { ref: firstInputRef, ...firstInputRest } = register('groupName', { required: 'Pflichtfeld!' })
   const pageContentRef = useRef<HTMLIonContentElement>(null)
-
-  useSetFocus(groupNameRef, 500)
 
   useEffect(() => {
     const adjustFieldArray = watch(({ almostMembers }, { name }) => {
@@ -42,5 +47,5 @@ export const useAddGroupModal = (onDismiss: AddGroupModalProps['onDismiss']) => 
     onDismiss()
   })
 
-  return { pageContentRef, firstInputRef, firstInputRest, groupNameRef, formState, fields, register, remove, onSubmit }
+  return { pageContentRef, formState, fields, remove, onSubmit, control }
 }

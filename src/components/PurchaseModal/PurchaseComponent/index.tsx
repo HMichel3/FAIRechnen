@@ -1,72 +1,48 @@
-import { IonItemDivider, IonLabel } from '@ionic/react'
-import { useRef } from 'react'
-import { Control, FieldError, UseFormRegister, useFormState } from 'react-hook-form'
+import { IonItem, IonItemDivider, IonLabel } from '@ionic/react'
+import { Control, useFormState } from 'react-hook-form'
 import { FormValues } from '../usePurchaseModal'
 import { Member } from '../../../App/types'
-import { useSetFocus } from '../../../hooks/useSetFocus'
-import { Checkbox } from '../../formComponents/Checkbox'
-import { CurrencyInput } from '../../formComponents/CurrencyInput'
-import { Select } from '../../formComponents/Select'
-import { TextInput } from '../../formComponents/TextInput'
+import { FormComponent } from '../../formComponents/FormComponent'
+import { FormInput } from '../../formComponents/FormInput'
+import { FormCurrency } from '../../formComponents/FormCurrency'
+import { FormSelect } from '../../formComponents/FormSelect'
+import { FormCheckbox } from '../../formComponents/FormCheckbox'
+import { path } from 'ramda'
 
 interface PurchaseComponentProps {
-  register: UseFormRegister<FormValues>
   control: Control<FormValues>
   groupMembers: Member[]
   membersWithoutPurchaser: Member[]
-  isPurchaseSelected: boolean
 }
 
 export const PurchaseComponent = ({
-  register,
   control,
   groupMembers,
   membersWithoutPurchaser,
-  isPurchaseSelected,
 }: PurchaseComponentProps): JSX.Element => {
   const { errors } = useFormState({ control, name: ['name', 'amount', 'purchaserId', 'beneficiaryIds'] })
-  const nameRef = useRef<HTMLIonInputElement | null>(null)
-  const { ref: firstInputRef, ...firstInputRest } = register('name')
-
-  useSetFocus(nameRef, 500, isPurchaseSelected)
 
   return (
     <>
       <IonItemDivider color='medium'>
         <IonLabel>Einkauf</IonLabel>
       </IonItemDivider>
-      <TextInput
-        label='Einkaufname'
-        placeholder='Name eingeben'
-        error={errors.name}
-        ref={event => {
-          firstInputRef(event)
-          nameRef.current = event
-        }}
-        {...firstInputRest}
-      />
-      <CurrencyInput label='Betrag' name='amount' control={control} error={errors.amount} />
-      <Select
-        label='Einkäufer'
-        placeholder='Einkäufer auswählen'
-        selectOptions={groupMembers}
-        error={errors.purchaserId}
-        {...register('purchaserId')}
-      />
-      <Select
-        label='Begünstigte'
-        placeholder='Begünstigte auswählen'
-        selectOptions={membersWithoutPurchaser}
-        error={errors.beneficiaryIds as FieldError | undefined}
-        {...register('beneficiaryIds')}
-        multipleSelect
-      />
-      <Checkbox
-        label='Bezahlt der Einkäufer nur für Andere?'
-        name='isPurchaserOnlyPaying'
-        control={control}
-        lines='none'
-      />
+      <FormComponent label='Einkaufname' error={errors.name}>
+        <FormInput name='name' control={control} />
+      </FormComponent>
+      <FormComponent label='Betrag' error={errors.amount}>
+        <FormCurrency name='amount' control={control} />
+      </FormComponent>
+      <FormComponent label='Einkäufer' error={errors.purchaserId}>
+        <FormSelect name='purchaserId' control={control} selectOptions={groupMembers} />
+      </FormComponent>
+      <FormComponent label='Begünstigte' error={path(['beneficiaryIds'], errors)}>
+        <FormSelect name='beneficiaryIds' control={control} selectOptions={membersWithoutPurchaser} multiple />
+      </FormComponent>
+      <IonItem className='form-input-margin' fill='outline' color='light' lines='none'>
+        <IonLabel color='light'>Bezahlt der Einkäufer nur für Andere?</IonLabel>
+        <FormCheckbox name='isPurchaserOnlyPaying' control={control} />
+      </IonItem>
     </>
   )
 }

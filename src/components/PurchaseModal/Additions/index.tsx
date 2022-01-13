@@ -2,7 +2,7 @@ import { IonAlert, IonButton, IonButtons, IonIcon, IonItemDivider, IonLabel } fr
 import { addSharp } from 'ionicons/icons'
 import { mapIndexed } from 'ramda-adjunct'
 import { RefObject } from 'react'
-import { Control, UseFormRegister } from 'react-hook-form'
+import { Control } from 'react-hook-form'
 import { FormValues } from '../usePurchaseModal'
 import { Member } from '../../../App/types'
 import { AdditionCard } from './AdditionCard'
@@ -10,16 +10,14 @@ import { useAdditions } from './useAdditions'
 import { displayCurrencyValue } from '../../../App/utils'
 
 export interface AdditionsProps {
-  register: UseFormRegister<FormValues>
   control: Control<FormValues>
   groupMembers: Member[]
   pageContentRef: RefObject<HTMLIonContentElement>
 }
 
-export const Additions = ({ register, control, groupMembers, pageContentRef }: AdditionsProps): JSX.Element => {
+export const Additions = ({ control, groupMembers, pageContentRef }: AdditionsProps): JSX.Element => {
   const {
     fields,
-    remove,
     additions,
     additionsTotalAmount,
     showDeleteAdditionAlert,
@@ -47,8 +45,6 @@ export const Additions = ({ register, control, groupMembers, pageContentRef }: A
               addition={additions[index]}
               {...{
                 index,
-                remove,
-                register,
                 control,
                 groupMembers,
                 setShowDeleteAdditionAlert,

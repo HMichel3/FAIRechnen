@@ -9,7 +9,6 @@ import { removeArrayItemsById, getTotalAmountFromArray } from '../../App/utils'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
 
-// Better, because the currencyInput has no register for react-hook-form validation
 const validationSchema = z.object({
   name: z.string().min(1, { message: 'Pflichtfeld!' }),
   amount: z.number().positive({ message: 'Der Betrag muss größer als 0 sein!' }),
@@ -51,7 +50,7 @@ export const usePurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalP
   const editPurchase = usePersistedStore.useEditPurchase()
   const { group, groupMembers } = useStore.useSelectedGroup()
   const showAnimationOnce = useStore.useSetShowAnimationOnce()
-  const { register, handleSubmit, watch, setValue, control } = useForm({
+  const { handleSubmit, watch, setValue, control } = useForm({
     resolver: zodResolver(validationSchema),
     defaultValues: defaultValues(groupMembers, selectedPurchase),
   })
@@ -92,7 +91,6 @@ export const usePurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalP
     membersWithoutPurchaser,
     showAdditionError,
     setShowAdditionError,
-    register,
     control,
     onSubmit,
   }

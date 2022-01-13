@@ -18,24 +18,21 @@ export const useAddManualCompensation = (
   setManualCompensation: AddManualCompensationProps['setManualCompensation']
 ) => {
   const { groupMembers } = useStore.useSelectedGroup()
-  const { register, watch, setValue, control } = useForm({ defaultValues })
+  const { watch, setValue, control } = useForm({ defaultValues })
   const payerId = watch('payerId')
+  const receiverId = watch('receiverId')
+  const amount = watch('amount')
   const membersWithoutPayer = removeArrayItemsById(payerId, groupMembers)
 
   useEffect(() => {
-    const saveCompensation = watch(data => {
-      if (isEmpty(data.payerId) || isEmpty(data.receiverId) || data.amount <= 0) return setManualCompensation(null)
-      setManualCompensation(data)
-    })
-    const adjustReceiverId = watch(({ payerId, receiverId }, { name }) => {
-      if (name !== 'payerId' || isEmpty(payerId)) return
-      payerId === receiverId && setValue('receiverId', '')
-    })
-    return () => {
-      saveCompensation.unsubscribe()
-      adjustReceiverId.unsubscribe()
-    }
-  }, [watch, setManualCompensation, setValue])
+    if (payerId !== receiverId) return
+    setValue('receiverId', '')
+  }, [payerId, receiverId, setValue])
 
-  return { groupMembers, membersWithoutPayer, register, control }
+  useEffect(() => {
+    if (isEmpty(payerId) || isEmpty(receiverId) || amount <= 0) return setManualCompensation(null)
+    setManualCompensation({ payerId, receiverId, amount })
+  }, [payerId, receiverId, amount, setManualCompensation])
+
+  return { groupMembers, membersWithoutPayer, control }
 }
