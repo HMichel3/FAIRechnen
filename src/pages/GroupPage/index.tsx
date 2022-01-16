@@ -1,5 +1,4 @@
 import { IonAlert, IonReorderGroup } from '@ionic/react'
-import { map } from 'ramda'
 import { closeSharp, helpCircleSharp, peopleSharp, repeatSharp } from 'ionicons/icons'
 import { SlidingListItem } from '../../components/SlidingListItem'
 import { PageLayout } from '../../components/PageLayout'
@@ -52,23 +51,20 @@ export const GroupPage = (): JSX.Element => {
       />
       <PageContent>
         <IonReorderGroup disabled={!reorder} onIonItemReorder={({ detail }) => setGroups(detail.complete(groups))}>
-          {map(
-            group => (
-              <SlidingListItem
-                key={group.id}
-                label={group.name}
-                routerLink={`/groups/${group.id}`}
-                onDelete={() => onDeleteGroup(group.id)}
-                icon={peopleSharp}
-                labelComponent={
-                  <SmallLabelComponent>{displayCurrencyValue(calculateGroupTotalAmount(group.id))}</SmallLabelComponent>
-                }
-                lines={equalsLast(group, groups) ? 'none' : undefined}
-                reorder={reorder}
-              />
-            ),
-            groups
-          )}
+          {groups.map(group => (
+            <SlidingListItem
+              key={group.id}
+              label={group.name}
+              routerLink={`/groups/${group.id}`}
+              onDelete={() => onDeleteGroup(group.id)}
+              icon={peopleSharp}
+              labelComponent={
+                <SmallLabelComponent>{displayCurrencyValue(calculateGroupTotalAmount(group.id))}</SmallLabelComponent>
+              }
+              lines={equalsLast(group, groups) ? 'none' : undefined}
+              reorder={reorder}
+            />
+          ))}
         </IonReorderGroup>
         <IonAlert
           cssClass='delete-alert'

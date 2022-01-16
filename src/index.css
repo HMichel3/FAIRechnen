@@ -120,10 +120,10 @@ body.dark .basic-select-popover .select-interface-option ion-checkbox {
 body.dark .slides-bullet-active {
   --bullet-background-active: var(--ion-color-light);
 }
-body.dark .text-input-outlined.item-has-focus ion-label {
+body.dark .form-component.item-has-focus ion-label {
   color: #fff !important;
 }
-body.dark .text-input-outlined.ion-activated ion-select {
+body.dark .form-component.ion-activated ion-select {
   color: #fff !important;
 }
 body.dark ion-select::part(text) {

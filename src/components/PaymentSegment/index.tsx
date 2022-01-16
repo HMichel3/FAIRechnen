@@ -1,4 +1,3 @@
-import { map } from 'ramda'
 import { CompensationInvolvedInfo } from './CompensationInvolvedInfo'
 import { PurchaseInvolvedInfo } from './PurchaseInvolvedInfo'
 import { SlidingListItem } from '../SlidingListItem'
@@ -24,33 +23,31 @@ export const PaymentSegment = (): JSX.Element => {
 
   return (
     <motion.div variants={fadeOutLeftVariants} {...variantProps}>
-      {map(
-        groupPayment =>
-          isPurchase(groupPayment) ? (
-            <SlidingListItem
-              key={groupPayment.id}
-              label={groupPayment.name}
-              endText={<AmountAdditionInfo payment={groupPayment} />}
-              onDelete={() => deletePurchase(groupPayment.id)}
-              onSelect={() => onSelectPurchase(groupPayment)}
-              labelComponent={<PurchaseInvolvedInfo purchase={groupPayment} />}
-              icon={cartSharp}
-              lines={equalsLast(groupPayment, groupPayments) ? 'none' : undefined}
-              style={{ marginBottom: equalsLast(groupPayment, groupPayments) ? 92 : 0 }}
-            />
-          ) : (
-            <SlidingListItem
-              key={groupPayment.id}
-              onDelete={() => deleteCompensation(groupPayment.id)}
-              onSelect={() => setShowCantEditCompensation(true)}
-              labelComponent={<CompensationInvolvedInfo compensation={groupPayment} />}
-              icon={walletSharp}
-              detail={false}
-              lines={equalsLast(groupPayment, groupPayments) ? 'none' : undefined}
-              style={{ marginBottom: equalsLast(groupPayment, groupPayments) ? 81 : 0 }}
-            />
-          ),
-        groupPayments
+      {groupPayments.map(groupPayment =>
+        isPurchase(groupPayment) ? (
+          <SlidingListItem
+            key={groupPayment.id}
+            label={groupPayment.name}
+            endText={<AmountAdditionInfo payment={groupPayment} />}
+            onDelete={() => deletePurchase(groupPayment.id)}
+            onSelect={() => onSelectPurchase(groupPayment)}
+            labelComponent={<PurchaseInvolvedInfo purchase={groupPayment} />}
+            icon={cartSharp}
+            lines={equalsLast(groupPayment, groupPayments) ? 'none' : undefined}
+            style={{ marginBottom: equalsLast(groupPayment, groupPayments) ? 92 : 0 }}
+          />
+        ) : (
+          <SlidingListItem
+            key={groupPayment.id}
+            onDelete={() => deleteCompensation(groupPayment.id)}
+            onSelect={() => setShowCantEditCompensation(true)}
+            labelComponent={<CompensationInvolvedInfo compensation={groupPayment} />}
+            icon={walletSharp}
+            detail={false}
+            lines={equalsLast(groupPayment, groupPayments) ? 'none' : undefined}
+            style={{ marginBottom: equalsLast(groupPayment, groupPayments) ? 81 : 0 }}
+          />
+        )
       )}
       <IonAlert
         isOpen={showCantEditPurchase}

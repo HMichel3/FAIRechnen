@@ -7,6 +7,8 @@ import { ButtonWithSaveIcon } from '../ButtonWithSaveIcon'
 import { Additions } from './Additions'
 import { PurchaseComponent } from './PurchaseComponent'
 import { usePurchaseModal } from './usePurchaseModal'
+import { FormProvider } from 'react-hook-form'
+import { useRef } from 'react'
 
 export interface PurchaseModalProps {
   onDismiss: () => void
@@ -14,33 +16,31 @@ export interface PurchaseModalProps {
 }
 
 export const PurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalProps): JSX.Element => {
-  const {
-    pageContentRef,
-    groupMembers,
-    membersWithoutPurchaser,
-    showAdditionError,
-    setShowAdditionError,
-    control,
-    onSubmit,
-  } = usePurchaseModal({ onDismiss, selectedPurchase })
+  const { showAdditionError, setShowAdditionError, methods, onSubmit } = usePurchaseModal({
+    onDismiss,
+    selectedPurchase,
+  })
+  const pageContentRef = useRef<HTMLIonContentElement>(null)
 
   return (
-    <form className='flex-column-full-height' onSubmit={onSubmit}>
-      <PageHeader title={selectedPurchase ? 'Einkauf bearbeiten' : 'Neuer Einkauf'} onCloseButton={onDismiss} />
-      <PageContent ref={pageContentRef}>
-        <PurchaseComponent {...{ control, groupMembers, membersWithoutPurchaser }} />
-        <Additions {...{ control, pageContentRef, groupMembers }} />
-        <IonAlert
-          isOpen={showAdditionError}
-          onDidDismiss={() => setShowAdditionError(false)}
-          header='Einkauf kann nicht gespeichert werden!'
-          message='Der Gesamtbetrag aller Zusätze darf den Einkaufswert nicht überschreiten.'
-          buttons={[{ role: 'cancel', text: 'Okay' }]}
-        />
-      </PageContent>
-      <PageFooter>
-        <ButtonWithSaveIcon type='submit'>Einkauf speichern</ButtonWithSaveIcon>
-      </PageFooter>
-    </form>
+    <FormProvider {...methods}>
+      <form className='flex-column-full-height' onSubmit={onSubmit}>
+        <PageHeader title={selectedPurchase ? 'Einkauf bearbeiten' : 'Neuer Einkauf'} onCloseButton={onDismiss} />
+        <PageContent ref={pageContentRef}>
+          <PurchaseComponent />
+          <Additions pageContentRef={pageContentRef} />
+          <IonAlert
+            isOpen={showAdditionError}
+            onDidDismiss={() => setShowAdditionError(false)}
+            header='Einkauf kann nicht gespeichert werden!'
+            message='Der Gesamtbetrag aller Zusätze darf den Einkaufswert nicht überschreiten.'
+            buttons={[{ role: 'cancel', text: 'Okay' }]}
+          />
+        </PageContent>
+        <PageFooter>
+          <ButtonWithSaveIcon type='submit'>Einkauf speichern</ButtonWithSaveIcon>
+        </PageFooter>
+      </form>
+    </FormProvider>
   )
 }

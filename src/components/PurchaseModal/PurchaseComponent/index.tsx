@@ -1,26 +1,18 @@
 import { IonItem, IonItemDivider, IonLabel } from '@ionic/react'
-import { Control, useFormState } from 'react-hook-form'
-import { FormValues } from '../usePurchaseModal'
-import { Member } from '../../../App/types'
 import { FormComponent } from '../../formComponents/FormComponent'
 import { FormInput } from '../../formComponents/FormInput'
 import { FormCurrency } from '../../formComponents/FormCurrency'
 import { FormSelect } from '../../formComponents/FormSelect'
 import { FormCheckbox } from '../../formComponents/FormCheckbox'
 import { path } from 'ramda'
+import { removeArrayItemsById } from '../../../App/utils'
+import { useStore } from '../../../stores/useStore'
+import { usePurchaseComponent } from './usePurchaseComponent'
 
-interface PurchaseComponentProps {
-  control: Control<FormValues>
-  groupMembers: Member[]
-  membersWithoutPurchaser: Member[]
-}
-
-export const PurchaseComponent = ({
-  control,
-  groupMembers,
-  membersWithoutPurchaser,
-}: PurchaseComponentProps): JSX.Element => {
-  const { errors } = useFormState({ control, name: ['name', 'amount', 'purchaserId', 'beneficiaryIds'] })
+export const PurchaseComponent = (): JSX.Element => {
+  const { control, watch, errors } = usePurchaseComponent()
+  const { groupMembers } = useStore.useSelectedGroup()
+  const membersWithoutPurchaser = removeArrayItemsById(watch('purchaserId'), groupMembers)
 
   return (
     <>

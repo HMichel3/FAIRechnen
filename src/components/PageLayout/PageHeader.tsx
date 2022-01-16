@@ -1,6 +1,5 @@
 import { IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonButton, IonIcon, IonToggle } from '@ionic/react'
 import { moonSharp, sunnySharp } from 'ionicons/icons'
-import { map } from 'ramda'
 import { ReactNode } from 'react'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 
@@ -49,14 +48,11 @@ export const PageHeader = ({
                 </>
               )}
               {menuButtons &&
-                map(
-                  ({ icon, onClick }) => (
-                    <IonButton key={icon} onClick={onClick}>
-                      <IonIcon slot='icon-only' icon={icon} />
-                    </IonButton>
-                  ),
-                  menuButtons
-                )}
+                menuButtons.map(({ icon, onClick }) => (
+                  <IonButton key={icon} onClick={onClick}>
+                    <IonIcon slot='icon-only' icon={icon} />
+                  </IonButton>
+                ))}
             </IonButtons>
           )
         )}

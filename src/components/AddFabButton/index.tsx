@@ -1,7 +1,6 @@
 import { IonFab, IonFabButton, IonIcon, IonFabList } from '@ionic/react'
 import clsx from 'clsx'
 import { addSharp } from 'ionicons/icons'
-import { map } from 'ramda'
 import './index.css'
 
 interface AddFabButtonProps {
@@ -25,23 +24,20 @@ export const AddFabButton = ({
         <IonIcon icon={addSharp} />
       </IonFabButton>
       <IonFabList side='top'>
-        {map(
-          ({ text, icon, onClick, disabled }) => (
-            <IonFabButton
-              // needed, because disabled not working as expected
-              className={clsx({ 'custom-button-disabled': disabled })}
-              style={{ height: 56, width: 56 }}
-              key={text}
-              color='medium'
-              data-label={text}
-              // needed, because disabled not working as expected
-              onClick={() => (disabled ? onClickBackdrop() : onClickFabButtonInList(onClick))}
-            >
-              <IonIcon icon={icon} />
-            </IonFabButton>
-          ),
-          children
-        )}
+        {children.map(({ text, icon, onClick, disabled }) => (
+          <IonFabButton
+            // needed, because disabled not working as expected
+            className={clsx({ 'custom-button-disabled': disabled })}
+            style={{ height: 56, width: 56 }}
+            key={text}
+            color='medium'
+            data-label={text}
+            // needed, because disabled not working as expected
+            onClick={() => (disabled ? onClickBackdrop() : onClickFabButtonInList(onClick))}
+          >
+            <IonIcon icon={icon} />
+          </IonFabButton>
+        ))}
       </IonFabList>
     </IonFab>
   </>

@@ -2,7 +2,6 @@ import { IonItemDivider, IonLabel } from '@ionic/react'
 import { PageContent } from '../PageLayout/PageContent'
 import { PageFooter } from '../PageLayout/PageFooter'
 import { PageHeader } from '../PageLayout/PageHeader'
-import { mapIndexed } from 'ramda-adjunct'
 import { ButtonWithSaveIcon } from '../ButtonWithSaveIcon'
 import { useAddGroupModal } from './useAddGroupModal'
 import { equalsLast } from '../../App/utils'
@@ -29,18 +28,15 @@ export const AddGroupModal = ({ onDismiss }: AddGroupModalProps): JSX.Element =>
         <IonItemDivider color='medium'>
           <IonLabel>Mitglieder</IonLabel>
         </IonItemDivider>
-        {mapIndexed(
-          (field, index) => (
-            <FormComponent
-              key={field.id}
-              label='Mitglied'
-              {...(!equalsLast(field, fields) && { onDelete: () => remove(index) })}
-            >
-              <FormInput name={`almostMembers.${index}.name`} control={control} />
-            </FormComponent>
-          ),
-          fields
-        )}
+        {fields.map((field, index) => (
+          <FormComponent
+            key={field.id}
+            label='Mitglied'
+            {...(!equalsLast(field, fields) && { onDelete: () => remove(index) })}
+          >
+            <FormInput name={`almostMembers.${index}.name`} control={control} />
+          </FormComponent>
+        ))}
       </PageContent>
       <PageFooter>
         <ButtonWithSaveIcon type='submit'>Gruppe speichern</ButtonWithSaveIcon>

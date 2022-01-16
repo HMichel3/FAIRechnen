@@ -6,33 +6,35 @@ import { removeArrayItemsById } from '../../../App/utils'
 import { useStore } from '../../../stores/useStore'
 import { AddManualCompensationProps } from '../AddManualCompensation'
 
-interface FormValues {
+interface CompensationFormValues {
   payerId: Compensation['payerId']
   receiverId: Compensation['receiverId']
   amount: Compensation['amount']
 }
 
-const defaultValues: FormValues = { payerId: '', receiverId: '', amount: 0 }
+const defaultValues: CompensationFormValues = { payerId: '', receiverId: '', amount: 0 }
 
 export const useAddManualCompensation = (
   setManualCompensation: AddManualCompensationProps['setManualCompensation']
 ) => {
   const { groupMembers } = useStore.useSelectedGroup()
   const { watch, setValue, control } = useForm({ defaultValues })
-  const payerId = watch('payerId')
-  const receiverId = watch('receiverId')
-  const amount = watch('amount')
-  const membersWithoutPayer = removeArrayItemsById(payerId, groupMembers)
+  const membersWithoutPayer = removeArrayItemsById(watch('payerId'), groupMembers)
 
   useEffect(() => {
-    if (payerId !== receiverId) return
-    setValue('receiverId', '')
-  }, [payerId, receiverId, setValue])
-
-  useEffect(() => {
-    if (isEmpty(payerId) || isEmpty(receiverId) || amount <= 0) return setManualCompensation(null)
-    setManualCompensation({ payerId, receiverId, amount })
-  }, [payerId, receiverId, amount, setManualCompensation])
+    const adjustReceiverId = watch(({ payerId, receiverId }, { name }) => {
+      if (name !== 'payerId' || payerId !== receiverId) return
+      setValue('receiverId', '')
+    })
+    const saveCompensation = watch(({ payerId, receiverId, amount }) => {
+      if (isEmpty(payerId) || isEmpty(receiverId) || amount <= 0) return setManualCompensation(null)
+      setManualCompensation({ payerId, receiverId, amount })
+    })
+    return () => {
+      adjustReceiverId.unsubscribe()
+      saveCompensation.unsubscribe()
+    }
+  }, [watch, setManualCompensation, setValue])
 
   return { groupMembers, membersWithoutPayer, control }
 }

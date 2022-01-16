@@ -16,7 +16,7 @@ const MAX = Number.MAX_SAFE_INTEGER
 
 export const FormCurrency = <Type extends FieldValues>({ name, control }: FormCurrencyProps<Type>): JSX.Element => {
   const {
-    field: { value, onChange },
+    field: { ref, value, onChange, onBlur },
   } = useController({ name, control })
 
   const valueAbsTrunc = Math.trunc(Math.abs(value))
@@ -52,5 +52,14 @@ export const FormCurrency = <Type extends FieldValues>({ name, control }: FormCu
     [onChange, value]
   )
 
-  return <IonInput value={displayCurrencyValue(value)} inputMode='numeric' onIonInput={onKeyDown} />
+  return (
+    <IonInput
+      ref={ref}
+      name={name}
+      value={displayCurrencyValue(value)}
+      onIonInput={onKeyDown}
+      onIonBlur={onBlur}
+      inputMode='numeric'
+    />
+  )
 }

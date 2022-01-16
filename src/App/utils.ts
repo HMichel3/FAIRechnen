@@ -8,7 +8,6 @@ import {
   filter,
   find,
   findIndex,
-  forEach,
   includes,
   isEmpty,
   isNil,
@@ -84,21 +83,22 @@ export const generatePossibleCompensations = (groupId: Group['id'], groupMembers
   if (possibleGroupMembers.length < 2) return []
   let compensations: Compensation[] = []
   let partner: Member
-  forEach(member => {
+  possibleGroupMembers.forEach(member => {
     let minAmountDiff: number
-    forEach(secondMember => {
+    const membersWithoutCurrent = removeArrayItemsById(member.id, possibleGroupMembers)
+    membersWithoutCurrent.forEach(secondMember => {
       if (Math.sign(member.amount) === Math.sign(secondMember.amount)) return
       const amountDiff = member.amount + secondMember.amount
       if (amountDiff >= minAmountDiff) return
       minAmountDiff = amountDiff
       partner = secondMember
-    }, removeArrayItemsById(member.id, possibleGroupMembers))
+    })
     const compensationAmount = Math.min(Math.abs(member.amount), Math.abs(partner.amount))
     if (isPositive(member.amount)) {
       return compensations.push(compensationDTO(groupId, compensationAmount, partner.id, member.id))
     }
     compensations.push(compensationDTO(groupId, compensationAmount, member.id, partner.id))
-  }, possibleGroupMembers)
+  })
   const compensationsWithoutDuplicates = removeDuplicateCompensations(compensations)
   const sortedCompensations = sort(descend(prop('amount')), compensationsWithoutDuplicates)
   return sortedCompensations

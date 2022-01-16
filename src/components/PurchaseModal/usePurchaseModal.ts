@@ -1,11 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { isEmpty, without, pick, map, prop, equals } from 'ramda'
-import { useRef, useState, useEffect } from 'react'
+import { pick, map, prop, equals } from 'ramda'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { PurchaseModalProps } from '.'
 import { Purchase, Member } from '../../App/types'
-import { removeArrayItemsById, getTotalAmountFromArray } from '../../App/utils'
+import { getTotalAmountFromArray } from '../../App/utils'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
 
@@ -24,7 +24,7 @@ const validationSchema = z.object({
     .array(),
 })
 
-export interface FormValues {
+export interface PurchaseFormValues {
   name: Purchase['name']
   amount: Purchase['amount']
   purchaserId: Purchase['purchaserId']
@@ -33,7 +33,7 @@ export interface FormValues {
   additions: Purchase['additions']
 }
 
-const defaultValues = (groupMembers: Member[], selectedPurchase?: Purchase): FormValues => {
+const defaultValues = (groupMembers: Member[], selectedPurchase?: Purchase): PurchaseFormValues => {
   const groupMemberIds = map(prop('id'), groupMembers)
   return {
     name: selectedPurchase?.name ?? '',
@@ -50,26 +50,15 @@ export const usePurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalP
   const editPurchase = usePersistedStore.useEditPurchase()
   const { group, groupMembers } = useStore.useSelectedGroup()
   const showAnimationOnce = useStore.useSetShowAnimationOnce()
-  const { handleSubmit, watch, setValue, control } = useForm({
+  const methods = useForm({
     resolver: zodResolver(validationSchema),
     defaultValues: defaultValues(groupMembers, selectedPurchase),
   })
-  const pageContentRef = useRef<HTMLIonContentElement>(null)
   const [showAdditionError, setShowAdditionError] = useState(false)
-  const purchaserId = watch('purchaserId')
-  const membersWithoutPurchaser = removeArrayItemsById(purchaserId, groupMembers)
 
-  useEffect(() => {
-    const adjustBeneficiaryIds = watch(({ purchaserId, beneficiaryIds }, { name }) => {
-      if (name !== 'purchaserId' || isEmpty(purchaserId)) return
-      setValue('beneficiaryIds', without([purchaserId], beneficiaryIds))
-    })
-    return () => adjustBeneficiaryIds.unsubscribe()
-  }, [watch, setValue])
-
-  const onSubmit = handleSubmit(data => {
+  const onSubmit = methods.handleSubmit(data => {
     setShowAdditionError(false)
-    if (getTotalAmountFromArray(watch('additions')) > watch('amount')) {
+    if (getTotalAmountFromArray(methods.getValues('additions')) > methods.getValues('amount')) {
       return setShowAdditionError(true)
     }
     if (selectedPurchase) {
@@ -86,12 +75,9 @@ export const usePurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalP
   })
 
   return {
-    pageContentRef,
-    groupMembers,
-    membersWithoutPurchaser,
     showAdditionError,
     setShowAdditionError,
-    control,
+    methods,
     onSubmit,
   }
 }

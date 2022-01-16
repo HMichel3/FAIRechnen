@@ -1,6 +1,5 @@
 import { IonItem, IonLabel, IonRadio, IonRadioGroup } from '@ionic/react'
 import { AnimatePresence } from 'framer-motion'
-import { map } from 'ramda'
 import { AddManualCompensation } from './AddManualCompensation'
 import { PageContent } from '../PageLayout/PageContent'
 import { PageFooter } from '../PageLayout/PageFooter'
@@ -31,12 +30,9 @@ export const AddCompensationModal = ({ onDismiss }: AddCompensationModalProps): 
       <PageHeader title='Neue Zahlung' onCloseButton={onDismiss} />
       <PageContent ref={pageContentRef}>
         <IonRadioGroup value={checkedRadio} onIonChange={({ detail }) => onSetCheckedRadio(detail.value)}>
-          {map(
-            compensation => (
-              <CompensationItem key={compensation.id} compensation={compensation} />
-            ),
-            possibleCompensations
-          )}
+          {possibleCompensations.map(compensation => (
+            <CompensationItem key={compensation.id} compensation={compensation} />
+          ))}
           <IonItem lines='none'>
             <IonRadio color={clsx({ light: theme === 'dark' })} slot='start' value='manual' />
             <IonLabel>Manuelle Zahlung</IonLabel>

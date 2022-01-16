@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { isEmpty, last, forEach } from 'ramda'
+import { isEmpty, last } from 'ramda'
 import { useRef, useEffect } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { z } from 'zod'
@@ -13,12 +13,12 @@ const validationSchema = z.object({
   almostMembers: z.object({ name: z.string() }).array(),
 })
 
-interface FormValues {
+interface GroupFormValues {
   groupName: Group['name']
   almostMembers: Pick<Member, 'name'>[]
 }
 
-const defaultValues: FormValues = { groupName: '', almostMembers: [{ name: '' }] }
+const defaultValues: GroupFormValues = { groupName: '', almostMembers: [{ name: '' }] }
 
 export const useAddGroupModal = (onDismiss: AddGroupModalProps['onDismiss']) => {
   const addGroup = usePersistedStore.useAddGroup()
@@ -42,7 +42,7 @@ export const useAddGroupModal = (onDismiss: AddGroupModalProps['onDismiss']) => 
 
   const onSubmit = handleSubmit(({ groupName, almostMembers }) => {
     const groupId = addGroup(groupName)
-    forEach(({ name }) => !isEmpty(name) && addMember(groupId, name), almostMembers)
+    almostMembers.forEach(({ name }) => !isEmpty(name) && addMember(groupId, name))
     showAnimationOnce()
     onDismiss()
   })

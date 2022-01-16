@@ -22,7 +22,7 @@ export const FormComponent = ({
   noMargin = false,
 }: FormComponentProps): JSX.Element => (
   <IonItem
-    className={clsx('text-input-outlined', !noMargin ? 'form-input-margin' : 'form-input-no-margin', className)}
+    className={clsx('form-component', !noMargin ? 'form-input-margin' : 'form-input-no-margin', className)}
     color='light'
     fill='outline'
   >

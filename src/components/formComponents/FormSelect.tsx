@@ -1,6 +1,5 @@
 import { IonSelect, IonSelectOption } from '@ionic/react'
-import { map } from 'ramda'
-import { Control, Controller, FieldValues, Path } from 'react-hook-form'
+import { Control, FieldValues, Path, useController } from 'react-hook-form'
 
 interface FormSelectProps<Type> {
   name: Path<Type>
@@ -14,27 +13,27 @@ export const FormSelect = <Type extends FieldValues>({
   control,
   selectOptions,
   multiple = false,
-}: FormSelectProps<Type>) => (
-  <Controller
-    render={({ field }) => (
-      <IonSelect
-        interface='popover'
-        interfaceOptions={{ cssClass: 'basic-select-popover' }}
-        value={field.value}
-        onIonChange={field.onChange}
-        multiple={multiple}
-      >
-        {map(
-          selectOption => (
-            <IonSelectOption key={selectOption.id} value={selectOption.id}>
-              {selectOption.name}
-            </IonSelectOption>
-          ),
-          selectOptions
-        )}
-      </IonSelect>
-    )}
-    control={control}
-    name={name}
-  />
-)
+}: FormSelectProps<Type>) => {
+  const {
+    field: { ref, value, onChange, onBlur },
+  } = useController({ name, control })
+
+  return (
+    <IonSelect
+      interface='popover'
+      interfaceOptions={{ cssClass: 'basic-select-popover' }}
+      ref={ref}
+      name={name}
+      value={value}
+      onIonChange={onChange}
+      onIonBlur={onBlur}
+      multiple={multiple}
+    >
+      {selectOptions.map(selectOption => (
+        <IonSelectOption key={selectOption.id} value={selectOption.id}>
+          {selectOption.name}
+        </IonSelectOption>
+      ))}
+    </IonSelect>
+  )
+}

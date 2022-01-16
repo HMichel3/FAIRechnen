@@ -1,31 +1,26 @@
 import { IonAlert, IonButton, IonButtons, IonIcon, IonItemDivider, IonLabel } from '@ionic/react'
 import { addSharp } from 'ionicons/icons'
-import { mapIndexed } from 'ramda-adjunct'
-import { RefObject } from 'react'
-import { Control } from 'react-hook-form'
-import { FormValues } from '../usePurchaseModal'
-import { Member } from '../../../App/types'
+import { RefObject, useState } from 'react'
 import { AdditionCard } from './AdditionCard'
-import { useAdditions } from './useAdditions'
-import { displayCurrencyValue } from '../../../App/utils'
+import { displayCurrencyValue, getTotalAmountFromArray } from '../../../App/utils'
+import { isNil } from 'ramda'
+import { useFieldArray, useFormContext } from 'react-hook-form'
 
 export interface AdditionsProps {
-  control: Control<FormValues>
-  groupMembers: Member[]
   pageContentRef: RefObject<HTMLIonContentElement>
 }
 
-export const Additions = ({ control, groupMembers, pageContentRef }: AdditionsProps): JSX.Element => {
-  const {
-    fields,
-    additions,
-    additionsTotalAmount,
-    showDeleteAdditionAlert,
-    setShowDeleteAdditionAlert,
-    setDeleteAdditionIndex,
-    onAddAddition,
-    onDeleteAddition,
-  } = useAdditions({ control, pageContentRef })
+export const Additions = ({ pageContentRef }: AdditionsProps): JSX.Element => {
+  const { control, watch } = useFormContext()
+  const { fields, append, remove } = useFieldArray({ control, name: 'additions' })
+  // the additionIndex is needed for the delete-alert (can't move it into the additionCard, because of memory leak)
+  const [additionIndex, setAdditionIndex] = useState<number | null>(null)
+  const additionsTotalAmount = getTotalAmountFromArray(watch('additions'))
+
+  const onAddAddition = () => {
+    append({ name: '', amount: 0, beneficiaryIds: [] })
+    setTimeout(() => pageContentRef.current?.scrollToBottom(), 300)
+  }
 
   return (
     <>
@@ -37,32 +32,17 @@ export const Additions = ({ control, groupMembers, pageContentRef }: AdditionsPr
           </IonButton>
         </IonButtons>
       </IonItemDivider>
-      {mapIndexed(
-        (field, index) =>
-          additions[index] && (
-            <AdditionCard
-              key={field.id}
-              addition={additions[index]}
-              {...{
-                index,
-                control,
-                groupMembers,
-                setShowDeleteAdditionAlert,
-                setDeleteAdditionIndex,
-                pageContentRef,
-              }}
-            />
-          ),
-        fields
-      )}
+      {fields.map((field, index) => (
+        <AdditionCard key={field.id} {...{ index, pageContentRef, setAdditionIndex }} />
+      ))}
       <IonAlert
         cssClass='delete-alert'
-        isOpen={showDeleteAdditionAlert}
-        onDidDismiss={() => setShowDeleteAdditionAlert(false)}
+        isOpen={!isNil(additionIndex)}
+        onDidDismiss={() => setAdditionIndex(null)}
         header='Wollen Sie den Zusatz wirklich löschen?'
         buttons={[
           { role: 'cancel', text: 'Abbrechen' },
-          { text: 'Löschen', handler: onDeleteAddition },
+          { text: 'Löschen', handler: () => remove(additionIndex!) },
         ]}
       />
     </>

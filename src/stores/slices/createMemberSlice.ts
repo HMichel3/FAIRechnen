@@ -1,4 +1,4 @@
-import { append, or, filter, forEach, concat, map } from 'ramda'
+import { append, or, filter, concat, map } from 'ramda'
 import { GetState, SetState } from 'zustand'
 import { memberDTO } from '../../dtos/memberDTO'
 import { Addition, Compensation, Group, Member, Purchase } from '../../App/types'
@@ -64,9 +64,9 @@ export const createMemberSlice = (set: SetState<PersistedState>, get: GetState<P
   adjustPurchaseAmountOnMembers: (purchaseAmount, purchasePurchaserId, purchaseBeneficiaryIds) => {
     const memberCount = purchaseBeneficiaryIds.length
     const memberPurchaseAmount = Math.round(purchaseAmount / memberCount)
-    forEach(beneficiaryId => {
+    purchaseBeneficiaryIds.forEach(beneficiaryId => {
       get().editMemberAmount(beneficiaryId, -memberPurchaseAmount)
-    }, purchaseBeneficiaryIds)
+    })
     // ensures that only purchases can be created, which can be divided smoothly
     const newPurchaseAmount = memberPurchaseAmount * memberCount
     get().editMemberAmount(purchasePurchaserId, newPurchaseAmount)
@@ -109,9 +109,9 @@ export const createMemberSlice = (set: SetState<PersistedState>, get: GetState<P
         ) as boolean,
       memberIds
     )
-    forEach(notInvolvedId => {
+    notInvolvedIds.forEach(notInvolvedId => {
       set({ deletedMembers: removeArrayItemsById(notInvolvedId, get().deletedMembers) })
-    }, notInvolvedIds)
+    })
   },
   deleteGroupMembers: groupId => {
     set({ members: removeArrayItemsById(groupId, get().members, 'groupId') })
