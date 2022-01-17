@@ -5,11 +5,11 @@ import { useCallback } from 'react'
 import { displayCurrencyValue } from '../../App/utils'
 import { arrowForwardSharp } from 'ionicons/icons'
 
-interface CompensationInvolvedInfoProps {
+interface CompensationInfoProps {
   compensation: Compensation
 }
 
-export const CompensationInvolvedInfo = ({ compensation }: CompensationInvolvedInfoProps): JSX.Element => {
+export const CompensationInfo = ({ compensation }: CompensationInfoProps): JSX.Element => {
   const payer = usePersistedStore(useCallback(s => s.getMemberById(compensation.payerId), [compensation]))
   const receiver = usePersistedStore(useCallback(s => s.getMemberById(compensation.receiverId), [compensation]))
 

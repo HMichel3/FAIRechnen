@@ -1,10 +1,9 @@
-import { CompensationInvolvedInfo } from './CompensationInvolvedInfo'
-import { PurchaseInvolvedInfo } from './PurchaseInvolvedInfo'
+import { CompensationInfo } from './CompensationInfo'
+import { PurchaseInfo } from './PurchaseInfo'
 import { SlidingListItem } from '../SlidingListItem'
 import { motion } from 'framer-motion'
 import { fadeOutLeftVariants, variantProps } from '../../App/animations'
 import { cartSharp, walletSharp } from 'ionicons/icons'
-import { AmountAdditionInfo } from './AmountAdditionInfo'
 import { IonAlert } from '@ionic/react'
 import { usePaymentSegment } from './usePaymentSegment'
 import { equalsLast, isPurchase } from '../../App/utils'
@@ -27,12 +26,11 @@ export const PaymentSegment = (): JSX.Element => {
         isPurchase(groupPayment) ? (
           <SlidingListItem
             key={groupPayment.id}
-            label={groupPayment.name}
-            endText={<AmountAdditionInfo payment={groupPayment} />}
             onDelete={() => deletePurchase(groupPayment.id)}
             onSelect={() => onSelectPurchase(groupPayment)}
-            labelComponent={<PurchaseInvolvedInfo purchase={groupPayment} />}
+            labelComponent={<PurchaseInfo purchase={groupPayment} />}
             icon={cartSharp}
+            detail={false}
             lines={equalsLast(groupPayment, groupPayments) ? 'none' : undefined}
             style={{ marginBottom: equalsLast(groupPayment, groupPayments) ? 92 : 0 }}
           />
@@ -41,7 +39,7 @@ export const PaymentSegment = (): JSX.Element => {
             key={groupPayment.id}
             onDelete={() => deleteCompensation(groupPayment.id)}
             onSelect={() => setShowCantEditCompensation(true)}
-            labelComponent={<CompensationInvolvedInfo compensation={groupPayment} />}
+            labelComponent={<CompensationInfo compensation={groupPayment} />}
             icon={walletSharp}
             detail={false}
             lines={equalsLast(groupPayment, groupPayments) ? 'none' : undefined}
