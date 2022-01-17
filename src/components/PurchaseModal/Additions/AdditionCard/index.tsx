@@ -9,10 +9,10 @@ import { FormInput } from '../../../formComponents/FormInput'
 import { FormComponent } from '../../../formComponents/FormComponent'
 import { FormCurrency } from '../../../formComponents/FormCurrency'
 import { FormSelect } from '../../../formComponents/FormSelect'
-import './index.css'
 import { useStore } from '../../../../stores/useStore'
 import { useFormContext } from 'react-hook-form'
 import { useToggle } from '../../../../hooks/useToggle'
+import './index.scss'
 
 export interface AdditionCardProps {
   index: number

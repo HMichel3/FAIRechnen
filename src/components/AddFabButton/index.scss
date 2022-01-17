@@ -1,16 +1,16 @@
 ion-fab-button[data-label] {
   position: relative;
-}
 
-ion-fab-button[data-label]::after {
-  position: absolute;
-  content: attr(data-label);
-  z-index: 1;
-  right: 60px;
-  bottom: 11px;
-  padding: 9px 12px;
-  text-transform: uppercase;
-  color: white;
+  &::after {
+    position: absolute;
+    content: attr(data-label);
+    z-index: 1;
+    right: 60px;
+    bottom: 11px;
+    padding: 9px 12px;
+    text-transform: uppercase;
+    color: white;
+  }
 }
 
 /* ionic intern class */

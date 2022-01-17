@@ -1,7 +1,7 @@
 import { IonFab, IonFabButton, IonIcon, IonFabList } from '@ionic/react'
 import clsx from 'clsx'
 import { addSharp } from 'ionicons/icons'
-import './index.css'
+import './index.scss'
 
 interface AddFabButtonProps {
   showFab: boolean

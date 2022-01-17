@@ -1,0 +1,21 @@
+/* needed, because the form-inputs got different default stylings in the IonCard-Component */
+.addition-card-input {
+  & ion-label {
+    margin-top: -5px !important;
+  }
+  & ion-input {
+    margin-top: -2px !important;
+    margin-bottom: -2px !important;
+  }
+}
+
+.addition-card-select {
+  & ion-label {
+    margin-top: -4px !important;
+  }
+  & ion-select {
+    margin-top: -2px !important;
+    margin-bottom: -3px !important;
+    height: 40px;
+  }
+}

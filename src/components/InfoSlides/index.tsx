@@ -14,7 +14,7 @@ import { Pagination } from 'swiper'
 import 'swiper/swiper.min.css'
 import 'swiper/modules/pagination/pagination.min.css'
 import '@ionic/react/css/ionic-swiper.css'
-import './index.css'
+import './index.scss'
 
 interface InfoSlidesProps {
   onToggleShowInfoSlides: () => void
