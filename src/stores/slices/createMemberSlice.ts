@@ -1,4 +1,4 @@
-import { append, or, filter, concat, map } from 'ramda'
+import { filter, map } from 'ramda'
 import { GetState, SetState } from 'zustand'
 import { memberDTO } from '../../dtos/memberDTO'
 import { Addition, Compensation, Group, Member, Purchase } from '../../App/types'
@@ -11,12 +11,11 @@ import {
   updateArrayItemById,
 } from '../../App/utils'
 import { PersistedState } from '../usePersistedStore'
-import { checkCompensationParticipation, checkPurchaseParticipation } from '../utils'
-import { nor } from 'ramda-adjunct'
+import { checkCompensationParticipation, checkIncomeParticipation, checkPurchaseParticipation } from '../utils'
 
 export interface MemberSlice {
   members: Member[]
-  // holds the deleted members, if they are involved in purchases or compensations
+  // holds the deleted members, if they are involved in purchases, incomes or compensations
   deletedMembers: Member[]
   addMember: (groupId: Group['id'], memberName: Member['name']) => void
   editMemberName: (memberId: Member['id'], newMemberName: Member['name']) => void
@@ -49,7 +48,7 @@ export const createMemberSlice = (set: SetState<PersistedState>, get: GetState<P
   deletedMembers: [],
   addMember: (groupId, memberName) => {
     const member = memberDTO(groupId, memberName)
-    set({ members: append(member, get().members) })
+    set({ members: [...get().members, member] })
   },
   editMemberName: (memberId, newMemberName) => {
     const member = getArrayItemById(memberId, get().members)
@@ -89,24 +88,25 @@ export const createMemberSlice = (set: SetState<PersistedState>, get: GetState<P
     get().editMemberAmount(compensationReceiverId, -compensationAmount)
   },
   deleteMember: memberId => {
-    const isMemberStillNeeded = or(
-      checkPurchaseParticipation(memberId, get().purchases),
-      checkCompensationParticipation(memberId, get().compensations)
-    )
+    const isMemberStillNeeded =
+      checkPurchaseParticipation(memberId, get().purchases) ||
+      checkCompensationParticipation(memberId, get().compensations) ||
+      checkIncomeParticipation(memberId, get().incomes)
     if (isMemberStillNeeded) {
       const member = getArrayItemById(memberId, get().members)
-      set({ deletedMembers: append(member, get().deletedMembers) })
+      set({ deletedMembers: [...get().deletedMembers, member] })
     }
     set({ members: removeArrayItemsById(memberId, get().members) })
   },
-  // deletes the deleted members, if they are not involved in another purchase or compensation
+  // deletes the deleted members, if they are not involved in another purchase, income or compensation
   deleteDeletedMembersAfterCheck: memberIds => {
     const notInvolvedIds = filter(
       memberId =>
-        nor(
-          checkPurchaseParticipation(memberId, get().purchases),
-          checkCompensationParticipation(memberId, get().compensations)
-        ) as boolean,
+        !(
+          checkPurchaseParticipation(memberId, get().purchases) ||
+          checkCompensationParticipation(memberId, get().compensations) ||
+          checkIncomeParticipation(memberId, get().incomes)
+        ),
       memberIds
     )
     notInvolvedIds.forEach(notInvolvedId => {
@@ -121,9 +121,9 @@ export const createMemberSlice = (set: SetState<PersistedState>, get: GetState<P
     return getArrayItemsByGroupId(groupId, get().members)
   },
   getMemberById: memberId => {
-    return or(getArrayItemById(memberId, get().members), getArrayItemById(memberId, get().deletedMembers))
+    return getArrayItemById(memberId, get().members) || getArrayItemById(memberId, get().deletedMembers)
   },
   getMembersByIds: memberIds => {
-    return concat(getArrayItemsByIds(memberIds, get().members), getArrayItemsByIds(memberIds, get().deletedMembers))
+    return [...getArrayItemsByIds(memberIds, get().members), ...getArrayItemsByIds(memberIds, get().deletedMembers)]
   },
 })

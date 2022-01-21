@@ -12,6 +12,7 @@ const initialSelectedGroup: SelectedGroup = {
   group: { id: '', name: '' },
   groupMembers: [],
   groupPurchases: [],
+  groupIncomes: [],
   groupCompensations: [],
   groupPayments: [],
 }

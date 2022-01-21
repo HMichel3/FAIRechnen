@@ -1,40 +1,60 @@
 import { useIonModal } from '@ionic/react'
+import { isEmpty } from 'ramda'
 import { useState } from 'react'
-import { Purchase } from '../../App/types'
+import { Income, Member, Purchase } from '../../App/types'
+import { findDifferentMembersInArrays } from '../../App/utils'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
-import { checkIfAllPurchaseInvolvedExist } from '../../stores/utils'
+import { getAllBeneficiaryIdsFromPurchase } from '../../stores/utils'
+import { IncomeModal } from '../IncomeModal'
 import { PurchaseModal } from '../PurchaseModal'
 
 export const usePaymentSegment = () => {
-  const deletePurchase = usePersistedStore.useDeletePurchase()
-  const deleteCompensation = usePersistedStore.useDeleteCompensation()
+  const getMembersByIds = usePersistedStore.useGetMembersByIds()
   const { groupPayments, groupMembers } = useStore.useSelectedGroup()
-  const [showCantEditPurchase, setShowCantEditPurchase] = useState(false)
-  const [showCantEditCompensation, setShowCantEditCompensation] = useState(false)
-  const [selectedPurchase, setSelectedPurchase] = useState<Purchase | undefined>()
+  const [purchaseMembersNotExisting, setPurchaseMembersNotExisting] = useState<Member[]>([])
+  const [incomeMembersNotExisting, setIncomeMembersNotExisting] = useState<Member[]>([])
+  const [selectedPurchase, setSelectedPurchase] = useState<Purchase>()
+  const [selectedIncome, setSelectedIncome] = useState<Income>()
   const [showPurchaseModal, dismissPurchaseModal] = useIonModal(PurchaseModal, {
     onDismiss: () => dismissPurchaseModal(),
     selectedPurchase: selectedPurchase,
   })
+  const [showIncomeModal, dismissIncomeModal] = useIonModal(IncomeModal, {
+    onDismiss: () => dismissIncomeModal(),
+    selectedIncome: selectedIncome,
+  })
 
   const onSelectPurchase = (purchase: Purchase) => {
-    if (!checkIfAllPurchaseInvolvedExist(purchase.purchaserId, purchase.beneficiaryIds, groupMembers)) {
-      setShowCantEditPurchase(true)
+    const allBeneficiaryIdsFromPurchase = getAllBeneficiaryIdsFromPurchase(purchase.beneficiaryIds, purchase.additions)
+    const allPurchaseMembers = getMembersByIds([purchase.purchaserId, ...allBeneficiaryIdsFromPurchase])
+    const purchaseMembersNotExisting = findDifferentMembersInArrays(allPurchaseMembers, groupMembers, false)
+    if (!isEmpty(purchaseMembersNotExisting)) {
+      setPurchaseMembersNotExisting(purchaseMembersNotExisting)
       return
     }
     setSelectedPurchase(purchase)
     showPurchaseModal()
   }
 
+  const onSelectIncome = (income: Income) => {
+    const allIncomeMembers = getMembersByIds([income.earnerId, ...income.beneficiaryIds])
+    const incomeMembersNotExisting = findDifferentMembersInArrays(allIncomeMembers, groupMembers, false)
+    if (!isEmpty(incomeMembersNotExisting)) {
+      setIncomeMembersNotExisting(incomeMembersNotExisting)
+      return
+    }
+    setSelectedIncome(income)
+    showIncomeModal()
+  }
+
   return {
     groupPayments,
-    showCantEditPurchase,
-    setShowCantEditPurchase,
-    showCantEditCompensation,
-    setShowCantEditCompensation,
-    deletePurchase,
-    deleteCompensation,
+    purchaseMembersNotExisting,
+    setPurchaseMembersNotExisting,
+    incomeMembersNotExisting,
+    setIncomeMembersNotExisting,
     onSelectPurchase,
+    onSelectIncome,
   }
 }

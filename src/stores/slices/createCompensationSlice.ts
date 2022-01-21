@@ -1,4 +1,4 @@
-import { append, pair } from 'ramda'
+import { pair } from 'ramda'
 import { GetState, SetState } from 'zustand'
 import { Compensation, Group } from '../../App/types'
 import { getArrayItemById, getArrayItemsByGroupId, removeArrayItemsById } from '../../App/utils'
@@ -21,7 +21,7 @@ export const createCompensationSlice = (
   addCompensation: compensation => {
     const { amount, payerId, receiverId } = compensation
     get().adjustCompensationAmountOnMembers(amount, payerId, receiverId)
-    set({ compensations: append(compensation, get().compensations) })
+    set({ compensations: [...get().compensations, compensation] })
   },
   deleteCompensation: compensationId => {
     const { amount, payerId, receiverId } = getArrayItemById(compensationId, get().compensations)

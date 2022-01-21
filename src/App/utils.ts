@@ -1,8 +1,8 @@
 import {
   add,
   any,
-  concat,
   descend,
+  differenceWith,
   eqProps,
   equals,
   filter,
@@ -11,6 +11,7 @@ import {
   includes,
   isEmpty,
   isNil,
+  join,
   last,
   map,
   prop,
@@ -18,11 +19,12 @@ import {
   reduce,
   reject,
   sort,
+  symmetricDifferenceWith,
   update,
 } from 'ramda'
 import { isPositive } from 'ramda-adjunct'
 import { compensationDTO } from '../dtos/compensationDTO'
-import { Purchase, Compensation, Group, Member } from './types'
+import { Purchase, Compensation, Group, Member, Income } from './types'
 
 export const getArrayItemById = <Type extends { id: string }>(id: Type['id'], array: Type[]) =>
   find(propEq('id', id), array)!
@@ -36,11 +38,16 @@ export const getArrayItemsByGroupId = <Type extends { id: string }>(
 export const getArrayItemsByIds = <Type extends { id: string }>(ids: Type['id'][], array: Type[]) =>
   filter(item => includes(item.id, ids), array)
 
-export const mergeAndSortArraysByTimestamp = <Type1 extends { timestamp: number }, Type2 extends { timestamp: number }>(
+export const mergeAndSortArraysByTimestamp = <
+  Type1 extends { timestamp: number },
+  Type2 extends { timestamp: number },
+  Type3 extends { timestamp: number }
+>(
   array1: Type1[],
-  array2: Type2[]
+  array2: Type2[],
+  array3: Type3[]
 ) => {
-  const mergedArrays = concat(array1, array2)
+  const mergedArrays = [...array1, ...array2, ...array3]
   return sort(descend(prop('timestamp')), mergedArrays)
 }
 
@@ -66,7 +73,11 @@ export const getTotalAmountFromArray = <Type extends { amount: number }>(array: 
   return reduce(add, 0, amounts)
 }
 
-export const isPurchase = (item: Purchase | Compensation): item is Purchase => !isNil((item as Purchase).name)
+export const isPurchase = (item: Purchase | Compensation | Income): item is Purchase =>
+  !isNil((item as Purchase).isPurchaserOnlyPaying)
+
+export const isIncome = (item: Purchase | Compensation | Income): item is Income =>
+  !isNil((item as Income).isEarnerOnlyEarning)
 
 export const removeDuplicateCompensations = (array: Compensation[]) => {
   const findSecondObj = (firstObj: Compensation) =>
@@ -140,13 +151,28 @@ export const generateOnePossibleCompensationChain = (groupId: Group['id'], group
 export const calculateMemberTotalAmount = (
   memberId: Member['id'],
   groupPurchases: Purchase[],
+  groupIncomes: Income[],
   groupCompensations: Compensation[]
 ) => {
   const memberPurchases = getArrayItemsByGroupId(memberId, groupPurchases, 'purchaserId')
+  const memberIncomes = getArrayItemsByGroupId(memberId, groupIncomes, 'earnerId')
   const memberPayedCompensations = getArrayItemsByGroupId(memberId, groupCompensations, 'payerId')
   const memberReceivedCompensations = getArrayItemsByGroupId(memberId, groupCompensations, 'receiverId')
   const memberPurchasesTotalAmount = getTotalAmountFromArray(memberPurchases)
+  const memberIncomesTotalAmount = getTotalAmountFromArray(memberIncomes)
   const memberPayedTotalAmount = getTotalAmountFromArray(memberPayedCompensations)
   const memberReceivedTotalAmount = getTotalAmountFromArray(memberReceivedCompensations)
-  return memberPurchasesTotalAmount + memberPayedTotalAmount - memberReceivedTotalAmount
+  return memberPurchasesTotalAmount - memberIncomesTotalAmount + memberPayedTotalAmount - memberReceivedTotalAmount
+}
+
+export const findDifferentMembersInArrays = (memberArray1: Member[], memberArray2: Member[], symmetric = true) => {
+  const compareMemberIds = (member1: Member, member2: Member) => eqProps('id', member1, member2)
+  return symmetric
+    ? symmetricDifferenceWith(compareMemberIds, memberArray1, memberArray2)
+    : differenceWith(compareMemberIds, memberArray1, memberArray2)
+}
+
+export const displayMembersNotExistingInAlert = (memberArray: Member[]) => {
+  const membersNotExistingArray = memberArray.map(({ name }) => `<div>- ${name}</div>`)
+  return join('\n', membersNotExistingArray)
 }

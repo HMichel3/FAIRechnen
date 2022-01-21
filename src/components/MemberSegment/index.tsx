@@ -52,7 +52,7 @@ export const MemberSegment = (): JSX.Element => {
         isOpen={showCantDeleteMemberAlert}
         onDidDismiss={() => setShowCantDeleteMemberAlert(false)}
         header='Mitglied kann nicht gelöscht werden!'
-        message='Mitglieder mit offenen Rechnungen können nicht gelöscht werden. Bearbeiten Sie die vorhandenen Einkäufe oder fügen Sie neue Zahlungen hinzu.'
+        message='Mitglieder mit offenen Rechnungen können nicht gelöscht werden. Bearbeiten Sie die vorhandenen Einkäufe oder Einkommen, beziehungsweise fügen Sie neue Zahlungen hinzu.'
         buttons={[{ role: 'cancel', text: 'Okay' }]}
       />
       <SimpleSaveAlert

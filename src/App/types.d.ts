@@ -37,10 +37,22 @@ export interface Compensation {
   receiverId: Member['id']
 }
 
+export interface Income {
+  groupId: Group['id']
+  id: string
+  timestamp: number
+  name: string
+  amount: number
+  earnerId: Member['id']
+  beneficiaryIds: Member['id'][]
+  isEarnerOnlyEarning: boolean
+}
+
 export interface SelectedGroup {
   group: Group
   groupMembers: Member[]
   groupPurchases: Purchase[]
+  groupIncomes: Income[]
   groupCompensations: Compensation[]
-  groupPayments: (Purchase | Compensation)[]
+  groupPayments: (Purchase | Compensation | Income)[]
 }

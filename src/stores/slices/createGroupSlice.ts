@@ -1,4 +1,3 @@
-import { prepend } from 'ramda'
 import { GetState, SetState } from 'zustand'
 import { groupDTO } from '../../dtos/groupDTO'
 import { Group } from '../../App/types'
@@ -18,7 +17,7 @@ export const createGroupSlice = (set: SetState<PersistedState>, get: GetState<Pe
   groups: [],
   addGroup: groupName => {
     const group = groupDTO(groupName)
-    set({ groups: prepend(group, get().groups) })
+    set({ groups: [group, ...get().groups] })
     return group.id
   },
   editGroupName: (groupId, groupName) => {

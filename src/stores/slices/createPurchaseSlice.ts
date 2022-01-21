@@ -1,4 +1,3 @@
-import { append } from 'ramda'
 import { GetState, SetState } from 'zustand'
 import { purchaseDTO, PurchaseWithoutIdAndTimeStamp } from '../../dtos/purchaseDTO'
 import { Group, Purchase } from '../../App/types'
@@ -6,7 +5,7 @@ import { getArrayItemById, getArrayItemsByGroupId, removeArrayItemsById, updateA
 import { PersistedState } from '../usePersistedStore'
 import {
   addPurchaserToBeneficiariesIfNeeded,
-  checkIfAllPurchaseInvolvedExist,
+  checkIfAllIdsExistInMembers,
   getAllBeneficiaryIdsFromPurchase,
 } from '../utils'
 
@@ -35,7 +34,7 @@ export const createPurchaseSlice = (set: SetState<PersistedState>, get: GetState
     )
     const newTotalAmount = newPurchaseAmount + newAdditionsTotalAmount
     const purchase = purchaseDTO({ ...almostPurchase, amount: newTotalAmount, additions: newAdditions })
-    set({ purchases: append(purchase, get().purchases) })
+    set({ purchases: [...get().purchases, purchase] })
   },
   editPurchase: (purchaseId, oldPurchase, newPurchase) => {
     // revert oldPurchase
@@ -43,7 +42,7 @@ export const createPurchaseSlice = (set: SetState<PersistedState>, get: GetState
       oldPurchase.beneficiaryIds,
       oldPurchase.additions
     )
-    if (checkIfAllPurchaseInvolvedExist(oldPurchase.purchaserId, allBeneficiaryIdsFromPurchase, get().members)) {
+    if (checkIfAllIdsExistInMembers([oldPurchase.purchaserId, ...allBeneficiaryIdsFromPurchase], get().members)) {
       const [additionsTotalAmount] = get().adjustAdditionsAmountsOnMembers(
         oldPurchase.additions,
         oldPurchase.purchaserId,
@@ -68,7 +67,7 @@ export const createPurchaseSlice = (set: SetState<PersistedState>, get: GetState
     const newTotalAmount = newPurchaseAmount + newAdditionsTotalAmount
     const newPurchaseWithAmount: Purchase = { ...newPurchase, amount: newTotalAmount, additions: newAdditions }
     set({ purchases: updateArrayItemById(purchaseId, newPurchaseWithAmount, get().purchases) })
-    get().deleteDeletedMembersAfterCheck(append(oldPurchase.purchaserId, allBeneficiaryIdsFromPurchase))
+    get().deleteDeletedMembersAfterCheck([...allBeneficiaryIdsFromPurchase, oldPurchase.purchaserId])
   },
   deletePurchase: purchaseId => {
     const { amount, purchaserId, beneficiaryIds, isPurchaserOnlyPaying, additions } = getArrayItemById(
@@ -76,7 +75,7 @@ export const createPurchaseSlice = (set: SetState<PersistedState>, get: GetState
       get().purchases
     )
     const allBeneficiaryIdsFromPurchase = getAllBeneficiaryIdsFromPurchase(beneficiaryIds, additions)
-    if (checkIfAllPurchaseInvolvedExist(purchaserId, allBeneficiaryIdsFromPurchase, get().members)) {
+    if (checkIfAllIdsExistInMembers([purchaserId, ...allBeneficiaryIdsFromPurchase], get().members)) {
       // negative amount, because it gets deleted
       const [additionsTotalAmount] = get().adjustAdditionsAmountsOnMembers(additions, purchaserId, true)
       const amountWithoutAdditions = amount - additionsTotalAmount
@@ -88,7 +87,7 @@ export const createPurchaseSlice = (set: SetState<PersistedState>, get: GetState
       get().adjustPurchaseAmountOnMembers(-amountWithoutAdditions, purchaserId, allPurchaseBeneficiaries)
     }
     set({ purchases: removeArrayItemsById(purchaseId, get().purchases) })
-    get().deleteDeletedMembersAfterCheck(append(purchaserId, allBeneficiaryIdsFromPurchase))
+    get().deleteDeletedMembersAfterCheck([...allBeneficiaryIdsFromPurchase, purchaserId])
   },
   deleteGroupPurchases: groupId => {
     set({ purchases: removeArrayItemsById(groupId, get().purchases, 'groupId') })

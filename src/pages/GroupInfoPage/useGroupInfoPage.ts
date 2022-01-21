@@ -1,9 +1,6 @@
-import { useIonModal } from '@ionic/react'
 import { isEmpty, join, map } from 'ramda'
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { Group, Member } from '../../App/types'
-import { AddCompensationModal } from '../../components/AddCompensationModal'
-import { PurchaseModal } from '../../components/PurchaseModal'
 import { useDeepCompareEffect } from '../../hooks/useDeepCompareEffect'
 import { useSelectedGroup } from '../../hooks/useSelectedGroup'
 import { usePersistedStore } from '../../stores/usePersistedStore'
@@ -18,15 +15,6 @@ export const useGroupInfoPage = (groupId: Group['id']) => {
   const setSelectedGroup = useStore.useSetSelectedGroup()
   const clearSelectedGroup = useStore.useClearSelectedGroup()
   const selectedGroup = useSelectedGroup(groupId)
-  const [showSegment, setShowSegment] = useState('members')
-  const [showEditGroupNameAlert, setShowEditGroupNameAlert] = useState(false)
-  const [showAddMemberAlert, setShowAddMemberAlert] = useState(false)
-  const [showPurchaseModal, dismissPurchaseModal] = useIonModal(PurchaseModal, {
-    onDismiss: () => dismissPurchaseModal(),
-  })
-  const [showAddCompensationModal, dismissAddCompensationModal] = useIonModal(AddCompensationModal, {
-    onDismiss: () => dismissAddCompensationModal(),
-  })
 
   useDeepCompareEffect(() => {
     // Saves the selectedGroup, to make it accessible in all child react components
@@ -46,7 +34,12 @@ export const useGroupInfoPage = (groupId: Group['id']) => {
 
   const displayMemberTotalAmount = (memberId: Member['id']) =>
     displayCurrencyValue(
-      calculateMemberTotalAmount(memberId, selectedGroup.groupPurchases, selectedGroup.groupCompensations)
+      calculateMemberTotalAmount(
+        memberId,
+        selectedGroup.groupPurchases,
+        selectedGroup.groupIncomes,
+        selectedGroup.groupCompensations
+      )
     )
 
   const onShareBill = () => {
@@ -90,18 +83,5 @@ export const useGroupInfoPage = (groupId: Group['id']) => {
     })
   }
 
-  return {
-    selectedGroup,
-    showSegment,
-    showEditGroupNameAlert,
-    showAddMemberAlert,
-    setShowSegment,
-    setShowEditGroupNameAlert,
-    setShowAddMemberAlert,
-    showPurchaseModal,
-    showAddCompensationModal,
-    onEditGroupName,
-    onAddNewMember,
-    onShareBill,
-  }
+  return { selectedGroup, onEditGroupName, onAddNewMember, onShareBill }
 }

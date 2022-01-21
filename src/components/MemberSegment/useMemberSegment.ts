@@ -8,7 +8,7 @@ import { useStore } from '../../stores/useStore'
 export const useMemberSegment = () => {
   const editMemberName = usePersistedStore.useEditMemberName()
   const deleteMember = usePersistedStore.useDeleteMember()
-  const { groupMembers, groupPurchases, groupCompensations } = useStore.useSelectedGroup()
+  const { groupMembers, groupPurchases, groupIncomes, groupCompensations } = useStore.useSelectedGroup()
   const [selectedMember, setSelectedMember] = useState<Member>()
   const [showEditMemberAlert, setShowEditMemberAlert] = useState(false)
   const [showCantDeleteMemberAlert, setShowCantDeleteMemberAlert] = useState(false)
@@ -27,7 +27,7 @@ export const useMemberSegment = () => {
   }
 
   const displayMemberTotalAmount = (memberId: Member['id']) =>
-    displayCurrencyValue(calculateMemberTotalAmount(memberId, groupPurchases, groupCompensations))
+    displayCurrencyValue(calculateMemberTotalAmount(memberId, groupPurchases, groupIncomes, groupCompensations))
 
   return {
     groupMembers,

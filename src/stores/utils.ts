@@ -1,5 +1,5 @@
-import { any, includes, map, equals, or, flatten, prop, concat, all, and, append } from 'ramda'
-import { Addition, Compensation, Member, Purchase } from '../App/types'
+import { any, includes, map, equals, flatten, prop, all } from 'ramda'
+import { Addition, Compensation, Income, Member, Purchase } from '../App/types'
 import { checkIfIdIsInArray } from '../App/utils'
 
 const checkIfIdIsInBeneficiaryIds = <Type extends { id: string; beneficiaryIds: string[] }>(
@@ -11,32 +11,28 @@ export const checkIfBeneficiaryIsInvolved = (memberId: Member['id'], purchases: 
   const resultOne = checkIfIdIsInBeneficiaryIds(memberId, purchases)
   const resultArray = map(({ additions }) => checkIfIdIsInBeneficiaryIds(memberId, additions), purchases)
   const resultTwo = any(equals(true), resultArray)
-  return or(resultOne, resultTwo)
+  return resultOne || resultTwo
 }
 
 export const checkPurchaseParticipation = (memberId: Member['id'], purchases: Purchase[]) => {
   const isPurchaserInvolved = checkIfIdIsInArray(memberId, purchases, 'purchaserId')
   const isBeneficiaryInvolved = checkIfBeneficiaryIsInvolved(memberId, purchases)
-  return or(isPurchaserInvolved, isBeneficiaryInvolved)
+  return isPurchaserInvolved || isBeneficiaryInvolved
 }
 
-export const checkIfAllPurchaseInvolvedExist = (
-  purchasePurchaserId: Purchase['purchaserId'],
-  purchaseBeneficiaryIds: Purchase['beneficiaryIds'],
-  members: Member[]
-) => {
-  const isPurchaserExisting = checkIfIdIsInArray(purchasePurchaserId, members)
-  const areBeneficiariesExisting = all(
-    beneficiaryId => checkIfIdIsInArray(beneficiaryId, members),
-    purchaseBeneficiaryIds
-  )
-  return and(isPurchaserExisting, areBeneficiariesExisting)
+export const checkIncomeParticipation = (memberId: Member['id'], incomes: Income[]) => {
+  const isEarnerInvolved = checkIfIdIsInArray(memberId, incomes, 'earnerId')
+  const isBeneficiaryInvolved = checkIfIdIsInBeneficiaryIds(memberId, incomes)
+  return isEarnerInvolved || isBeneficiaryInvolved
 }
+
+export const checkIfAllIdsExistInMembers = (ids: Member['id'][], members: Member[]) =>
+  all(id => checkIfIdIsInArray(id, members), ids)
 
 export const checkCompensationParticipation = (memberId: Member['id'], compensations: Compensation[]) => {
   const isPayerInvolved = checkIfIdIsInArray(memberId, compensations, 'payerId')
   const isReceiverInvolved = checkIfIdIsInArray(memberId, compensations, 'receiverId')
-  return or(isPayerInvolved, isReceiverInvolved)
+  return isPayerInvolved || isReceiverInvolved
 }
 
 export const checkIfAllCompensationInvolvedExist = (
@@ -46,7 +42,7 @@ export const checkIfAllCompensationInvolvedExist = (
 ) => {
   const isPayerExisting = checkIfIdIsInArray(compensationPayerId, members)
   const isReceiverExisting = checkIfIdIsInArray(compensationReceiverId, members)
-  return and(isPayerExisting, isReceiverExisting)
+  return isPayerExisting && isReceiverExisting
 }
 
 export const getAllBeneficiaryIdsFromPurchase = (
@@ -54,7 +50,7 @@ export const getAllBeneficiaryIdsFromPurchase = (
   purchaseAdditions: Addition[]
 ) => {
   const additionBeneficiaryIds = flatten(map(prop('beneficiaryIds'), purchaseAdditions))
-  const allBeneficiaryIds = concat(purchaseBeneficiaryIds, additionBeneficiaryIds)
+  const allBeneficiaryIds = [...purchaseBeneficiaryIds, ...additionBeneficiaryIds]
   // removes duplicates
   return [...new Set(allBeneficiaryIds)]
 }
@@ -64,4 +60,11 @@ export const addPurchaserToBeneficiariesIfNeeded = ({
   beneficiaryIds,
   isPurchaserOnlyPaying,
 }: Pick<Purchase, 'isPurchaserOnlyPaying' | 'beneficiaryIds' | 'purchaserId'>) =>
-  isPurchaserOnlyPaying ? beneficiaryIds : append(purchaserId, beneficiaryIds)
+  isPurchaserOnlyPaying ? beneficiaryIds : [...beneficiaryIds, purchaserId]
+
+export const addEarnerToBeneficiariesIfNeeded = ({
+  earnerId,
+  beneficiaryIds,
+  isEarnerOnlyEarning,
+}: Pick<Income, 'earnerId' | 'beneficiaryIds' | 'isEarnerOnlyEarning'>) =>
+  isEarnerOnlyEarning ? beneficiaryIds : [...beneficiaryIds, earnerId]

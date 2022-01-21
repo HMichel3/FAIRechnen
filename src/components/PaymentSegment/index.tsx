@@ -3,38 +3,62 @@ import { PurchaseInfo } from './PurchaseInfo'
 import { SlidingListItem } from '../SlidingListItem'
 import { motion } from 'framer-motion'
 import { fadeOutLeftVariants, variantProps } from '../../App/animations'
-import { cartSharp, walletSharp } from 'ionicons/icons'
+import { cartSharp, cashSharp, walletSharp } from 'ionicons/icons'
 import { IonAlert } from '@ionic/react'
 import { usePaymentSegment } from './usePaymentSegment'
-import { equalsLast, isPurchase } from '../../App/utils'
+import { displayMembersNotExistingInAlert, equalsLast, isIncome, isPurchase } from '../../App/utils'
+import { usePersistedStore } from '../../stores/usePersistedStore'
+import { useState } from 'react'
+import { IncomeInfo } from './IncomeInfo'
+import { isEmpty } from 'ramda'
 
 export const PaymentSegment = (): JSX.Element => {
   const {
     groupPayments,
-    showCantEditPurchase,
-    setShowCantEditPurchase,
-    showCantEditCompensation,
-    setShowCantEditCompensation,
-    deletePurchase,
-    deleteCompensation,
+    purchaseMembersNotExisting,
+    setPurchaseMembersNotExisting,
+    incomeMembersNotExisting,
+    setIncomeMembersNotExisting,
     onSelectPurchase,
+    onSelectIncome,
   } = usePaymentSegment()
+  const deletePurchase = usePersistedStore.useDeletePurchase()
+  const deleteIncome = usePersistedStore.useDeleteIncome()
+  const deleteCompensation = usePersistedStore.useDeleteCompensation()
+  const [showCantEditCompensation, setShowCantEditCompensation] = useState(false)
 
   return (
     <motion.div variants={fadeOutLeftVariants} {...variantProps}>
-      {groupPayments.map(groupPayment =>
-        isPurchase(groupPayment) ? (
-          <SlidingListItem
-            key={groupPayment.id}
-            onDelete={() => deletePurchase(groupPayment.id)}
-            onSelect={() => onSelectPurchase(groupPayment)}
-            labelComponent={<PurchaseInfo purchase={groupPayment} />}
-            icon={cartSharp}
-            detail={false}
-            lines={equalsLast(groupPayment, groupPayments) ? 'none' : undefined}
-            style={{ marginBottom: equalsLast(groupPayment, groupPayments) ? 92 : 0 }}
-          />
-        ) : (
+      {groupPayments.map(groupPayment => {
+        if (isPurchase(groupPayment)) {
+          return (
+            <SlidingListItem
+              key={groupPayment.id}
+              onDelete={() => deletePurchase(groupPayment.id)}
+              onSelect={() => onSelectPurchase(groupPayment)}
+              labelComponent={<PurchaseInfo purchase={groupPayment} />}
+              icon={cartSharp}
+              detail={false}
+              lines={equalsLast(groupPayment, groupPayments) ? 'none' : undefined}
+              style={{ marginBottom: equalsLast(groupPayment, groupPayments) ? 92 : 0 }}
+            />
+          )
+        }
+        if (isIncome(groupPayment)) {
+          return (
+            <SlidingListItem
+              key={groupPayment.id}
+              onDelete={() => deleteIncome(groupPayment.id)}
+              onSelect={() => onSelectIncome(groupPayment)}
+              labelComponent={<IncomeInfo income={groupPayment} />}
+              icon={cashSharp}
+              detail={false}
+              lines={equalsLast(groupPayment, groupPayments) ? 'none' : undefined}
+              style={{ marginBottom: equalsLast(groupPayment, groupPayments) ? 92 : 0 }}
+            />
+          )
+        }
+        return (
           <SlidingListItem
             key={groupPayment.id}
             onDelete={() => deleteCompensation(groupPayment.id)}
@@ -46,12 +70,23 @@ export const PaymentSegment = (): JSX.Element => {
             style={{ marginBottom: equalsLast(groupPayment, groupPayments) ? 81 : 0 }}
           />
         )
-      )}
+      })}
       <IonAlert
-        isOpen={showCantEditPurchase}
-        onDidDismiss={() => setShowCantEditPurchase(false)}
+        isOpen={!isEmpty(purchaseMembersNotExisting)}
+        onDidDismiss={() => setPurchaseMembersNotExisting([])}
         header='Dieser Einkauf kann nicht bearbeitet werden!'
-        message='Es können lediglich diejenigen Einkäufe bearbeitet werden, bei welchen noch alle beteiligten Mitglieder vorhanden sind.'
+        message={`Es können keine Einkäufe bearbeitet werden, welche bereits gelöschte Mitglieder beinhalten:
+          ${displayMembersNotExistingInAlert(purchaseMembersNotExisting)}
+        `}
+        buttons={[{ role: 'cancel', text: 'Okay' }]}
+      />
+      <IonAlert
+        isOpen={!isEmpty(incomeMembersNotExisting)}
+        onDidDismiss={() => setIncomeMembersNotExisting([])}
+        header='Dieses Einkommen kann nicht bearbeitet werden!'
+        message={`Es können keine Einkommen bearbeitet werden, welche bereits gelöschte Mitglieder beinhalten: 
+          ${displayMembersNotExistingInAlert(incomeMembersNotExisting)}
+        `}
         buttons={[{ role: 'cancel', text: 'Okay' }]}
       />
       <IonAlert

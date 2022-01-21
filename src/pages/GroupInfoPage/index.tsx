@@ -1,5 +1,5 @@
-import { IonBackdrop, IonBadge, IonLabel, IonSegment, IonSegmentButton, IonToolbar } from '@ionic/react'
-import { cartSharp, pencilSharp, personSharp, shareSharp, walletSharp } from 'ionicons/icons'
+import { IonBackdrop, IonBadge, IonLabel, IonSegment, IonSegmentButton, IonToolbar, useIonModal } from '@ionic/react'
+import { cartSharp, cashSharp, pencilSharp, personSharp, shareSharp, walletSharp } from 'ionicons/icons'
 import { all, propEq } from 'ramda'
 import { RouteComponentProps } from 'react-router'
 import { PageLayout } from '../../components/PageLayout'
@@ -14,6 +14,10 @@ import { useGroupInfoPage } from './useGroupInfoPage'
 import { AddFabButton } from '../../components/AddFabButton'
 import { useAddFabButton } from '../../components/AddFabButton/useAddFabButton'
 import { SimpleSaveAlert } from '../../components/SimpleSaveAlert'
+import { useState } from 'react'
+import { PurchaseModal } from '../../components/PurchaseModal'
+import { IncomeModal } from '../../components/IncomeModal'
+import { AddCompensationModal } from '../../components/AddCompensationModal'
 
 interface GroupInfoPageProps
   extends RouteComponentProps<{
@@ -25,20 +29,19 @@ export const GroupInfoPage = ({
     params: { id: groupId },
   },
 }: GroupInfoPageProps): JSX.Element => {
-  const {
-    selectedGroup,
-    showSegment,
-    showEditGroupNameAlert,
-    showAddMemberAlert,
-    setShowSegment,
-    setShowEditGroupNameAlert,
-    setShowAddMemberAlert,
-    showPurchaseModal,
-    showAddCompensationModal,
-    onEditGroupName,
-    onAddNewMember,
-    onShareBill,
-  } = useGroupInfoPage(groupId)
+  const { selectedGroup, onEditGroupName, onAddNewMember, onShareBill } = useGroupInfoPage(groupId)
+  const [showSegment, setShowSegment] = useState('members')
+  const [showEditGroupNameAlert, setShowEditGroupNameAlert] = useState(false)
+  const [showAddMemberAlert, setShowAddMemberAlert] = useState(false)
+  const [showPurchaseModal, dismissPurchaseModal] = useIonModal(PurchaseModal, {
+    onDismiss: () => dismissPurchaseModal(),
+  })
+  const [showIncomeModal, dismissIncomeModal] = useIonModal(IncomeModal, {
+    onDismiss: () => dismissIncomeModal(),
+  })
+  const [showAddCompensationModal, dismissAddCompensationModal] = useIonModal(AddCompensationModal, {
+    onDismiss: () => dismissAddCompensationModal(),
+  })
   const { showFab, showBackdrop, onClickFabButton, onClickFabButtonInList, onClickBackdrop } = useAddFabButton()
 
   return (
@@ -64,7 +67,7 @@ export const GroupInfoPage = ({
             </IonSegmentButton>
             <IonSegmentButton value='payments'>
               <IonLabel>
-                <span>Einkäufe & Zahlungen</span>
+                <span>Zahlungshistorie</span>
                 <IonBadge className={clsx('no-background', { 'unselected-color': showSegment !== 'payments' })}>
                   {selectedGroup.groupPayments.length}
                 </IonBadge>
@@ -99,6 +102,12 @@ export const GroupInfoPage = ({
               icon: walletSharp,
               onClick: () => showAddCompensationModal(),
               disabled: selectedGroup.groupMembers.length < 2 || all(propEq('amount', 0), selectedGroup.groupMembers),
+            },
+            {
+              text: 'Einkommen hinzufügen',
+              icon: cashSharp,
+              onClick: () => showIncomeModal(),
+              disabled: selectedGroup.groupMembers.length < 2,
             },
             {
               text: 'Einkauf hinzufügen',

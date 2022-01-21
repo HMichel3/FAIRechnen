@@ -32,7 +32,7 @@ export const PurchaseComponent = (): JSX.Element => {
         <FormSelect name='beneficiaryIds' control={control} selectOptions={membersWithoutPurchaser} multiple />
       </FormComponent>
       <IonItem className='form-input-margin' fill='outline' color='light' lines='none'>
-        <IonLabel color='light'>Bezahlt der Einkäufer nur für Andere?</IonLabel>
+        <IonLabel color='light'>Bezahlen die Begünstigten alles?</IonLabel>
         <FormCheckbox name='isPurchaserOnlyPaying' control={control} />
       </IonItem>
     </>

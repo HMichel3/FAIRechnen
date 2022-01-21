@@ -74,10 +74,5 @@ export const usePurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalP
     onDismiss()
   })
 
-  return {
-    showAdditionError,
-    setShowAdditionError,
-    methods,
-    onSubmit,
-  }
+  return { showAdditionError, setShowAdditionError, methods, onSubmit }
 }

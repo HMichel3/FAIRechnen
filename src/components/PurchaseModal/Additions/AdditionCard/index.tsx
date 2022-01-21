@@ -84,7 +84,7 @@ export const AdditionCard = ({ index, pageContentRef, setAdditionIndex }: Additi
               </FormComponent>
               <FormComponent
                 className='addition-card-select'
-                label='Betroffene'
+                label='Beteiligte'
                 error={path(['additions', index, 'beneficiaryIds'], formState.errors)}
                 noMargin
               >

@@ -11,6 +11,7 @@ export const useGroupPage = () => {
   const deleteGroup = usePersistedStore.useDeleteGroup()
   const setGroups = usePersistedStore.useSetGroups()
   const getGroupPurchases = usePersistedStore.useGetGroupPurchases()
+  const getGroupIncomes = usePersistedStore.useGetGroupIncomes()
   const theme = usePersistedStore.useTheme()
   const setTheme = usePersistedStore.useSetTheme()
   const ionRouter = useIonRouter()
@@ -62,7 +63,8 @@ export const useGroupPage = () => {
     setShowInfoSlides(prevState => !prevState)
   }
 
-  const calculateGroupTotalAmount = (groupId: Group['id']) => getTotalAmountFromArray(getGroupPurchases(groupId))
+  const calculateGroupTotalAmount = (groupId: Group['id']) =>
+    getTotalAmountFromArray(getGroupPurchases(groupId)) - getTotalAmountFromArray(getGroupIncomes(groupId))
 
   return {
     groups,

@@ -37,7 +37,7 @@ export const InfoSlides = ({ onToggleShowInfoSlides }: InfoSlidesProps): JSX.Ele
         icon={addCircleSharp}
         title='Hinzufügen'
         onToggleShowInfoSlides={onToggleShowInfoSlides}
-        firstParagraph='Es lassen sich Gruppen erstellen, in welchen Mitglieder, Einkäufe und Zahlungen hinzugefügt werden können.'
+        firstParagraph='Es lassen sich Gruppen erstellen, in welchen Mitglieder, Einkäufe, Einkommen und Zahlungen hinzugefügt werden können.'
         secondParagraph='Innerhalb einzelner Einkäufe besteht die Möglichkeit Zusätze hinzuzufügen. Diese sind immer dann sinnvoll, wenn ein Teil des Einkaufs nur für einzelne Mitglieder gekauft wird.'
       />
     </SwiperSlide>
@@ -47,7 +47,7 @@ export const InfoSlides = ({ onToggleShowInfoSlides }: InfoSlidesProps): JSX.Ele
         title='Beträge'
         onToggleShowInfoSlides={onToggleShowInfoSlides}
         firstParagraph='In der App tauchen die verschiedensten Beträge auf:'
-        secondParagraph='In der Gruppenübersicht stellen die Beträge die Summe aller Einkäufe der entsprechenden Gruppe dar.'
+        secondParagraph='In der Gruppenübersicht stellen die Beträge die Summe der aktuellen Ausgaben der entsprechenden Gruppe dar.'
         thirdParagraph='In der Gruppeninfo stellen die Beträge unter den Mitgliedern den Betrag dar, den das einzelne Mitglied bislang ausgegeben hat, während die Beträge am Ende der Zeile anzeigen, wie viel dieses noch bekommt/bezahlen muss.'
       />
     </SwiperSlide>
@@ -57,7 +57,7 @@ export const InfoSlides = ({ onToggleShowInfoSlides }: InfoSlidesProps): JSX.Ele
         title='Bearbeiten'
         onToggleShowInfoSlides={onToggleShowInfoSlides}
         firstParagraph='Über das Stift-Symbol oben rechts in der Gruppeninfo kann der Gruppenname geändert werden.'
-        secondParagraph='Das Bearbeiten von Mitgliedern und Einkäufen ist ebenfalls möglich, indem einfach die entsprechenden Listeneinträge ausgewählt werden.'
+        secondParagraph='Das Bearbeiten von Mitgliedern, Einkäufen und Einkommen ist ebenfalls möglich, indem einfach die entsprechenden Listeneinträge ausgewählt werden.'
         thirdParagraph='Das Bearbeiten von Zahlungen ist nicht möglich.'
       />
     </SwiperSlide>
@@ -66,8 +66,8 @@ export const InfoSlides = ({ onToggleShowInfoSlides }: InfoSlidesProps): JSX.Ele
         icon={closeCircleSharp}
         title='Löschen'
         onToggleShowInfoSlides={onToggleShowInfoSlides}
-        firstParagraph='Durch das Wischen einzelner Listeneinträge nach rechts wird ein Knopf sichtbar, mit welchem sich die einzelnen Einträge löschen lassen.'
-        secondParagraph='Das Löschen von Mitgliedern mit einem Restbetrag ungleich 0,00€ ist nicht möglich.'
+        firstParagraph='Durch das Wischen einzelner Listeneinträge nach rechts wird ein Knopf sichtbar, mit welchem sich die entsprechenden Einträge löschen lassen.'
+        secondParagraph='Das Löschen von Mitgliedern mit einem Restbetrag ungleich 0,00 € ist nicht möglich.'
       />
     </SwiperSlide>
     <SwiperSlide style={{ flexDirection: 'column', justifyContent: 'start' }}>
@@ -76,7 +76,7 @@ export const InfoSlides = ({ onToggleShowInfoSlides }: InfoSlidesProps): JSX.Ele
         title='Sonstiges'
         onToggleShowInfoSlides={onToggleShowInfoSlides}
         firstParagraph='Über das Pfeil-Symbol oben rechts in der Gruppenübersicht kann die Reihenfolge der Gruppen angepasst werden.'
-        secondParagraph='Über das Exportieren-Symbol oben rechts in der Gruppeninfo können Ausgabenübersicht und Zahlungsvorschläge der Gruppe geteilt werden.'
+        secondParagraph='Über das Exportieren-Symbol oben rechts in der Gruppeninfo können die Ausgabenübersicht und Zahlungsvorschläge der Gruppe geteilt werden.'
       />
     </SwiperSlide>
     <SwiperSlide style={{ flexDirection: 'column', justifyContent: 'start' }}>
