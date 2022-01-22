@@ -1,5 +1,5 @@
 import { IonBackdrop, IonBadge, IonLabel, IonSegment, IonSegmentButton, IonToolbar, useIonModal } from '@ionic/react'
-import { cartSharp, cashSharp, pencilSharp, personSharp, shareSharp, walletSharp } from 'ionicons/icons'
+import { cartSharp, serverSharp, pencilSharp, personSharp, shareSharp, walletSharp } from 'ionicons/icons'
 import { all, propEq } from 'ramda'
 import { RouteComponentProps } from 'react-router'
 import { PageLayout } from '../../components/PageLayout'
@@ -67,7 +67,7 @@ export const GroupInfoPage = ({
             </IonSegmentButton>
             <IonSegmentButton value='payments'>
               <IonLabel>
-                <span>Zahlungshistorie</span>
+                <span>Historie</span>
                 <IonBadge className={clsx('no-background', { 'unselected-color': showSegment !== 'payments' })}>
                   {selectedGroup.groupPayments.length}
                 </IonBadge>
@@ -105,7 +105,7 @@ export const GroupInfoPage = ({
             },
             {
               text: 'Einkommen hinzufügen',
-              icon: cashSharp,
+              icon: serverSharp,
               onClick: () => showIncomeModal(),
               disabled: selectedGroup.groupMembers.length < 2,
             },

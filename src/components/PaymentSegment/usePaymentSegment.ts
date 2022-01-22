@@ -1,19 +1,23 @@
 import { useIonModal } from '@ionic/react'
 import { isEmpty } from 'ramda'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useMemo, useState } from 'react'
 import { Income, Member, Purchase } from '../../App/types'
-import { findDifferentMembersInArrays } from '../../App/utils'
+import { findDifferentMembersInArrays, isIncome, isPurchase } from '../../App/utils'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
 import { getAllBeneficiaryIdsFromPurchase } from '../../stores/utils'
 import { IncomeModal } from '../IncomeModal'
 import { PurchaseModal } from '../PurchaseModal'
 
-export const usePaymentSegment = () => {
+export const usePaymentSegment = (
+  showPurchases: boolean,
+  showIncomes: boolean,
+  showCompensations: boolean,
+  setPurchaseMembersNotExisting: Dispatch<SetStateAction<Member[]>>,
+  setIncomeMembersNotExisting: Dispatch<SetStateAction<Member[]>>
+) => {
   const getMembersByIds = usePersistedStore.useGetMembersByIds()
   const { groupPayments, groupMembers } = useStore.useSelectedGroup()
-  const [purchaseMembersNotExisting, setPurchaseMembersNotExisting] = useState<Member[]>([])
-  const [incomeMembersNotExisting, setIncomeMembersNotExisting] = useState<Member[]>([])
   const [selectedPurchase, setSelectedPurchase] = useState<Purchase>()
   const [selectedIncome, setSelectedIncome] = useState<Income>()
   const [showPurchaseModal, dismissPurchaseModal] = useIonModal(PurchaseModal, {
@@ -24,6 +28,20 @@ export const usePaymentSegment = () => {
     onDismiss: () => dismissIncomeModal(),
     selectedIncome: selectedIncome,
   })
+
+  const filteredGroupPayments = useMemo(
+    () =>
+      groupPayments.filter(groupPayment => {
+        if (isPurchase(groupPayment)) {
+          return showPurchases && groupPayment
+        }
+        if (isIncome(groupPayment)) {
+          return showIncomes && groupPayment
+        }
+        return showCompensations && groupPayment
+      }),
+    [groupPayments, showPurchases, showIncomes, showCompensations]
+  )
 
   const onSelectPurchase = (purchase: Purchase) => {
     const allBeneficiaryIdsFromPurchase = getAllBeneficiaryIdsFromPurchase(purchase.beneficiaryIds, purchase.additions)
@@ -48,13 +66,5 @@ export const usePaymentSegment = () => {
     showIncomeModal()
   }
 
-  return {
-    groupPayments,
-    purchaseMembersNotExisting,
-    setPurchaseMembersNotExisting,
-    incomeMembersNotExisting,
-    setIncomeMembersNotExisting,
-    onSelectPurchase,
-    onSelectIncome,
-  }
+  return { filteredGroupPayments, onSelectPurchase, onSelectIncome }
 }

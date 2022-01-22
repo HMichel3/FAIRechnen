@@ -3,7 +3,7 @@ import { PurchaseInfo } from './PurchaseInfo'
 import { SlidingListItem } from '../SlidingListItem'
 import { motion } from 'framer-motion'
 import { fadeOutLeftVariants, variantProps } from '../../App/animations'
-import { cartSharp, cashSharp, walletSharp } from 'ionicons/icons'
+import { cartSharp, serverSharp, walletSharp } from 'ionicons/icons'
 import { IonAlert } from '@ionic/react'
 import { usePaymentSegment } from './usePaymentSegment'
 import { displayMembersNotExistingInAlert, equalsLast, isIncome, isPurchase } from '../../App/utils'
@@ -11,25 +11,36 @@ import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useState } from 'react'
 import { IncomeInfo } from './IncomeInfo'
 import { isEmpty } from 'ramda'
+import { FilterCheckbox } from './FilterCheckbox'
+import './index.scss'
+import { Member } from '../../App/types'
 
 export const PaymentSegment = (): JSX.Element => {
-  const {
-    groupPayments,
-    purchaseMembersNotExisting,
-    setPurchaseMembersNotExisting,
-    incomeMembersNotExisting,
-    setIncomeMembersNotExisting,
-    onSelectPurchase,
-    onSelectIncome,
-  } = usePaymentSegment()
   const deletePurchase = usePersistedStore.useDeletePurchase()
   const deleteIncome = usePersistedStore.useDeleteIncome()
   const deleteCompensation = usePersistedStore.useDeleteCompensation()
+  const [showPurchases, setShowPurchases] = useState(true)
+  const [showIncomes, setShowIncomes] = useState(true)
+  const [showCompensations, setShowCompensations] = useState(true)
+  const [purchaseMembersNotExisting, setPurchaseMembersNotExisting] = useState<Member[]>([])
+  const [incomeMembersNotExisting, setIncomeMembersNotExisting] = useState<Member[]>([])
   const [showCantEditCompensation, setShowCantEditCompensation] = useState(false)
+  const { filteredGroupPayments, onSelectPurchase, onSelectIncome } = usePaymentSegment(
+    showPurchases,
+    showIncomes,
+    showCompensations,
+    setPurchaseMembersNotExisting,
+    setIncomeMembersNotExisting
+  )
 
   return (
     <motion.div variants={fadeOutLeftVariants} {...variantProps}>
-      {groupPayments.map(groupPayment => {
+      <div className='filter-payments'>
+        <FilterCheckbox label='Einkäufe' checked={showPurchases} setChecked={setShowPurchases} />
+        <FilterCheckbox label='Einkommen' checked={showIncomes} setChecked={setShowIncomes} />
+        <FilterCheckbox label='Zahlungen' checked={showCompensations} setChecked={setShowCompensations} />
+      </div>
+      {filteredGroupPayments.map(groupPayment => {
         if (isPurchase(groupPayment)) {
           return (
             <SlidingListItem
@@ -39,8 +50,8 @@ export const PaymentSegment = (): JSX.Element => {
               labelComponent={<PurchaseInfo purchase={groupPayment} />}
               icon={cartSharp}
               detail={false}
-              lines={equalsLast(groupPayment, groupPayments) ? 'none' : undefined}
-              style={{ marginBottom: equalsLast(groupPayment, groupPayments) ? 92 : 0 }}
+              lines={equalsLast(groupPayment, filteredGroupPayments) ? 'none' : undefined}
+              style={{ marginBottom: equalsLast(groupPayment, filteredGroupPayments) ? 92 : 0 }}
             />
           )
         }
@@ -51,10 +62,10 @@ export const PaymentSegment = (): JSX.Element => {
               onDelete={() => deleteIncome(groupPayment.id)}
               onSelect={() => onSelectIncome(groupPayment)}
               labelComponent={<IncomeInfo income={groupPayment} />}
-              icon={cashSharp}
+              icon={serverSharp}
               detail={false}
-              lines={equalsLast(groupPayment, groupPayments) ? 'none' : undefined}
-              style={{ marginBottom: equalsLast(groupPayment, groupPayments) ? 92 : 0 }}
+              lines={equalsLast(groupPayment, filteredGroupPayments) ? 'none' : undefined}
+              style={{ marginBottom: equalsLast(groupPayment, filteredGroupPayments) ? 92 : 0 }}
             />
           )
         }
@@ -66,8 +77,8 @@ export const PaymentSegment = (): JSX.Element => {
             labelComponent={<CompensationInfo compensation={groupPayment} />}
             icon={walletSharp}
             detail={false}
-            lines={equalsLast(groupPayment, groupPayments) ? 'none' : undefined}
-            style={{ marginBottom: equalsLast(groupPayment, groupPayments) ? 81 : 0 }}
+            lines={equalsLast(groupPayment, filteredGroupPayments) ? 'none' : undefined}
+            style={{ marginBottom: equalsLast(groupPayment, filteredGroupPayments) ? 81 : 0 }}
           />
         )
       })}
