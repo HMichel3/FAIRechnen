@@ -4,21 +4,22 @@ import { useRef, useEffect } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { z } from 'zod'
 import { AddGroupModalProps } from '.'
-import { Group, Member } from '../../App/types'
+import { groupDTO } from '../../dtos/groupDTO'
+import { memberDTO } from '../../dtos/memberDTO'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
 
 const validationSchema = z.object({
   groupName: z.string().min(1, { message: 'Pflichtfeld!' }),
-  almostMembers: z.object({ name: z.string() }).array(),
+  memberNames: z.object({ name: z.string() }).array(),
 })
 
 interface GroupFormValues {
-  groupName: Group['name']
-  almostMembers: Pick<Member, 'name'>[]
+  groupName: string
+  memberNames: { name: string }[]
 }
 
-const defaultValues: GroupFormValues = { groupName: '', almostMembers: [{ name: '' }] }
+const defaultValues: GroupFormValues = { groupName: '', memberNames: [{ name: '' }] }
 
 export const useAddGroupModal = (onDismiss: AddGroupModalProps['onDismiss']) => {
   const addGroup = usePersistedStore.useAddGroup()
@@ -28,21 +29,26 @@ export const useAddGroupModal = (onDismiss: AddGroupModalProps['onDismiss']) => 
     resolver: zodResolver(validationSchema),
     defaultValues,
   })
-  const { fields, append, remove } = useFieldArray({ control, name: 'almostMembers' })
+  const { fields, append, remove } = useFieldArray({ control, name: 'memberNames' })
   const pageContentRef = useRef<HTMLIonContentElement>(null)
 
   useEffect(() => {
-    const adjustFieldArray = watch(({ almostMembers }, { name }) => {
-      if (name === 'groupName' || isEmpty(last(almostMembers)!.name)) return
+    const adjustFieldArray = watch(({ memberNames }, { name }) => {
+      if (name === 'groupName' || isEmpty(last(memberNames)!.name)) return
       append({ name: '' })
       setTimeout(() => pageContentRef.current?.scrollToBottom(), 300)
     })
     return () => adjustFieldArray.unsubscribe()
   }, [watch, append])
 
-  const onSubmit = handleSubmit(({ groupName, almostMembers }) => {
-    const groupId = addGroup(groupName)
-    almostMembers.forEach(({ name }) => !isEmpty(name) && addMember(groupId, name))
+  const onSubmit = handleSubmit(({ groupName, memberNames }) => {
+    const newGroup = groupDTO({ name: groupName })
+    addGroup(newGroup)
+    memberNames.forEach(({ name }) => {
+      if (isEmpty(name)) return
+      const newMember = memberDTO({ groupId: newGroup.groupId, name })
+      addMember(newMember)
+    })
     showAnimationOnce()
     onDismiss()
   })

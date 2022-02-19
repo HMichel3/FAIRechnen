@@ -1,64 +1,26 @@
 import { GetState, SetState } from 'zustand'
 import { Group, Income } from '../../App/types'
-import { getArrayItemById, getArrayItemsByGroupId, removeArrayItemsById, updateArrayItemById } from '../../App/utils'
-import { incomeDTO, IncomeWithoutIdAndTimeStamp } from '../../dtos/incomeDTO'
+import { findItemsById, removeItemById, removeItemsById, updateArrayItemById } from '../../App/utils'
 import { PersistedState } from '../usePersistedStore'
-import { addEarnerToBeneficiariesIfNeeded, checkIfAllIdsExistInMembers } from '../utils'
+import { calculateNewIncome } from '../utils'
 
 export interface IncomeSlice {
   incomes: Income[]
-  addIncome: (almostIncome: IncomeWithoutIdAndTimeStamp) => void
-  editIncome: (incomeId: Income['id'], oldIncome: Income, newIncome: Income) => void
-  deleteIncome: (incomeId: Income['id']) => void
-  deleteGroupIncomes: (groupId: Group['id']) => void
-  getGroupIncomes: (groupId: Group['id']) => Income[]
+  addIncome: (income: Income) => void
+  editIncome: (newIncome: Income) => void
+  deleteIncome: (incomeId: Income['incomeId']) => void
+  deleteGroupIncomes: (groupId: Group['groupId']) => void
+  getGroupIncomes: (groupId: Group['groupId']) => Income[]
 }
 
 export const createIncomeSlice = (set: SetState<PersistedState>, get: GetState<PersistedState>): IncomeSlice => ({
   incomes: [],
-  addIncome: almostIncome => {
-    const allIncomeBeneficiaries = addEarnerToBeneficiariesIfNeeded(almostIncome)
-    const newIncomeAmount = get().adjustPurchaseAmountOnMembers(
-      -almostIncome.amount,
-      almostIncome.earnerId,
-      allIncomeBeneficiaries
-    )
-    set({ incomes: [...get().incomes, incomeDTO({ ...almostIncome, amount: newIncomeAmount })] })
-  },
-  editIncome: (incomeId, oldIncome, newIncome) => {
-    // revert oldIncome
-    if (checkIfAllIdsExistInMembers([oldIncome.earnerId, ...oldIncome.beneficiaryIds], get().members)) {
-      const allOldIncomeBeneficiaries = addEarnerToBeneficiariesIfNeeded(oldIncome)
-      get().adjustPurchaseAmountOnMembers(oldIncome.amount, oldIncome.earnerId, allOldIncomeBeneficiaries)
-    }
-    // update oldIncome
-    const allNewIncomeBeneficiaries = addEarnerToBeneficiariesIfNeeded(newIncome)
-    const newIncomeAmount = get().adjustPurchaseAmountOnMembers(
-      -newIncome.amount,
-      newIncome.earnerId,
-      allNewIncomeBeneficiaries
-    )
-    set({ incomes: updateArrayItemById(incomeId, { ...newIncome, amount: newIncomeAmount }, get().incomes) })
-    get().deleteDeletedMembersAfterCheck([...oldIncome.beneficiaryIds, oldIncome.earnerId])
-  },
-  deleteIncome: incomeId => {
-    const { amount, earnerId, beneficiaryIds, isEarnerOnlyEarning } = getArrayItemById(incomeId, get().incomes)
-    if (checkIfAllIdsExistInMembers([earnerId, ...beneficiaryIds], get().members)) {
-      const allIncomeBeneficiaries = addEarnerToBeneficiariesIfNeeded({
-        earnerId,
-        beneficiaryIds,
-        isEarnerOnlyEarning,
-      })
-      // positive amount, because it gets deleted
-      get().adjustPurchaseAmountOnMembers(amount, earnerId, allIncomeBeneficiaries)
-    }
-    set({ incomes: removeArrayItemsById(incomeId, get().incomes) })
-    get().deleteDeletedMembersAfterCheck([...beneficiaryIds, earnerId])
-  },
-  deleteGroupIncomes: groupId => {
-    set({ incomes: removeArrayItemsById(groupId, get().incomes, 'groupId') })
-  },
-  getGroupIncomes: groupId => {
-    return getArrayItemsByGroupId(groupId, get().incomes)
-  },
+  addIncome: income => set(s => ({ incomes: [...s.incomes, calculateNewIncome(income)] })),
+  editIncome: newIncome =>
+    set(s => ({
+      incomes: updateArrayItemById(newIncome.incomeId, calculateNewIncome(newIncome), s.incomes, 'incomeId'),
+    })),
+  deleteIncome: incomeId => set(s => ({ incomes: removeItemById(incomeId, s.incomes, 'incomeId') })),
+  deleteGroupIncomes: groupId => set(s => ({ incomes: removeItemsById(groupId, s.incomes, 'groupId') })),
+  getGroupIncomes: groupId => findItemsById(groupId, get().incomes, 'groupId'),
 })

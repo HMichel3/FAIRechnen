@@ -18,7 +18,7 @@ export const Additions = ({ pageContentRef }: AdditionsProps): JSX.Element => {
   const additionsTotalAmount = getTotalAmountFromArray(watch('additions'))
 
   const onAddAddition = () => {
-    append({ name: '', amount: 0, beneficiaryIds: [] })
+    append({ name: '', amount: 0, payerIds: [] })
     setTimeout(() => pageContentRef.current?.scrollToBottom(), 300)
   }
 

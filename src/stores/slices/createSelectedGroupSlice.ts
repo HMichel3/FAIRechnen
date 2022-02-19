@@ -9,11 +9,8 @@ export interface SelectedGroupSlice {
 }
 
 const initialSelectedGroup: SelectedGroup = {
-  group: { id: '', name: '' },
+  group: { groupId: '', name: '', timestamp: 0, totalAmount: 0 },
   groupMembers: [],
-  groupPurchases: [],
-  groupIncomes: [],
-  groupCompensations: [],
   groupPayments: [],
 }
 

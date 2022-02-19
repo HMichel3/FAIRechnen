@@ -1,15 +1,14 @@
-import { Income } from '../App/types'
+import { CopyWithPartial, Income } from '../App/types'
 import { v4 as uuid } from 'uuid'
 
-export type IncomeWithoutIdAndTimeStamp = Omit<Income, 'id' | 'timestamp'>
+type IncomeDTO = CopyWithPartial<Income, 'incomeId' | 'timestamp'>
 
-export const incomeDTO = (income: IncomeWithoutIdAndTimeStamp): Income => ({
+export const incomeDTO = (income: IncomeDTO): Income => ({
   groupId: income.groupId,
-  id: uuid(),
-  timestamp: Date.now(),
+  incomeId: income.incomeId ?? uuid(),
+  timestamp: income.timestamp ?? Date.now(),
   name: income.name,
   amount: income.amount,
   earnerId: income.earnerId,
   beneficiaryIds: income.beneficiaryIds,
-  isEarnerOnlyEarning: income.isEarnerOnlyEarning,
 })

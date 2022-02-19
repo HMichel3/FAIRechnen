@@ -1,9 +1,11 @@
-import { Group, Member } from '../App/types'
+import { CopyWithPartial, Member } from '../App/types'
 import { v4 as uuid } from 'uuid'
 
-export const memberDTO = (groupId: Group['id'], memberName: Member['name']): Member => ({
-  groupId: groupId,
-  id: uuid(),
-  name: memberName,
-  amount: 0,
+type MemberDTO = CopyWithPartial<Member, 'memberId' | 'timestamp'>
+
+export const memberDTO = (member: MemberDTO): Member => ({
+  groupId: member.groupId,
+  memberId: member.memberId ?? uuid(),
+  timestamp: member.timestamp ?? Date.now(),
+  name: member.name,
 })

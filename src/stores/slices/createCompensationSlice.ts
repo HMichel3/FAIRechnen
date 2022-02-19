@@ -1,16 +1,14 @@
-import { pair } from 'ramda'
 import { GetState, SetState } from 'zustand'
 import { Compensation, Group } from '../../App/types'
-import { getArrayItemById, getArrayItemsByGroupId, removeArrayItemsById } from '../../App/utils'
+import { findItemsById, removeItemById, removeItemsById } from '../../App/utils'
 import { PersistedState } from '../usePersistedStore'
-import { checkIfAllCompensationInvolvedExist } from '../utils'
 
 export interface CompensationSlice {
   compensations: Compensation[]
   addCompensation: (compensation: Compensation) => void
-  deleteCompensation: (compensationId: Compensation['id']) => void
-  deleteGroupCompensations: (groupId: Group['id']) => void
-  getGroupCompensations: (groupId: Group['id']) => Compensation[]
+  deleteCompensation: (compensationId: Compensation['compensationId']) => void
+  deleteGroupCompensations: (groupId: Group['groupId']) => void
+  getGroupCompensations: (groupId: Group['groupId']) => Compensation[]
 }
 
 export const createCompensationSlice = (
@@ -18,24 +16,10 @@ export const createCompensationSlice = (
   get: GetState<PersistedState>
 ): CompensationSlice => ({
   compensations: [],
-  addCompensation: compensation => {
-    const { amount, payerId, receiverId } = compensation
-    get().adjustCompensationAmountOnMembers(amount, payerId, receiverId)
-    set({ compensations: [...get().compensations, compensation] })
-  },
-  deleteCompensation: compensationId => {
-    const { amount, payerId, receiverId } = getArrayItemById(compensationId, get().compensations)
-    if (checkIfAllCompensationInvolvedExist(payerId, receiverId, get().members)) {
-      // negative amount, because it gets deleted
-      get().adjustCompensationAmountOnMembers(-amount, payerId, receiverId)
-    }
-    set({ compensations: removeArrayItemsById(compensationId, get().compensations) })
-    get().deleteDeletedMembersAfterCheck(pair(payerId, receiverId))
-  },
-  deleteGroupCompensations: groupId => {
-    set({ compensations: removeArrayItemsById(groupId, get().compensations, 'groupId') })
-  },
-  getGroupCompensations: groupId => {
-    return getArrayItemsByGroupId(groupId, get().compensations)
-  },
+  addCompensation: compensation => set(s => ({ compensations: [...s.compensations, compensation] })),
+  deleteCompensation: compensationId =>
+    set(s => ({ compensations: removeItemById(compensationId, s.compensations, 'compensationId') })),
+  deleteGroupCompensations: groupId =>
+    set(s => ({ compensations: removeItemsById(groupId, s.compensations, 'groupId') })),
+  getGroupCompensations: groupId => findItemsById(groupId, get().compensations, 'groupId'),
 })

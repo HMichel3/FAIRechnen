@@ -1,33 +1,36 @@
-import { IonAlert, IonReorderGroup } from '@ionic/react'
+import { IonAlert, IonReorderGroup, useIonModal } from '@ionic/react'
 import { closeSharp, helpCircleSharp, peopleSharp, repeatSharp } from 'ionicons/icons'
 import { SlidingListItem } from '../../components/SlidingListItem'
 import { PageLayout } from '../../components/PageLayout'
 import { PageContent } from '../../components/PageLayout/PageContent'
 import { PageFooter } from '../../components/PageLayout/PageFooter'
 import { PageHeader } from '../../components/PageLayout/PageHeader'
-import { SmallLabelComponent } from '../../components/SlidingListItem/SmallLabelComponent'
 import { ButtonWithSaveIcon } from '../../components/ButtonWithSaveIcon'
 import { InfoSlides } from '../../components/InfoSlides'
 import { useGroupPage } from './useGroupPage'
-import { displayCurrencyValue, equalsLast } from '../../App/utils'
+import { equalsLast } from '../../App/utils'
 import { useState } from 'react'
+import { GroupTotalComponent } from './GroupTotalComponent'
+import { usePersistedStore } from '../../stores/usePersistedStore'
+import { AddGroupModal } from '../../components/AddGroupModal'
 
 export const GroupPage = (): JSX.Element => {
   const {
-    groups,
     showInfoSlides,
     showDeleteGroupAlert,
     selectedGroupId,
-    showAddGroupModal,
-    deleteGroup,
     setShowDeleteGroupAlert,
     onDeleteGroup,
     onToggleDarkMode,
     onToggleShowInfoSlides,
-    calculateGroupTotalAmount,
-    setGroups,
   } = useGroupPage()
+  const groups = usePersistedStore.useGroups()
+  const deleteGroup = usePersistedStore.useDeleteGroup()
+  const setGroups = usePersistedStore.useSetGroups()
   const [reorder, setReorder] = useState(false)
+  const [showAddGroupModal, dismissAddGroupModal] = useIonModal(AddGroupModal, {
+    onDismiss: () => dismissAddGroupModal(),
+  })
 
   if (showInfoSlides) {
     return (
@@ -53,14 +56,12 @@ export const GroupPage = (): JSX.Element => {
         <IonReorderGroup disabled={!reorder} onIonItemReorder={({ detail }) => setGroups(detail.complete(groups))}>
           {groups.map(group => (
             <SlidingListItem
-              key={group.id}
+              key={group.groupId}
               label={group.name}
-              routerLink={`/groups/${group.id}`}
-              onDelete={() => onDeleteGroup(group.id)}
+              routerLink={`/groups/${group.groupId}`}
+              onDelete={() => onDeleteGroup(group.groupId)}
               icon={peopleSharp}
-              labelComponent={
-                <SmallLabelComponent>{displayCurrencyValue(calculateGroupTotalAmount(group.id))}</SmallLabelComponent>
-              }
+              labelComponent={<GroupTotalComponent groupId={group.groupId} />}
               lines={equalsLast(group, groups) ? 'none' : undefined}
               reorder={reorder}
             />

@@ -1,58 +1,67 @@
 export interface Group {
-  id: string
+  groupId: string
+  timestamp: number
   name: string
 }
 
 export interface Member {
-  groupId: Group['id']
-  id: string
+  groupId: Group['groupId']
+  memberId: string
+  timestamp: number
   name: string
-  amount: number
 }
 
 export interface Purchase {
-  groupId: Group['id']
-  id: string
+  groupId: Group['groupId']
+  purchaseId: string
   timestamp: number
   name: string
   amount: number
-  purchaserId: Member['id']
-  beneficiaryIds: Member['id'][]
-  isPurchaserOnlyPaying: boolean
+  purchaserId: Member['memberId']
+  beneficiaryIds: Member['memberId'][]
   additions: Addition[]
 }
 
 export interface Addition {
   name: string
   amount: number
-  beneficiaryIds: Member['id'][]
+  payerIds: Member['memberId'][]
 }
 
 export interface Compensation {
-  groupId: Group['id']
-  id: string
+  groupId: Group['groupId']
+  compensationId: string
   timestamp: number
   amount: number
-  payerId: Member['id']
-  receiverId: Member['id']
+  payerId: Member['memberId']
+  receiverId: Member['memberId']
 }
 
 export interface Income {
-  groupId: Group['id']
-  id: string
+  groupId: Group['groupId']
+  incomeId: string
   timestamp: number
   name: string
   amount: number
-  earnerId: Member['id']
-  beneficiaryIds: Member['id'][]
-  isEarnerOnlyEarning: boolean
+  earnerId: Member['memberId']
+  beneficiaryIds: Member['memberId'][]
+}
+
+export interface CompleteGroup extends Group {
+  totalAmount: number
+}
+
+export interface CompleteMember extends Member {
+  amount: number
+  totalAmount: number
+  involved: boolean
 }
 
 export interface SelectedGroup {
-  group: Group
-  groupMembers: Member[]
-  groupPurchases: Purchase[]
-  groupIncomes: Income[]
-  groupCompensations: Compensation[]
+  group: CompleteGroup
+  groupMembers: CompleteMember[]
   groupPayments: (Purchase | Compensation | Income)[]
 }
+
+// creates a copy of T, but makes K optional
+export type CopyWithPartial<T, K extends keyof T> = Omit<T, K> & Partial<T>

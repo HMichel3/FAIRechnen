@@ -1,7 +1,7 @@
 import { IonItem, IonLabel } from '@ionic/react'
 import { path } from 'ramda'
 import { Income } from '../../App/types'
-import { removeArrayItemsById } from '../../App/utils'
+import { removeItemById } from '../../App/utils'
 import { ButtonWithSaveIcon } from '../ButtonWithSaveIcon'
 import { FormCheckbox } from '../formComponents/FormCheckbox'
 import { FormComponent } from '../formComponents/FormComponent'
@@ -20,7 +20,7 @@ export interface IncomeModalProps {
 
 export const IncomeModal = ({ onDismiss, selectedIncome }: IncomeModalProps): JSX.Element => {
   const { onSubmit, errors, control, groupMembers, watch } = useIncomeModal({ onDismiss, selectedIncome })
-  const membersWithoutEarner = removeArrayItemsById(watch('earnerId'), groupMembers)
+  const membersWithoutEarner = removeItemById(watch('earnerId'), groupMembers, 'memberId')
 
   return (
     <form className='flex-column-full-height' onSubmit={onSubmit}>

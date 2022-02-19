@@ -85,11 +85,11 @@ export const AdditionCard = ({ index, pageContentRef, setAdditionIndex }: Additi
               <FormComponent
                 className='addition-card-select'
                 label='Beteiligte'
-                error={path(['additions', index, 'beneficiaryIds'], formState.errors)}
+                error={path(['additions', index, 'payerIds'], formState.errors)}
                 noMargin
               >
                 <FormSelect
-                  name={`additions.${index}.beneficiaryIds`}
+                  name={`additions.${index}.payerIds`}
                   selectOptions={groupMembers}
                   control={control}
                   multiple

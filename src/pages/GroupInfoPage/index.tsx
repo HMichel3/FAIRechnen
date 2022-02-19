@@ -9,7 +9,7 @@ import { PageContent } from '../../components/PageLayout/PageContent'
 import { PageHeader } from '../../components/PageLayout/PageHeader'
 import { AnimatePresence } from 'framer-motion'
 import clsx from 'clsx'
-import { Group } from '../../App/types'
+import { CompleteGroup } from '../../App/types'
 import { useGroupInfoPage } from './useGroupInfoPage'
 import { AddFabButton } from '../../components/AddFabButton'
 import { useAddFabButton } from '../../components/AddFabButton/useAddFabButton'
@@ -21,7 +21,7 @@ import { AddCompensationModal } from '../../components/AddCompensationModal'
 
 interface GroupInfoPageProps
   extends RouteComponentProps<{
-    id: Group['id']
+    id: CompleteGroup['groupId']
   }> {}
 
 export const GroupInfoPage = ({
@@ -29,7 +29,7 @@ export const GroupInfoPage = ({
     params: { id: groupId },
   },
 }: GroupInfoPageProps): JSX.Element => {
-  const { selectedGroup, onEditGroupName, onAddNewMember, onShareBill } = useGroupInfoPage(groupId)
+  const { group, groupMembers, groupPayments, onEditGroupName, onAddNewMember, onShareBill } = useGroupInfoPage(groupId)
   const [showSegment, setShowSegment] = useState('members')
   const [showEditGroupNameAlert, setShowEditGroupNameAlert] = useState(false)
   const [showAddMemberAlert, setShowAddMemberAlert] = useState(false)
@@ -48,7 +48,7 @@ export const GroupInfoPage = ({
     <PageLayout>
       {showBackdrop && <IonBackdrop className='custom-backdrop' tappable={true} onIonBackdropTap={onClickBackdrop} />}
       <PageHeader
-        title={selectedGroup.group.name}
+        title={group.name}
         backButton
         menuButtons={[
           { icon: pencilSharp, onClick: () => setShowEditGroupNameAlert(true) },
@@ -61,7 +61,7 @@ export const GroupInfoPage = ({
               <IonLabel>
                 <span>Mitglieder</span>
                 <IonBadge className={clsx('no-background', { 'unselected-color': showSegment !== 'members' })}>
-                  {selectedGroup.groupMembers.length}
+                  {groupMembers.length}
                 </IonBadge>
               </IonLabel>
             </IonSegmentButton>
@@ -69,7 +69,7 @@ export const GroupInfoPage = ({
               <IonLabel>
                 <span>Historie</span>
                 <IonBadge className={clsx('no-background', { 'unselected-color': showSegment !== 'payments' })}>
-                  {selectedGroup.groupPayments.length}
+                  {groupPayments.length}
                 </IonBadge>
               </IonLabel>
             </IonSegmentButton>
@@ -87,7 +87,7 @@ export const GroupInfoPage = ({
           header='Gruppe umbenennen'
           setIsOpen={setShowEditGroupNameAlert}
           onSave={onEditGroupName}
-          value={selectedGroup.group.name}
+          value={group.name}
         />
         <SimpleSaveAlert
           isOpen={showAddMemberAlert}
@@ -101,19 +101,19 @@ export const GroupInfoPage = ({
               text: 'Zahlung hinzufügen',
               icon: walletSharp,
               onClick: () => showAddCompensationModal(),
-              disabled: selectedGroup.groupMembers.length < 2 || all(propEq('amount', 0), selectedGroup.groupMembers),
+              disabled: groupMembers.length < 2 || all(propEq('amount', 0), groupMembers),
             },
             {
               text: 'Einkommen hinzufügen',
               icon: serverSharp,
               onClick: () => showIncomeModal(),
-              disabled: selectedGroup.groupMembers.length < 2,
+              disabled: groupMembers.length < 2,
             },
             {
               text: 'Einkauf hinzufügen',
               icon: cartSharp,
               onClick: () => showPurchaseModal(),
-              disabled: selectedGroup.groupMembers.length < 2,
+              disabled: groupMembers.length < 2,
             },
             {
               text: 'Mitglied hinzufügen',

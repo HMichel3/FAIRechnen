@@ -22,16 +22,16 @@ export const AddCompensationModal = ({ onDismiss }: AddCompensationModalProps): 
     manualCompensation,
     setManualCompensation,
     onAddCompensation,
-    onSetCheckedRadio,
+    onCheckRadio,
   } = useAddCompensationModal(onDismiss)
 
   return (
     <div className='flex-column-full-height'>
       <PageHeader title='Neue Zahlung' onCloseButton={onDismiss} />
       <PageContent ref={pageContentRef}>
-        <IonRadioGroup value={checkedRadio} onIonChange={({ detail }) => onSetCheckedRadio(detail.value)}>
+        <IonRadioGroup value={checkedRadio} onIonChange={({ detail }) => onCheckRadio(detail.value)}>
           {possibleCompensations.map(compensation => (
-            <CompensationItem key={compensation.id} compensation={compensation} />
+            <CompensationItem key={compensation.payerReceiverId} compensation={compensation} />
           ))}
           <IonItem lines='none'>
             <IonRadio color={clsx({ light: theme === 'dark' })} slot='start' value='manual' />

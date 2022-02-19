@@ -1,18 +1,13 @@
-import { Compensation, Group } from '../App/types'
+import { Compensation, CopyWithPartial } from '../App/types'
 import { v4 as uuid } from 'uuid'
 
-export type CompensationWithoutIdsAndTimeStamp = Omit<Compensation, 'id' | 'groupId' | 'timestamp'>
+type CompensationDTO = CopyWithPartial<Compensation, 'compensationId' | 'timestamp'>
 
-export const compensationDTO = (
-  groupId: Group['id'],
-  compensationAmount: Compensation['amount'],
-  compensationPayerId: Compensation['payerId'],
-  compensationReceiverId: Compensation['receiverId']
-): Compensation => ({
-  groupId: groupId,
-  id: uuid(),
-  timestamp: Date.now(),
-  amount: compensationAmount,
-  payerId: compensationPayerId,
-  receiverId: compensationReceiverId,
+export const compensationDTO = (compensation: CompensationDTO): Compensation => ({
+  groupId: compensation.groupId,
+  compensationId: compensation.compensationId ?? uuid(),
+  timestamp: compensation.timestamp ?? Date.now(),
+  amount: compensation.amount,
+  payerId: compensation.payerId,
+  receiverId: compensation.receiverId,
 })

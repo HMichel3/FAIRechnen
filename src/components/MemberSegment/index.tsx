@@ -21,14 +21,13 @@ export const MemberSegment = (): JSX.Element => {
     onEditMemberName,
     onDeleteMember,
     onSelectMember,
-    displayMemberTotalAmount,
   } = useMemberSegment()
 
   return (
     <motion.div variants={fadeOutRightVariants} {...variantProps}>
       {groupMembers.map(member => (
         <SlidingListItem
-          key={member.id}
+          key={member.memberId}
           label={member.name}
           endText={
             <div
@@ -43,7 +42,7 @@ export const MemberSegment = (): JSX.Element => {
           onDelete={() => onDeleteMember(member)}
           onSelect={() => onSelectMember(member)}
           icon={personSharp}
-          labelComponent={<SmallLabelComponent>{displayMemberTotalAmount(member.id)}</SmallLabelComponent>}
+          labelComponent={<SmallLabelComponent>{displayCurrencyValue(member.totalAmount)}</SmallLabelComponent>}
           lines={equalsLast(member, groupMembers) ? 'none' : undefined}
           style={{ marginBottom: equalsLast(member, groupMembers) ? 81 : 0 }}
         />
@@ -52,7 +51,7 @@ export const MemberSegment = (): JSX.Element => {
         isOpen={showCantDeleteMemberAlert}
         onDidDismiss={() => setShowCantDeleteMemberAlert(false)}
         header='Mitglied kann nicht gelöscht werden!'
-        message='Mitglieder mit offenen Rechnungen können nicht gelöscht werden. Bearbeiten Sie die vorhandenen Einkäufe oder Einkommen, beziehungsweise fügen Sie neue Zahlungen hinzu.'
+        message='Mitglieder, welche an Einkäufen, Einkommen oder Zahlungen beteiligt sind, können nicht gelöscht werden. Bearbeiten Sie erst die betroffenen Einträge.'
         buttons={[{ role: 'cancel', text: 'Okay' }]}
       />
       <SimpleSaveAlert

@@ -57,7 +57,7 @@ export const InfoSlides = ({ onToggleShowInfoSlides }: InfoSlidesProps): JSX.Ele
         title='Bearbeiten'
         onToggleShowInfoSlides={onToggleShowInfoSlides}
         firstParagraph='Über das Stift-Symbol oben rechts in der Gruppeninfo kann der Gruppenname geändert werden.'
-        secondParagraph='Das Bearbeiten von Mitgliedern, Einkäufen und Einkommen ist ebenfalls möglich, indem einfach die entsprechenden Listeneinträge ausgewählt werden.'
+        secondParagraph='Das Bearbeiten von Mitgliedern, Einkäufen und Einkommen ist ebenfalls möglich, indem die entsprechenden Listeneinträge ausgewählt werden.'
         thirdParagraph='Das Bearbeiten von Zahlungen ist nicht möglich.'
       />
     </SwiperSlide>
@@ -67,7 +67,7 @@ export const InfoSlides = ({ onToggleShowInfoSlides }: InfoSlidesProps): JSX.Ele
         title='Löschen'
         onToggleShowInfoSlides={onToggleShowInfoSlides}
         firstParagraph='Durch das Wischen einzelner Listeneinträge nach rechts wird ein Knopf sichtbar, mit welchem sich die entsprechenden Einträge löschen lassen.'
-        secondParagraph='Das Löschen von Mitgliedern mit einem Restbetrag ungleich 0,00 € ist nicht möglich.'
+        secondParagraph='Das Löschen von Mitgliedern, welche an Einkäufen, Einkommen oder Zahlungen beteiligt sind, ist nicht möglich.'
       />
     </SwiperSlide>
     <SwiperSlide style={{ flexDirection: 'column', justifyContent: 'start' }}>

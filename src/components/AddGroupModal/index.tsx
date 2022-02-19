@@ -34,7 +34,7 @@ export const AddGroupModal = ({ onDismiss }: AddGroupModalProps): JSX.Element =>
             label='Mitglied'
             {...(!equalsLast(field, fields) && { onDelete: () => remove(index) })}
           >
-            <FormInput name={`almostMembers.${index}.name`} control={control} />
+            <FormInput name={`memberNames.${index}.name`} control={control} />
           </FormComponent>
         ))}
       </PageContent>

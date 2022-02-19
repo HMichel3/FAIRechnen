@@ -1,33 +1,33 @@
-import { equals } from 'ramda'
 import { useState } from 'react'
-import { Member } from '../../App/types'
-import { calculateMemberTotalAmount, displayCurrencyValue } from '../../App/utils'
+import { CompleteMember } from '../../App/types'
+import { memberDTO } from '../../dtos/memberDTO'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
 
 export const useMemberSegment = () => {
-  const editMemberName = usePersistedStore.useEditMemberName()
+  const editMember = usePersistedStore.useEditMember()
   const deleteMember = usePersistedStore.useDeleteMember()
-  const { groupMembers, groupPurchases, groupIncomes, groupCompensations } = useStore.useSelectedGroup()
-  const [selectedMember, setSelectedMember] = useState<Member>()
+  const { groupMembers } = useStore.useSelectedGroup()
+  const [selectedMember, setSelectedMember] = useState<CompleteMember>()
   const [showEditMemberAlert, setShowEditMemberAlert] = useState(false)
   const [showCantDeleteMemberAlert, setShowCantDeleteMemberAlert] = useState(false)
 
-  const onSelectMember = (member: Member) => {
+  const onSelectMember = (member: CompleteMember) => {
     setSelectedMember(member)
     setShowEditMemberAlert(true)
   }
 
-  const onEditMemberName = (newMemberName: Member['name']) => {
-    editMemberName(selectedMember!.id, newMemberName)
+  const onEditMemberName = (newMemberName: CompleteMember['name']) => {
+    const editedMember = memberDTO({ ...selectedMember!, name: newMemberName })
+    editMember(editedMember)
   }
 
-  const onDeleteMember = (member: Member) => {
-    equals(member.amount, 0) ? deleteMember(member.id) : setShowCantDeleteMemberAlert(true)
+  const onDeleteMember = (member: CompleteMember) => {
+    if (member.involved) {
+      return setShowCantDeleteMemberAlert(true)
+    }
+    deleteMember(member.memberId)
   }
-
-  const displayMemberTotalAmount = (memberId: Member['id']) =>
-    displayCurrencyValue(calculateMemberTotalAmount(memberId, groupPurchases, groupIncomes, groupCompensations))
 
   return {
     groupMembers,
@@ -39,6 +39,5 @@ export const useMemberSegment = () => {
     onEditMemberName,
     onDeleteMember,
     onSelectMember,
-    displayMemberTotalAmount,
   }
 }

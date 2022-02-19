@@ -1,10 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { map, prop, pick, equals, isEmpty, includes, without } from 'ramda'
+import { map, prop, pick, equals, isEmpty, includes, without, reject } from 'ramda'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { IncomeModalProps } from '.'
-import { Income, Member } from '../../App/types'
+import { Income, CompleteMember } from '../../App/types'
+import { addIdToBeneficiariesIfNeeded } from '../../App/utils'
+import { incomeDTO } from '../../dtos/incomeDTO'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
 
@@ -21,17 +23,24 @@ interface IncomeFormValues {
   amount: Income['amount']
   earnerId: Income['earnerId']
   beneficiaryIds: Income['beneficiaryIds']
-  isEarnerOnlyEarning: Income['isEarnerOnlyEarning']
+  isEarnerOnlyEarning: boolean
 }
 
-const defaultValues = (groupMembers: Member[], selectedIncome?: Income): IncomeFormValues => {
-  const groupMemberIds = map(prop('id'), groupMembers)
+const defaultValues = (groupMembers: CompleteMember[], selectedIncome?: Income): IncomeFormValues => {
+  if (!selectedIncome) {
+    const groupMemberIds = map(prop('memberId'), groupMembers)
+    return { name: '', amount: 0, earnerId: '', beneficiaryIds: groupMemberIds, isEarnerOnlyEarning: false }
+  }
+
+  const { name, amount, earnerId, beneficiaryIds } = selectedIncome
+  // the earner could be included into the beneficiaries (we don't want this here)
+  const beneficiaryIdsWithoutEarner = reject(equals(earnerId), beneficiaryIds)
   return {
-    name: selectedIncome?.name ?? '',
-    amount: selectedIncome?.amount ?? 0,
-    earnerId: selectedIncome?.earnerId ?? '',
-    beneficiaryIds: selectedIncome?.beneficiaryIds ?? groupMemberIds,
-    isEarnerOnlyEarning: selectedIncome?.isEarnerOnlyEarning ?? false,
+    name: name,
+    amount: amount,
+    earnerId: earnerId,
+    beneficiaryIds: beneficiaryIdsWithoutEarner,
+    isEarnerOnlyEarning: !includes(earnerId, beneficiaryIds),
   }
 }
 
@@ -53,15 +62,27 @@ export const useIncomeModal = ({ onDismiss, selectedIncome }: IncomeModalProps) 
     return () => adjustBeneficiaryIds.unsubscribe()
   }, [watch, setValue])
 
-  const onSubmit = handleSubmit(data => {
+  const onSubmit = handleSubmit(({ name, amount, earnerId, beneficiaryIds, isEarnerOnlyEarning }) => {
+    const completeBeneficiaryIds = addIdToBeneficiariesIfNeeded(earnerId, beneficiaryIds, isEarnerOnlyEarning)
     if (selectedIncome) {
-      const neededSelectedIncomeData = pick(['groupId', 'id', 'timestamp'], selectedIncome)
-      const newIncome = { ...neededSelectedIncomeData, ...data }
-      if (!equals(selectedIncome, newIncome)) {
-        editIncome(selectedIncome.id, selectedIncome, newIncome)
-      }
+      const neededSelectedIncomeData = pick(['groupId', 'incomeId', 'timestamp'], selectedIncome)
+      const editedIncome = incomeDTO({
+        ...neededSelectedIncomeData,
+        name,
+        amount,
+        earnerId,
+        beneficiaryIds: completeBeneficiaryIds,
+      })
+      if (!equals(selectedIncome, editedIncome)) editIncome(editedIncome)
     } else {
-      addIncome({ groupId: group.id, ...data })
+      const newIncome = incomeDTO({
+        groupId: group.groupId,
+        name,
+        amount,
+        earnerId,
+        beneficiaryIds: completeBeneficiaryIds,
+      })
+      addIncome(newIncome)
     }
     showAnimationOnce()
     onDismiss()

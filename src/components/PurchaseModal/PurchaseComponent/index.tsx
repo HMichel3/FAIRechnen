@@ -5,14 +5,14 @@ import { FormCurrency } from '../../formComponents/FormCurrency'
 import { FormSelect } from '../../formComponents/FormSelect'
 import { FormCheckbox } from '../../formComponents/FormCheckbox'
 import { path } from 'ramda'
-import { removeArrayItemsById } from '../../../App/utils'
 import { useStore } from '../../../stores/useStore'
 import { usePurchaseComponent } from './usePurchaseComponent'
+import { removeItemById } from '../../../App/utils'
 
 export const PurchaseComponent = (): JSX.Element => {
   const { control, watch, errors } = usePurchaseComponent()
   const { groupMembers } = useStore.useSelectedGroup()
-  const membersWithoutPurchaser = removeArrayItemsById(watch('purchaserId'), groupMembers)
+  const membersWithoutPurchaser = removeItemById(watch('purchaserId'), groupMembers, 'memberId')
 
   return (
     <>

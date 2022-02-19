@@ -1,14 +1,14 @@
 import { motion } from 'framer-motion'
 import { Dispatch, SetStateAction } from 'react'
 import { fadeInOutTopVariants, variantProps } from '../../../App/animations'
-import { CompensationWithoutIdsAndTimeStamp } from '../../../dtos/compensationDTO'
 import { useAddManualCompensation } from './useAddManualCompensation'
 import { FormComponent } from '../../formComponents/FormComponent'
 import { FormSelect } from '../../formComponents/FormSelect'
 import { FormCurrency } from '../../formComponents/FormCurrency'
+import { ManualCompensation } from '../useAddCompensationModal'
 
 export interface AddManualCompensationProps {
-  setManualCompensation: Dispatch<SetStateAction<CompensationWithoutIdsAndTimeStamp | null>>
+  setManualCompensation: Dispatch<SetStateAction<ManualCompensation | null>>
 }
 
 export const AddManualCompensation = ({ setManualCompensation }: AddManualCompensationProps): JSX.Element => {
