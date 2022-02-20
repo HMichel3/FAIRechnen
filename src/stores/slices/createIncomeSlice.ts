@@ -1,6 +1,6 @@
 import { GetState, SetState } from 'zustand'
 import { Group, Income } from '../../App/types'
-import { findItemsById, removeItemById, removeItemsById, updateArrayItemById } from '../../App/utils'
+import { findItemsById, removeItemsById, updateArrayItemById } from '../../App/utils'
 import { PersistedState } from '../usePersistedStore'
 import { calculateNewIncome } from '../utils'
 
@@ -20,7 +20,7 @@ export const createIncomeSlice = (set: SetState<PersistedState>, get: GetState<P
     set(s => ({
       incomes: updateArrayItemById(newIncome.incomeId, calculateNewIncome(newIncome), s.incomes, 'incomeId'),
     })),
-  deleteIncome: incomeId => set(s => ({ incomes: removeItemById(incomeId, s.incomes, 'incomeId') })),
+  deleteIncome: incomeId => set(s => ({ incomes: removeItemsById(incomeId, s.incomes, 'incomeId') })),
   deleteGroupIncomes: groupId => set(s => ({ incomes: removeItemsById(groupId, s.incomes, 'groupId') })),
   getGroupIncomes: groupId => findItemsById(groupId, get().incomes, 'groupId'),
 })

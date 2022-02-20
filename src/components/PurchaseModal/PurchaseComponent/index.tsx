@@ -7,15 +7,15 @@ import { FormCheckbox } from '../../formComponents/FormCheckbox'
 import { path } from 'ramda'
 import { useStore } from '../../../stores/useStore'
 import { usePurchaseComponent } from './usePurchaseComponent'
-import { removeItemById } from '../../../App/utils'
+import { removeItemsById } from '../../../App/utils'
 
 export const PurchaseComponent = (): JSX.Element => {
   const { control, watch, errors } = usePurchaseComponent()
   const { groupMembers } = useStore.useSelectedGroup()
-  const membersWithoutPurchaser = removeItemById(watch('purchaserId'), groupMembers, 'memberId')
+  const membersWithoutPurchaser = removeItemsById(watch('purchaserId'), groupMembers, 'memberId')
 
   return (
-    <>
+    <div className='purchase-component'>
       <IonItemDivider color='medium'>
         <IonLabel>Einkauf</IonLabel>
       </IonItemDivider>
@@ -35,6 +35,6 @@ export const PurchaseComponent = (): JSX.Element => {
         <IonLabel color='light'>Bezahlen die Begünstigten alles?</IonLabel>
         <FormCheckbox name='isPurchaserOnlyPaying' control={control} />
       </IonItem>
-    </>
+    </div>
   )
 }

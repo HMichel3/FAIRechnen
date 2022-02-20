@@ -1,6 +1,6 @@
 import { GetState, SetState } from 'zustand'
 import { Group, Purchase } from '../../App/types'
-import { findItemsById, removeItemById, removeItemsById, updateArrayItemById } from '../../App/utils'
+import { findItemsById, removeItemsById, updateArrayItemById } from '../../App/utils'
 import { PersistedState } from '../usePersistedStore'
 import { calculateNewPurchase } from '../utils'
 
@@ -25,7 +25,7 @@ export const createPurchaseSlice = (set: SetState<PersistedState>, get: GetState
         'purchaseId'
       ),
     })),
-  deletePurchase: purchaseId => set(s => ({ purchases: removeItemById(purchaseId, s.purchases, 'purchaseId') })),
+  deletePurchase: purchaseId => set(s => ({ purchases: removeItemsById(purchaseId, s.purchases, 'purchaseId') })),
   deleteGroupPurchases: groupId => set(s => ({ purchases: removeItemsById(groupId, s.purchases, 'groupId') })),
   getGroupPurchases: groupId => findItemsById(groupId, get().purchases, 'groupId'),
 })

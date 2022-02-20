@@ -1,6 +1,6 @@
 import { GetState, SetState } from 'zustand'
 import { Compensation, Group } from '../../App/types'
-import { findItemsById, removeItemById, removeItemsById } from '../../App/utils'
+import { findItemsById, removeItemsById } from '../../App/utils'
 import { PersistedState } from '../usePersistedStore'
 
 export interface CompensationSlice {
@@ -18,7 +18,7 @@ export const createCompensationSlice = (
   compensations: [],
   addCompensation: compensation => set(s => ({ compensations: [...s.compensations, compensation] })),
   deleteCompensation: compensationId =>
-    set(s => ({ compensations: removeItemById(compensationId, s.compensations, 'compensationId') })),
+    set(s => ({ compensations: removeItemsById(compensationId, s.compensations, 'compensationId') })),
   deleteGroupCompensations: groupId =>
     set(s => ({ compensations: removeItemsById(groupId, s.compensations, 'groupId') })),
   getGroupCompensations: groupId => findItemsById(groupId, get().compensations, 'groupId'),

@@ -1,6 +1,6 @@
 import { GetState, SetState } from 'zustand'
 import { Group } from '../../App/types'
-import { findItemById, removeItemById, updateArrayItemById } from '../../App/utils'
+import { findItemById, removeItemsById, updateArrayItemById } from '../../App/utils'
 import { PersistedState } from '../usePersistedStore'
 
 export interface GroupSlice {
@@ -21,7 +21,7 @@ export const createGroupSlice = (set: SetState<PersistedState>, get: GetState<Pe
     get().deleteGroupPurchases(groupId)
     get().deleteGroupIncomes(groupId)
     get().deleteGroupCompensations(groupId)
-    set(s => ({ groups: removeItemById(groupId, s.groups, 'groupId') }))
+    set(s => ({ groups: removeItemsById(groupId, s.groups, 'groupId') }))
   },
   getGroup: groupId => findItemById(groupId, get().groups, 'groupId'),
   setGroups: groups => set({ groups }),

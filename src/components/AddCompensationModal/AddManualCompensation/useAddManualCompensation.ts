@@ -2,7 +2,7 @@ import { isEmpty } from 'ramda'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { Compensation } from '../../../App/types'
-import { removeItemById } from '../../../App/utils'
+import { removeItemsById } from '../../../App/utils'
 import { useStore } from '../../../stores/useStore'
 import { AddManualCompensationProps } from '../AddManualCompensation'
 
@@ -19,7 +19,7 @@ export const useAddManualCompensation = (
 ) => {
   const { groupMembers } = useStore.useSelectedGroup()
   const { watch, setValue, control } = useForm({ defaultValues })
-  const membersWithoutPayer = removeItemById(watch('payerId'), groupMembers, 'memberId')
+  const membersWithoutPayer = removeItemsById(watch('payerId'), groupMembers, 'memberId')
 
   useEffect(() => {
     const adjustReceiverId = watch(({ payerId, receiverId }, { name }) => {

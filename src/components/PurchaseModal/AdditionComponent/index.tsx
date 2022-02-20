@@ -6,11 +6,11 @@ import { displayCurrencyValue, getTotalAmountFromArray } from '../../../App/util
 import { isNil } from 'ramda'
 import { useFieldArray, useFormContext } from 'react-hook-form'
 
-export interface AdditionsProps {
+export interface AdditionComponentProps {
   pageContentRef: RefObject<HTMLIonContentElement>
 }
 
-export const Additions = ({ pageContentRef }: AdditionsProps): JSX.Element => {
+export const AdditionComponent = ({ pageContentRef }: AdditionComponentProps): JSX.Element => {
   const { control, watch } = useFormContext()
   const { fields, append, remove } = useFieldArray({ control, name: 'additions' })
   // the additionIndex is needed for the delete-alert (can't move it into the additionCard, because of memory leak)
@@ -23,7 +23,7 @@ export const Additions = ({ pageContentRef }: AdditionsProps): JSX.Element => {
   }
 
   return (
-    <>
+    <div className='addition-component'>
       <IonItemDivider color='medium'>
         <IonLabel>Zusätze ({displayCurrencyValue(additionsTotalAmount)})</IonLabel>
         <IonButtons style={{ marginRight: 1 }} slot='end'>
@@ -45,6 +45,6 @@ export const Additions = ({ pageContentRef }: AdditionsProps): JSX.Element => {
           { text: 'Löschen', handler: () => remove(additionIndex!) },
         ]}
       />
-    </>
+    </div>
   )
 }

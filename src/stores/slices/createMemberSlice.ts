@@ -1,6 +1,6 @@
 import { GetState, SetState } from 'zustand'
 import { Group, Member } from '../../App/types'
-import { findItemsById, removeItemById, removeItemsById, updateArrayItemById } from '../../App/utils'
+import { findItemsById, removeItemsById, updateArrayItemById } from '../../App/utils'
 import { PersistedState } from '../usePersistedStore'
 
 export interface MemberSlice {
@@ -17,7 +17,7 @@ export const createMemberSlice = (set: SetState<PersistedState>, get: GetState<P
   addMember: member => set(s => ({ members: [...s.members, member] })),
   editMember: newMember =>
     set(s => ({ members: updateArrayItemById(newMember.memberId, newMember, s.members, 'memberId') })),
-  deleteMember: memberId => set(s => ({ members: removeItemById(memberId, s.members, 'memberId') })),
+  deleteMember: memberId => set(s => ({ members: removeItemsById(memberId, s.members, 'memberId') })),
   deleteGroupMembers: groupId => set(s => ({ members: removeItemsById(groupId, s.members, 'groupId') })),
   getGroupMembers: groupId => findItemsById(groupId, get().members, 'groupId'),
 })

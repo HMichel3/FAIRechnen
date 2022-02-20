@@ -1,4 +1,4 @@
-import { filter, find, findIndex, last, map, propEq, reduce, reject, remove, update } from 'ramda'
+import { filter, find, findIndex, last, map, propEq, reduce, reject, update } from 'ramda'
 
 export const findItemById = <T>(id: string, array: T[], idName: keyof T) => find(propEq(idName as string, id), array)!
 
@@ -7,9 +7,9 @@ export const findItemsById = <T>(id: string, array: T[], idName: keyof T) => fil
 export const findItemsByIds = <T>(ids: string[], array: T[], idName: keyof T) =>
   map(id => findItemById(id, array, idName), ids)
 
-export const removeItemById = <T>(id: string, array: T[], idName: keyof T) =>
-  remove(findIndex(propEq(idName as string, id), array), 1, array)
-
+/**
+ * Removes one or multiple items, based on the id.
+ */
 export const removeItemsById = <T>(id: string, array: T[], idName: keyof T) =>
   reject(propEq(idName as string, id), array)
 

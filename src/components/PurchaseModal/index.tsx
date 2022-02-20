@@ -4,7 +4,7 @@ import { PageContent } from '../PageLayout/PageContent'
 import { PageFooter } from '../PageLayout/PageFooter'
 import { PageHeader } from '../PageLayout/PageHeader'
 import { ButtonWithSaveIcon } from '../ButtonWithSaveIcon'
-import { Additions } from './Additions'
+import { AdditionComponent } from './AdditionComponent'
 import { PurchaseComponent } from './PurchaseComponent'
 import { usePurchaseModal } from './usePurchaseModal'
 import { FormProvider } from 'react-hook-form'
@@ -28,7 +28,7 @@ export const PurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalProp
         <PageHeader title={selectedPurchase ? 'Einkauf bearbeiten' : 'Neuer Einkauf'} onCloseButton={onDismiss} />
         <PageContent ref={pageContentRef}>
           <PurchaseComponent />
-          <Additions pageContentRef={pageContentRef} />
+          <AdditionComponent pageContentRef={pageContentRef} />
           <IonAlert
             isOpen={showAdditionError}
             onDidDismiss={() => setShowAdditionError(false)}

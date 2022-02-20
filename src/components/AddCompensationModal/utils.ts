@@ -1,7 +1,7 @@
 import { filter, equals, join, sort, descend, prop } from 'ramda'
 import { isPositive } from 'ramda-adjunct'
 import { CompleteMember } from '../../App/types'
-import { removeItemById } from '../../App/utils'
+import { removeItemsById } from '../../App/utils'
 import { AlmostCompensation } from './useAddCompensationModal'
 
 const removeDuplicateCompensations = (compensations: AlmostCompensation[]) => {
@@ -17,7 +17,7 @@ export const generatePossibleCompensations = (groupMembers: CompleteMember[]) =>
   let partner: CompleteMember
   possibleGroupMembers.forEach(member => {
     let minAmountDiff: number
-    const membersWithoutCurrent = removeItemById(member.memberId, possibleGroupMembers, 'memberId')
+    const membersWithoutCurrent = removeItemsById(member.memberId, possibleGroupMembers, 'memberId')
     membersWithoutCurrent.forEach(secondMember => {
       if (Math.sign(member.amount) === Math.sign(secondMember.amount)) return
       const amountDiff = member.amount + secondMember.amount
