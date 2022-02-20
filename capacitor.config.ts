@@ -1,8 +1,8 @@
 import { CapacitorConfig } from '@capacitor/cli'
 
 const config: CapacitorConfig = {
-  appId: 'holsten.split.it',
-  appName: 'split it',
+  appId: 'holsten.fair.rechnen',
+  appName: 'FAIRrechnen',
   webDir: 'build',
   bundledWebRuntime: false,
 }

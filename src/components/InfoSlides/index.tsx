@@ -28,7 +28,7 @@ export const InfoSlides = ({ onToggleShowInfoSlides }: InfoSlidesProps): JSX.Ele
         iconFontSize={208}
         title='Willkommen'
         onToggleShowInfoSlides={onToggleShowInfoSlides}
-        firstParagraph='Die split it App hilft Dir dabei, alle Einkäufe innerhalb einer Gruppe aufzulisten, um einen Überblick darüber zu bekommen, wer am Ende welchen Betrag bekommt/bezahlen muss.'
+        firstParagraph='Die FAIRrechnen App hilft Dir dabei, alle Einkäufe innerhalb einer Gruppe aufzulisten, um einen Überblick darüber zu bekommen, wer am Ende welchen Betrag bekommt/bezahlen muss.'
         secondParagraph='Zusätzlich werden Zahlungen zwischen den Mitgliedern vorgeschlagen, mit denen bestmöglich alle Schulden beglichen werden können.'
       />
     </SwiperSlide>

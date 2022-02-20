@@ -1,8 +1,8 @@
-# split it
+# FAIRrechnen
 
 ## Info
 
-The split it app helps you to list all purchases within a group to get an overview of who gets/pays what amount in the end. In addition, payments between members are proposed, which can be used to settle all debts in the best possible way.
+The FAIRrechnen app helps you to list all purchases within a group to get an overview of who gets/pays what amount in the end. In addition, payments between members are proposed, which can be used to settle all debts in the best possible way.
 
 All data is stored offline on the corresponding device.
 
