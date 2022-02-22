@@ -2,7 +2,7 @@ import { Purchase } from '../../App/types'
 import { format } from 'date-fns'
 import { displayCurrencyValue, findItemById, findItemsByIds } from '../../App/utils'
 import { useStore } from '../../stores/useStore'
-import { displayBeneficiaryNames } from './utils'
+import { displayAdditionQuantity, displayBeneficiaryNames } from './utils'
 
 export interface PurchaseInfoProps {
   purchase: Purchase
@@ -26,7 +26,7 @@ export const PurchaseInfo = ({ purchase }: PurchaseInfoProps): JSX.Element => {
       </div>
       <div className='small-label-component' style={{ display: 'flex' }}>
         <div style={{ flex: 1, paddingRight: 16 }}>Für {displayBeneficiaryNames(beneficiaries, groupMembers)}</div>
-        <div>{additions.length === 1 ? '1 Zusatz' : `${additions.length} Zusätze`}</div>
+        <div>{displayAdditionQuantity(additions.length)}</div>
       </div>
     </>
   )

@@ -1,5 +1,5 @@
 export const displayMemberQuantity = (memberQuantity: number) =>
-  memberQuantity === 1 ? `${memberQuantity} Mitglied` : `${memberQuantity} Mitglieder`
+  memberQuantity === 1 ? `1 Mitglied` : `${memberQuantity} Mitglieder`
 
 export const displayHistoryQuantity = (historyQuantity: number) =>
-  historyQuantity === 1 ? `${historyQuantity} Eintrag` : `${historyQuantity} Einträge`
+  historyQuantity === 1 ? `1 Eintrag` : `${historyQuantity} Einträge`

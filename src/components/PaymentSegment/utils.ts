@@ -14,6 +14,9 @@ export const displayBeneficiaryNames = (beneficiaries: CompleteMember[], groupMe
   return isForAllMembers ? 'Alle' : involvedMemberNamesSeparated
 }
 
+export const displayAdditionQuantity = (additionQuantity: number) =>
+  additionQuantity === 1 ? '1 Zusatz' : `${additionQuantity} Zusätze`
+
 export const filterGroupPayments = (
   payments: Payment[],
   showPurchases: boolean,
