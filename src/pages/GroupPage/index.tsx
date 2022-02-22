@@ -10,7 +10,7 @@ import { InfoSlides } from '../../components/InfoSlides'
 import { useGroupPage } from './useGroupPage'
 import { equalsLast } from '../../App/utils'
 import { useState } from 'react'
-import { GroupTotalComponent } from './GroupTotalComponent'
+import { GroupInfo } from './GroupInfo'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { AddGroupModal } from '../../components/AddGroupModal'
 
@@ -61,7 +61,7 @@ export const GroupPage = (): JSX.Element => {
               routerLink={`/groups/${group.groupId}`}
               onDelete={() => onDeleteGroup(group.groupId)}
               icon={peopleSharp}
-              labelComponent={<GroupTotalComponent groupId={group.groupId} />}
+              labelComponent={<GroupInfo groupId={group.groupId} />}
               lines={equalsLast(group, groups) ? 'none' : undefined}
               reorder={reorder}
             />
