@@ -8,6 +8,7 @@ import {
   IonReorder,
   IonText,
 } from '@ionic/react'
+import clsx from 'clsx'
 import { repeatSharp } from 'ionicons/icons'
 import { isNil } from 'ramda'
 import { MouseEventHandler } from 'react'
@@ -22,8 +23,8 @@ interface SlidingListItemProps {
   icon?: string
   style?: { [key: string]: number | string }
   detail?: boolean
-  lines?: 'full' | 'inset' | 'none'
   reorder?: boolean
+  transparentLine?: boolean
 }
 
 export const SlidingListItem = ({
@@ -36,8 +37,8 @@ export const SlidingListItem = ({
   icon,
   style,
   detail = true,
-  lines = 'inset',
   reorder = false,
+  transparentLine = false,
 }: SlidingListItemProps): JSX.Element => (
   <IonItemSliding style={style}>
     <IonItemOptions side='start'>
@@ -46,12 +47,12 @@ export const SlidingListItem = ({
       </IonItemOption>
     </IonItemOptions>
     <IonItem
-      className='detail-icon-opacity-0-5 item-border-color'
+      className={clsx('detail-icon-opacity-0-5 item-border-color', { 'transparent-line': transparentLine })}
       button
       detail={detail && isNil(endText)}
       routerLink={routerLink}
       onClick={!routerLink ? onSelect : undefined}
-      lines={lines}
+      lines='inset'
     >
       {reorder ? (
         <IonReorder slot='start'>

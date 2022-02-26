@@ -8,7 +8,7 @@ import { PageHeader } from '../../components/PageLayout/PageHeader'
 import { ButtonWithSaveIcon } from '../../components/ButtonWithSaveIcon'
 import { InfoSlides } from '../../components/InfoSlides'
 import { useGroupPage } from './useGroupPage'
-import { equalsLast } from '../../App/utils'
+import { isLast } from '../../App/utils'
 import { useState } from 'react'
 import { GroupInfo } from './GroupInfo'
 import { usePersistedStore } from '../../stores/usePersistedStore'
@@ -62,8 +62,8 @@ export const GroupPage = (): JSX.Element => {
               onDelete={() => onDeleteGroup(group.groupId)}
               icon={peopleSharp}
               labelComponent={<GroupInfo groupId={group.groupId} />}
-              lines={equalsLast(group, groups) ? 'none' : undefined}
               reorder={reorder}
+              transparentLine={isLast(group, groups)}
             />
           ))}
         </IonReorderGroup>

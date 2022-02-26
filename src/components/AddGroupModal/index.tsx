@@ -4,7 +4,7 @@ import { PageFooter } from '../PageLayout/PageFooter'
 import { PageHeader } from '../PageLayout/PageHeader'
 import { ButtonWithSaveIcon } from '../ButtonWithSaveIcon'
 import { useAddGroupModal } from './useAddGroupModal'
-import { equalsLast } from '../../App/utils'
+import { isLast } from '../../App/utils'
 import { FormComponent } from '../formComponents/FormComponent'
 import { FormInput } from '../formComponents/FormInput'
 
@@ -32,7 +32,7 @@ export const AddGroupModal = ({ onDismiss }: AddGroupModalProps): JSX.Element =>
           <FormComponent
             key={field.id}
             label='Mitglied'
-            {...(!equalsLast(field, fields) && { onDelete: () => remove(index) })}
+            {...(!isLast(field, fields) && { onDelete: () => remove(index) })}
           >
             <FormInput name={`memberNames.${index}.name`} control={control} />
           </FormComponent>

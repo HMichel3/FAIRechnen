@@ -63,54 +63,60 @@ ion-item-divider {
 }
 
 body.dark {
-  & .color-danger {
+  .color-danger {
     color: var(--ion-color-danger);
   }
-  & .color-success {
+  .color-success {
     color: var(--ion-color-success);
   }
-  & .list-item-icon-color {
+  .list-item-icon-color {
     color: var(--ion-color-light);
   }
-  & .item-border-color {
+  .item-border-color {
     --border-color: var(--ion-color-light-shade);
     --highlight-color-focused: var(--ion-color-light);
+    &.transparent-line {
+      --border-color: transparent;
+    }
   }
-  & .checkbox-input {
+  .checkbox-input {
     /* same color as select arrow */
     --border-color: rgba(155, 162, 171, 1);
     /* same color as background */
     --checkmark-color: hsl(215, 33%, 20%);
   }
-  & .alert-input.sc-ion-alert-md:focus {
+  .alert-input.sc-ion-alert-md:focus {
     border-color: var(--ion-color-light);
   }
-  & .sliding-delete {
+  .sliding-delete {
     background: var(--ion-color-danger-shade);
   }
-  & .background-success {
+  .background-success {
     --ion-color-base: var(--ion-color-success-shade) !important;
   }
-  & .delete-alert .alert-button {
+  .alert-message {
+    color: #999999;
+  }
+  .delete-alert .alert-button {
     color: var(--ion-color-danger);
   }
-  & .save-alert .alert-button {
+  .save-alert .alert-button {
     color: var(--ion-color-success);
   }
-  & .alert-button-role-cancel.sc-ion-alert-md {
+  .alert-button-role-cancel.sc-ion-alert-md {
     color: var(--ion-color-light);
   }
-  & .basic-select-popover {
-    & .select-interface-option {
+  .basic-select-popover {
+    .select-interface-option {
       --color: #fff;
       --background: var(--ion-color-medium);
       --background-focused: var(--ion-color-primary, #3880ff);
       --background-focused-opacity: 0.2;
     }
-    & ion-list {
+    ion-list {
       background-color: var(--ion-color-medium);
     }
-    & .select-interface-option ion-checkbox {
+    .select-interface-option ion-checkbox {
       /* same color as select arrow */
       --border-color: rgba(155, 162, 171, 1);
       --background-checked: rgba(155, 162, 171, 1);
@@ -120,10 +126,10 @@ body.dark {
       --background: var(--ion-color-medium);
     }
   }
-  & .slides-bullet-active {
+  .slides-bullet-active {
     --bullet-background-active: var(--ion-color-light);
   }
-  & .form-component {
+  .form-component {
     &.item-has-focus ion-label {
       color: #fff !important;
     }
@@ -131,11 +137,11 @@ body.dark {
       color: #fff !important;
     }
   }
-  & ion-select::part(text) {
+  ion-select::part(text) {
     /* doesn't matter what size is set, but it must be width (min-width isn't working!) */
     width: 16px;
   }
-  & ion-card {
+  ion-card {
     box-shadow: rgb(0 0 0 / 20%) 0px 0px 5px 0px, rgb(0 0 0 / 14%) 0px 2px 2px 0px, rgb(0 0 0 / 12%) 0px 1px 5px 0px;
   }
 }

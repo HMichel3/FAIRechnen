@@ -19,7 +19,7 @@ export const updateArrayItemById = <T>(id: string, newItem: T, array: T[], idNam
 export const getTotalAmountFromArray = <T extends { amount: number }>(array: T[]) =>
   reduce((total, { amount }) => total + amount, 0, array)
 
-export const equalsLast = <T>(current: T, array: T[]) => current === last(array)
+export const isLast = <T>(current: T, array: T[]) => current === last(array)
 
 export const displayCurrencyValue = (value: number) =>
   (value / 100).toLocaleString('de-DE', {

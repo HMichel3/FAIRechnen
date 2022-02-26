@@ -6,7 +6,7 @@ import { fadeOutLeftVariants, variantProps } from '../../App/animations'
 import { cartSharp, serverSharp, walletSharp } from 'ionicons/icons'
 import { IonAlert } from '@ionic/react'
 import { usePaymentSegment } from './usePaymentSegment'
-import { equalsLast } from '../../App/utils'
+import { isLast } from '../../App/utils'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useState } from 'react'
 import { IncomeInfo } from './IncomeInfo'
@@ -48,8 +48,8 @@ export const PaymentSegment = (): JSX.Element => {
               labelComponent={<PurchaseInfo purchase={groupPayment} />}
               icon={cartSharp}
               detail={false}
-              lines={equalsLast(groupPayment, filteredGroupPayments) ? 'none' : undefined}
-              style={{ marginBottom: equalsLast(groupPayment, filteredGroupPayments) ? 92 : 0 }}
+              transparentLine={isLast(groupPayment, filteredGroupPayments)}
+              style={{ marginBottom: isLast(groupPayment, filteredGroupPayments) ? 91 : 0 }}
             />
           )
         }
@@ -62,8 +62,8 @@ export const PaymentSegment = (): JSX.Element => {
               labelComponent={<IncomeInfo income={groupPayment} />}
               icon={serverSharp}
               detail={false}
-              lines={equalsLast(groupPayment, filteredGroupPayments) ? 'none' : undefined}
-              style={{ marginBottom: equalsLast(groupPayment, filteredGroupPayments) ? 92 : 0 }}
+              transparentLine={isLast(groupPayment, filteredGroupPayments)}
+              style={{ marginBottom: isLast(groupPayment, filteredGroupPayments) ? 91 : 0 }}
             />
           )
         }
@@ -75,8 +75,8 @@ export const PaymentSegment = (): JSX.Element => {
             labelComponent={<CompensationInfo compensation={groupPayment} />}
             icon={walletSharp}
             detail={false}
-            lines={equalsLast(groupPayment, filteredGroupPayments) ? 'none' : undefined}
-            style={{ marginBottom: equalsLast(groupPayment, filteredGroupPayments) ? 81 : 0 }}
+            transparentLine={isLast(groupPayment, filteredGroupPayments)}
+            style={{ marginBottom: isLast(groupPayment, filteredGroupPayments) ? 80 : 0 }}
           />
         )
       })}

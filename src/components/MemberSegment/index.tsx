@@ -1,5 +1,5 @@
 import { IonAlert } from '@ionic/react'
-import { displayCurrencyValue, equalsLast } from '../../App/utils'
+import { displayCurrencyValue, isLast } from '../../App/utils'
 import { SlidingListItem } from '../SlidingListItem'
 import { motion } from 'framer-motion'
 import { variantProps, fadeOutRightVariants } from '../../App/animations'
@@ -43,8 +43,8 @@ export const MemberSegment = (): JSX.Element => {
           onSelect={() => onSelectMember(member)}
           icon={personSharp}
           labelComponent={<SmallLabelComponent>{displayCurrencyValue(member.totalAmount)}</SmallLabelComponent>}
-          lines={equalsLast(member, groupMembers) ? 'none' : undefined}
-          style={{ marginBottom: equalsLast(member, groupMembers) ? 81 : 0 }}
+          transparentLine={isLast(member, groupMembers)}
+          style={{ marginBottom: isLast(member, groupMembers) ? 80 : 0 }}
         />
       ))}
       <IonAlert
