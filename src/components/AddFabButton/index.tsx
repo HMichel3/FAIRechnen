@@ -8,7 +8,7 @@ interface AddFabButtonProps {
   onClickFabButton: () => void
   onClickFabButtonInList: (onClick: () => void) => void
   onClickBackdrop: () => void
-  children: { text: string; icon: string; onClick: () => void; disabled?: boolean }[]
+  children: { label: string; description: string; icon: string; onClick: () => void; disabled?: boolean }[]
 }
 
 export const AddFabButton = ({
@@ -24,14 +24,15 @@ export const AddFabButton = ({
         <IonIcon icon={addSharp} />
       </IonFabButton>
       <IonFabList side='top'>
-        {children.map(({ text, icon, onClick, disabled }) => (
+        {children.map(({ label, description, icon, onClick, disabled }) => (
           <IonFabButton
             // needed, because disabled not working as expected
             className={clsx({ 'custom-button-disabled': disabled })}
             style={{ height: 56, width: 56 }}
-            key={text}
+            key={label}
             color='medium'
-            data-label={text}
+            data-label={label}
+            data-description={description}
             // needed, because disabled not working as expected
             onClick={() => (disabled ? onClickBackdrop() : onClickFabButtonInList(onClick))}
           >

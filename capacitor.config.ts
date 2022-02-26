@@ -2,7 +2,7 @@ import { CapacitorConfig } from '@capacitor/cli'
 
 const config: CapacitorConfig = {
   appId: 'holsten.fair.rechnen',
-  appName: 'FAIRrechnen',
+  appName: 'FAIRechnen',
   webDir: 'build',
   bundledWebRuntime: false,
 }

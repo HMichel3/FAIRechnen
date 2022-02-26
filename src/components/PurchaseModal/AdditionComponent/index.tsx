@@ -5,6 +5,7 @@ import { AdditionCard } from './AdditionCard'
 import { displayCurrencyValue, getTotalAmountFromArray } from '../../../App/utils'
 import { isNil } from 'ramda'
 import { useFieldArray, useFormContext } from 'react-hook-form'
+import './index.scss'
 
 export interface AdditionComponentProps {
   pageContentRef: RefObject<HTMLIonContentElement>
@@ -25,8 +26,15 @@ export const AdditionComponent = ({ pageContentRef }: AdditionComponentProps): J
   return (
     <div className='addition-component'>
       <IonItemDivider color='medium'>
-        <IonLabel>Zusätze ({displayCurrencyValue(additionsTotalAmount)})</IonLabel>
-        <IonButtons style={{ marginRight: 1 }} slot='end'>
+        <div>
+          <div>
+            <IonLabel>Zusätze ({displayCurrencyValue(additionsTotalAmount)})</IonLabel>
+          </div>
+          <div className='smaller-label-component'>
+            <IonLabel>Artikel, die nur für einzelne Mitglieder gekauft werden</IonLabel>
+          </div>
+        </div>
+        <IonButtons style={{ marginRight: 1, marginLeft: 0 }} slot='end'>
           <IonButton onClick={onAddAddition}>
             <IonIcon slot='icon-only' icon={addSharp} />
           </IonButton>

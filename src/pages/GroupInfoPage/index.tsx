@@ -98,25 +98,29 @@ export const GroupInfoPage = ({
         <AddFabButton {...{ showFab, onClickFabButton, onClickFabButtonInList, onClickBackdrop }}>
           {[
             {
-              text: 'Zahlung hinzufügen',
+              label: 'Zahlung hinzufügen',
+              description: 'Neue Zahlung zwischen den Personen',
               icon: walletSharp,
               onClick: () => showAddCompensationModal(),
               disabled: groupMembers.length < 2 || all(propEq('amount', 0), groupMembers),
             },
             {
-              text: 'Einkommen hinzufügen',
+              label: 'Einkommen hinzufügen',
+              description: 'Geld wurde eingenommen (z.B. Pfand)',
               icon: serverSharp,
               onClick: () => showIncomeModal(),
               disabled: groupMembers.length < 2,
             },
             {
-              text: 'Einkauf hinzufügen',
+              label: 'Einkauf hinzufügen',
+              description: 'Geld wurde ausgegeben',
               icon: cartSharp,
               onClick: () => showPurchaseModal(),
               disabled: groupMembers.length < 2,
             },
             {
-              text: 'Mitglied hinzufügen',
+              label: 'Mitglied hinzufügen',
+              description: 'Neue Person, die sich beteiligt',
               icon: personSharp,
               onClick: () => setShowAddMemberAlert(true),
             },

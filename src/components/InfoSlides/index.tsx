@@ -1,16 +1,11 @@
 import { IonButton, IonicSlides } from '@ionic/react'
-import {
-  informationCircleSharp,
-  addCircleSharp,
-  logoEuro,
-  helpCircleSharp,
-  closeCircleSharp,
-  createSharp,
-  bulbSharp,
-} from 'ionicons/icons'
+import { informationCircleSharp, helpCircleSharp, bulbSharp } from 'ionicons/icons'
 import { InfoSlideWithIcon } from './InfoSlideWithIcon'
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react'
 import { Pagination } from 'swiper'
+import img_group_overview from './images/Gruppenübersicht-bearbeitet.png'
+import img_group_info from './images/Gruppenmitglieder-bearbeitet.png'
+import { InfoSlideWithPicture } from './InfoSlideWithPicture'
 import 'swiper/swiper.min.css'
 import 'swiper/modules/pagination/pagination.min.css'
 import '@ionic/react/css/ionic-swiper.css'
@@ -28,55 +23,35 @@ export const InfoSlides = ({ onToggleShowInfoSlides }: InfoSlidesProps): JSX.Ele
         iconFontSize={208}
         title='Willkommen'
         onToggleShowInfoSlides={onToggleShowInfoSlides}
-        firstParagraph='Die FAIRrechnen App hilft Dir dabei, alle Einkäufe innerhalb einer Gruppe aufzulisten, um einen Überblick darüber zu bekommen, wer am Ende welchen Betrag bekommt/bezahlen muss.'
-        secondParagraph='Zusätzlich werden Zahlungen zwischen den Mitgliedern vorgeschlagen, mit denen bestmöglich alle Schulden beglichen werden können.'
+        firstParagraph='FAIRechnen hilft Dir dabei, alle Einkäufe innerhalb einer Gruppe aufzulisten und den Überblick darüber zu behalten, welche Beträge am Ende noch gezahlt werden müssen.'
+        secondParagraph='Zusätzlich werden Zahlungen vorgeschlagen, mit denen die Mitglieder bestmöglich ihre Schulden begleichen können.'
+        thirdParagraph='Folgend sind einige Bedienungshinweise vorzufinden.'
       />
     </SwiperSlide>
     <SwiperSlide style={{ flexDirection: 'column', justifyContent: 'start' }}>
-      <InfoSlideWithIcon
-        icon={addCircleSharp}
-        title='Hinzufügen'
+      <InfoSlideWithPicture
+        title='Gruppenübersicht'
+        imgSrc={img_group_overview}
+        imgAlt='Gruppenübersicht mit Bedienungshinweisen'
         onToggleShowInfoSlides={onToggleShowInfoSlides}
-        firstParagraph='Es lassen sich Gruppen erstellen, in welchen Mitglieder, Einkäufe, Einkommen und Zahlungen hinzugefügt werden können.'
-        secondParagraph='Innerhalb einzelner Einkäufe besteht die Möglichkeit Zusätze hinzuzufügen. Diese sind immer dann sinnvoll, wenn ein Teil des Einkaufs nur für einzelne Mitglieder gekauft wird.'
       />
     </SwiperSlide>
     <SwiperSlide style={{ flexDirection: 'column', justifyContent: 'start' }}>
-      <InfoSlideWithIcon
-        icon={logoEuro}
-        title='Beträge'
+      <InfoSlideWithPicture
+        title='Gruppeninfo'
+        imgSrc={img_group_info}
+        imgAlt='Gruppeninfo mit Bedienungshinweisen'
         onToggleShowInfoSlides={onToggleShowInfoSlides}
-        firstParagraph='In der App tauchen die verschiedensten Beträge auf:'
-        secondParagraph='In der Gruppenübersicht stellen die Beträge die Summe der aktuellen Ausgaben der entsprechenden Gruppe dar.'
-        thirdParagraph='In der Gruppeninfo stellen die Beträge unter den Mitgliedern den Betrag dar, den das einzelne Mitglied bislang ausgegeben hat, während die Beträge am Ende der Zeile anzeigen, wie viel dieses noch bekommt/bezahlen muss.'
-      />
-    </SwiperSlide>
-    <SwiperSlide style={{ flexDirection: 'column', justifyContent: 'start' }}>
-      <InfoSlideWithIcon
-        icon={createSharp}
-        title='Bearbeiten'
-        onToggleShowInfoSlides={onToggleShowInfoSlides}
-        firstParagraph='Über das Stift-Symbol oben rechts in der Gruppeninfo kann der Gruppenname geändert werden.'
-        secondParagraph='Das Bearbeiten von Mitgliedern, Einkäufen und Einkommen ist ebenfalls möglich, indem die entsprechenden Listeneinträge ausgewählt werden.'
-        thirdParagraph='Das Bearbeiten von Zahlungen ist nicht möglich.'
-      />
-    </SwiperSlide>
-    <SwiperSlide style={{ flexDirection: 'column', justifyContent: 'start' }}>
-      <InfoSlideWithIcon
-        icon={closeCircleSharp}
-        title='Löschen'
-        onToggleShowInfoSlides={onToggleShowInfoSlides}
-        firstParagraph='Durch das Wischen einzelner Listeneinträge nach rechts wird ein Knopf sichtbar, mit welchem sich die entsprechenden Einträge löschen lassen.'
-        secondParagraph='Das Löschen von Mitgliedern, welche an Einkäufen, Einkommen oder Zahlungen beteiligt sind, ist nicht möglich.'
       />
     </SwiperSlide>
     <SwiperSlide style={{ flexDirection: 'column', justifyContent: 'start' }}>
       <InfoSlideWithIcon
         icon={bulbSharp}
-        title='Sonstiges'
+        iconFontSize={208}
+        title='Listeneinträge'
         onToggleShowInfoSlides={onToggleShowInfoSlides}
-        firstParagraph='Über das Pfeil-Symbol oben rechts in der Gruppenübersicht kann die Reihenfolge der Gruppen angepasst werden.'
-        secondParagraph='Über das Exportieren-Symbol oben rechts in der Gruppeninfo können die Ausgabenübersicht und Zahlungsvorschläge der Gruppe geteilt werden.'
+        firstParagraph='Durch das Anklicken einzelner Listeneinträge können diese entweder geöffnet oder bearbeitet werden.'
+        secondParagraph='Durch das Wischen einzelner Listeneinträge nach rechts wird ein Knopf sichtbar, über welchem diese gelöscht werden können.'
       />
     </SwiperSlide>
     <SwiperSlide style={{ flexDirection: 'column', justifyContent: 'start' }}>
@@ -85,7 +60,7 @@ export const InfoSlides = ({ onToggleShowInfoSlides }: InfoSlidesProps): JSX.Ele
         iconFontSize={216}
         title='Alles klar?'
         onToggleShowInfoSlides={onToggleShowInfoSlides}
-        firstParagraph='Über das Fragezeichen-Symbol oben rechts in der Gruppenübersicht ist es möglich, diese Infos bei Bedarf erneut zu öffnen.'
+        firstParagraph='Über das Fragezeichen-Symbol in der Gruppenübersicht ist es möglich, diese Infos bei Bedarf erneut zu öffnen.'
       >
         <IonButton color='medium' onClick={onToggleShowInfoSlides}>
           Kann losgehen!

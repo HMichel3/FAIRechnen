@@ -1,15 +1,25 @@
 ion-fab-button[data-label] {
   position: relative;
 
-  &::after {
+  &::before {
     position: absolute;
     content: attr(data-label);
     z-index: 1;
     right: 60px;
-    bottom: 11px;
+    bottom: 21px;
     padding: 9px 12px;
     text-transform: uppercase;
     color: white;
+  }
+
+  &::after {
+    position: absolute;
+    content: attr(data-description);
+    z-index: 1;
+    right: 60px;
+    bottom: 2px;
+    padding: 9px 12px;
+    color: var(--ion-color-light-shade);
   }
 }
 
