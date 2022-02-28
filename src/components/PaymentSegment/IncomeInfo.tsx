@@ -3,6 +3,7 @@ import { format } from 'date-fns'
 import { displayCurrencyValue, findItemById, findItemsByIds } from '../../App/utils'
 import { useStore } from '../../stores/useStore'
 import { displayBeneficiaryNames } from './utils'
+import { IonLabel } from '@ionic/react'
 
 export interface IncomeInfoProps {
   income: Income
@@ -17,15 +18,15 @@ export const IncomeInfo = ({ income }: IncomeInfoProps): JSX.Element => {
   return (
     <>
       <div style={{ display: 'flex' }}>
-        <div style={{ flex: 1, paddingRight: 16 }}>{name}</div>
+        <IonLabel style={{ flex: 1, paddingRight: 16 }}>{name}</IonLabel>
         <div>{displayCurrencyValue(amount)}</div>
       </div>
       <div className='small-label-component' style={{ display: 'flex' }}>
-        <div style={{ flex: 1, paddingRight: 16 }}>Von {earner.name}</div>
+        <IonLabel style={{ flex: 1, paddingRight: 16 }}>Von {earner.name}</IonLabel>
         <div>{format(timestamp, 'dd.MM.y, HH:mm')}</div>
       </div>
       <div className='small-label-component' style={{ display: 'flex' }}>
-        <div style={{ flex: 1, paddingRight: 16 }}>Für {displayBeneficiaryNames(beneficiaries, groupMembers)}</div>
+        <IonLabel style={{ flex: 1 }}>Für {displayBeneficiaryNames(beneficiaries, groupMembers)}</IonLabel>
       </div>
     </>
   )
