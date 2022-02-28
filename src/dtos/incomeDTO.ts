@@ -11,4 +11,5 @@ export const incomeDTO = (income: IncomeDTO): Income => ({
   amount: income.amount,
   earnerId: income.earnerId,
   beneficiaryIds: income.beneficiaryIds,
+  description: income.description,
 })

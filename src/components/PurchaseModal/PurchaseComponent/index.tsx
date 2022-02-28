@@ -8,6 +8,7 @@ import { path } from 'ramda'
 import { useStore } from '../../../stores/useStore'
 import { usePurchaseComponent } from './usePurchaseComponent'
 import { removeItemsById } from '../../../App/utils'
+import { FormTextarea } from '../../formComponents/FormTextarea'
 
 export const PurchaseComponent = (): JSX.Element => {
   const { control, watch, errors } = usePurchaseComponent()
@@ -19,22 +20,25 @@ export const PurchaseComponent = (): JSX.Element => {
       <IonItemDivider color='medium'>
         <IonLabel>Einkauf</IonLabel>
       </IonItemDivider>
-      <FormComponent label='Einkaufname' error={errors.name}>
+      <FormComponent label='Einkaufname*' error={errors.name}>
         <FormInput name='name' control={control} />
       </FormComponent>
-      <FormComponent label='Betrag' error={errors.amount}>
+      <FormComponent label='Betrag*' error={errors.amount}>
         <FormCurrency name='amount' control={control} />
       </FormComponent>
-      <FormComponent label='Einkäufer' error={errors.purchaserId}>
+      <FormComponent label='Einkäufer*' error={errors.purchaserId}>
         <FormSelect name='purchaserId' control={control} selectOptions={groupMembers} />
       </FormComponent>
-      <FormComponent label='Begünstigte' error={path(['beneficiaryIds'], errors)}>
+      <FormComponent label='Begünstigte*' error={path(['beneficiaryIds'], errors)}>
         <FormSelect name='beneficiaryIds' control={control} selectOptions={membersWithoutPurchaser} multiple />
       </FormComponent>
       <IonItem className='form-input-margin' fill='outline' color='light' lines='none'>
         <IonLabel color='light'>Bezahlen die Begünstigten alles?</IonLabel>
         <FormCheckbox name='isPurchaserOnlyPaying' control={control} />
       </IonItem>
+      <FormComponent label='Beschreibung'>
+        <FormTextarea name='description' control={control} />
+      </FormComponent>
     </div>
   )
 }

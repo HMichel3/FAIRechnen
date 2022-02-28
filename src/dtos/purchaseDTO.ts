@@ -11,5 +11,6 @@ export const purchaseDTO = (purchase: PurchaseDTO): Purchase => ({
   amount: purchase.amount,
   purchaserId: purchase.purchaserId,
   beneficiaryIds: purchase.beneficiaryIds,
+  description: purchase.description,
   additions: purchase.additions,
 })

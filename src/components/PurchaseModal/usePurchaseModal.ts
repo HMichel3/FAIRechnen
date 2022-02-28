@@ -16,6 +16,7 @@ const validationSchema = z.object({
   purchaserId: z.string().min(1, { message: 'Pflichtfeld!' }),
   beneficiaryIds: z.string().array().nonempty({ message: 'Pflichtfeld!' }),
   isPurchaserOnlyPaying: z.boolean(),
+  description: z.string(),
   additions: z
     .object({
       name: z.string().min(1, { message: 'Pflichtfeld!' }),
@@ -31,6 +32,7 @@ export interface PurchaseFormValues {
   purchaserId: Purchase['purchaserId']
   beneficiaryIds: Purchase['beneficiaryIds']
   isPurchaserOnlyPaying: boolean
+  description: Purchase['description']
   additions: Purchase['additions']
 }
 
@@ -43,11 +45,12 @@ const defaultValues = (groupMembers: CompleteMember[], selectedPurchase?: Purcha
       purchaserId: '',
       beneficiaryIds: groupMemberIds,
       isPurchaserOnlyPaying: false,
+      description: '',
       additions: [],
     }
   }
 
-  const { name, amount, purchaserId, beneficiaryIds, additions } = selectedPurchase
+  const { name, amount, purchaserId, beneficiaryIds, description, additions } = selectedPurchase
   // the payer could be included into the beneficiaries (we don't want this here)
   const beneficiaryIdsWithoutPurchaser = reject(equals(purchaserId), beneficiaryIds)
   return {
@@ -56,6 +59,7 @@ const defaultValues = (groupMembers: CompleteMember[], selectedPurchase?: Purcha
     purchaserId,
     beneficiaryIds: beneficiaryIdsWithoutPurchaser,
     isPurchaserOnlyPaying: !includes(purchaserId, beneficiaryIds),
+    description,
     additions,
   }
 }
@@ -72,7 +76,7 @@ export const usePurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalP
   const [showAdditionError, setShowAdditionError] = useState(false)
 
   const onSubmit = methods.handleSubmit(
-    ({ name, amount, purchaserId, beneficiaryIds, isPurchaserOnlyPaying, additions }) => {
+    ({ name, amount, purchaserId, beneficiaryIds, isPurchaserOnlyPaying, description, additions }) => {
       setShowAdditionError(false)
       if (getTotalAmountFromArray(methods.getValues('additions')) > methods.getValues('amount')) {
         return setShowAdditionError(true)
@@ -86,6 +90,7 @@ export const usePurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalP
           amount,
           purchaserId,
           beneficiaryIds: completeBeneficiaryIds,
+          description,
           additions,
         })
         if (!equals(selectedPurchase, editedPurchase)) editPurchase(editedPurchase)
@@ -96,6 +101,7 @@ export const usePurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalP
           amount,
           purchaserId,
           beneficiaryIds: completeBeneficiaryIds,
+          description,
           additions,
         })
         addPurchase(newPurchase)

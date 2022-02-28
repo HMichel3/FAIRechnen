@@ -19,6 +19,7 @@ export interface Purchase {
   amount: number
   purchaserId: Member['memberId']
   beneficiaryIds: Member['memberId'][]
+  description: string
   additions: Addition[]
 }
 
@@ -45,6 +46,7 @@ export interface Income {
   amount: number
   earnerId: Member['memberId']
   beneficiaryIds: Member['memberId'][]
+  description: string
 }
 
 export interface CompleteGroup extends Group {

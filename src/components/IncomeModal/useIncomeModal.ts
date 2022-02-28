@@ -16,6 +16,7 @@ const validationSchema = z.object({
   earnerId: z.string().min(1, { message: 'Pflichtfeld!' }),
   beneficiaryIds: z.string().array().nonempty({ message: 'Pflichtfeld!' }),
   isEarnerOnlyEarning: z.boolean(),
+  description: z.string(),
 })
 
 interface IncomeFormValues {
@@ -24,23 +25,32 @@ interface IncomeFormValues {
   earnerId: Income['earnerId']
   beneficiaryIds: Income['beneficiaryIds']
   isEarnerOnlyEarning: boolean
+  description: Income['description']
 }
 
 const defaultValues = (groupMembers: CompleteMember[], selectedIncome?: Income): IncomeFormValues => {
   if (!selectedIncome) {
     const groupMemberIds = map(prop('memberId'), groupMembers)
-    return { name: '', amount: 0, earnerId: '', beneficiaryIds: groupMemberIds, isEarnerOnlyEarning: false }
+    return {
+      name: '',
+      amount: 0,
+      earnerId: '',
+      beneficiaryIds: groupMemberIds,
+      isEarnerOnlyEarning: false,
+      description: '',
+    }
   }
 
-  const { name, amount, earnerId, beneficiaryIds } = selectedIncome
+  const { name, amount, earnerId, beneficiaryIds, description } = selectedIncome
   // the earner could be included into the beneficiaries (we don't want this here)
   const beneficiaryIdsWithoutEarner = reject(equals(earnerId), beneficiaryIds)
   return {
-    name: name,
-    amount: amount,
-    earnerId: earnerId,
+    name,
+    amount,
+    earnerId,
     beneficiaryIds: beneficiaryIdsWithoutEarner,
     isEarnerOnlyEarning: !includes(earnerId, beneficiaryIds),
+    description,
   }
 }
 
@@ -62,7 +72,7 @@ export const useIncomeModal = ({ onDismiss, selectedIncome }: IncomeModalProps) 
     return () => adjustBeneficiaryIds.unsubscribe()
   }, [watch, setValue])
 
-  const onSubmit = handleSubmit(({ name, amount, earnerId, beneficiaryIds, isEarnerOnlyEarning }) => {
+  const onSubmit = handleSubmit(({ name, amount, earnerId, beneficiaryIds, isEarnerOnlyEarning, description }) => {
     const completeBeneficiaryIds = addIdToBeneficiariesIfNeeded(earnerId, beneficiaryIds, isEarnerOnlyEarning)
     if (selectedIncome) {
       const neededSelectedIncomeData = pick(['groupId', 'incomeId', 'timestamp'], selectedIncome)
@@ -72,6 +82,7 @@ export const useIncomeModal = ({ onDismiss, selectedIncome }: IncomeModalProps) 
         amount,
         earnerId,
         beneficiaryIds: completeBeneficiaryIds,
+        description,
       })
       if (!equals(selectedIncome, editedIncome)) editIncome(editedIncome)
     } else {
@@ -81,6 +92,7 @@ export const useIncomeModal = ({ onDismiss, selectedIncome }: IncomeModalProps) 
         amount,
         earnerId,
         beneficiaryIds: completeBeneficiaryIds,
+        description,
       })
       addIncome(newIncome)
     }
