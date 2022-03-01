@@ -14,13 +14,12 @@ export const useGroupInfoPage = (groupId: CompleteGroup['groupId']) => {
   const addMember = usePersistedStore.useAddMember()
   const setSelectedGroup = useStore.useSetSelectedGroup()
   const clearSelectedGroup = useStore.useClearSelectedGroup()
-  const selectedGroup = useSelectedGroup(groupId)
-  const { group, groupMembers, groupPayments } = selectedGroup
+  const { group, groupMembers, groupPayments } = useSelectedGroup(groupId)
 
   useEffect(() => {
     // Saves the selectedGroup, to make it accessible in all child react components
-    setSelectedGroup(selectedGroup)
-  }, [selectedGroup, setSelectedGroup])
+    setSelectedGroup({ group, groupMembers, groupPayments })
+  }, [group, groupMembers, groupPayments, setSelectedGroup])
 
   // onUnmount
   useEffect(() => () => clearSelectedGroup(), [clearSelectedGroup])
