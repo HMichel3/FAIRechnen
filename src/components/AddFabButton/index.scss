@@ -35,6 +35,6 @@ ion-fab-button[data-label] {
 }
 
 /*  needed, because disabled not working as expected */
-.custom-button-disabled[data-label]::after {
+.custom-button-disabled[data-label]::before {
   color: rgba(var(--ion-color-contrast-rgb), 0.6);
 }
