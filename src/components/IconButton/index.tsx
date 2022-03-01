@@ -1,30 +1,29 @@
 import { IonButton, IonIcon } from '@ionic/react'
-import { saveSharp } from 'ionicons/icons'
 import { MouseEventHandler } from 'react'
 
-interface ButtonWithSaveIconProps {
+interface IconButtonProps {
   children: string
-  onClick?: MouseEventHandler<HTMLIonButtonElement>
+  icon: string
   type?: 'button' | 'submit' | 'reset'
+  onClick?: MouseEventHandler<HTMLIonButtonElement>
   disabled?: boolean
-  icon?: string
 }
 
-export const ButtonWithSaveIcon = ({
+export const IconButton = ({
   children,
+  icon,
   onClick,
-  type,
-  disabled,
-  icon = saveSharp,
-}: ButtonWithSaveIconProps): JSX.Element => (
+  type = 'button',
+  disabled = false,
+}: IconButtonProps): JSX.Element => (
   <IonButton
     className='ion-margin-horizontal ion-margin-top'
     style={{ marginBottom: 24 }}
     color='medium'
     expand='block'
+    type={type}
+    disabled={disabled}
     {...(onClick && { onClick })}
-    {...(type && { type })}
-    {...(disabled && { disabled })}
   >
     {children}
     <IonIcon slot='end' icon={icon} />

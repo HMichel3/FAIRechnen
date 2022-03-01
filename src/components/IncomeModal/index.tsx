@@ -1,17 +1,15 @@
-import { IonItem, IonLabel } from '@ionic/react'
+import { IonContent, IonItem, IonLabel } from '@ionic/react'
 import { path } from 'ramda'
 import { Income } from '../../App/types'
 import { removeItemsById } from '../../App/utils'
-import { ButtonWithSaveIcon } from '../ButtonWithSaveIcon'
 import { FormCheckbox } from '../formComponents/FormCheckbox'
 import { FormComponent } from '../formComponents/FormComponent'
 import { FormCurrency } from '../formComponents/FormCurrency'
 import { FormInput } from '../formComponents/FormInput'
 import { FormSelect } from '../formComponents/FormSelect'
 import { FormTextarea } from '../formComponents/FormTextarea'
-import { PageContent } from '../PageLayout/PageContent'
-import { PageFooter } from '../PageLayout/PageFooter'
-import { PageHeader } from '../PageLayout/PageHeader'
+import { ModalFooter } from '../modalComponents/ModalFooter'
+import { ModalHeader } from '../modalComponents/ModalHeader'
 import { useIncomeModal } from './useIncomeModal'
 
 export interface IncomeModalProps {
@@ -25,8 +23,8 @@ export const IncomeModal = ({ onDismiss, selectedIncome }: IncomeModalProps): JS
 
   return (
     <form className='flex-column-full-height' onSubmit={onSubmit}>
-      <PageHeader title={selectedIncome ? 'Einkommen bearbeiten' : 'Neues Einkommen'} onCloseButton={onDismiss} />
-      <PageContent>
+      <ModalHeader onDismiss={onDismiss}>{selectedIncome ? 'Einkommen bearbeiten' : 'Neues Einkommen'}</ModalHeader>
+      <IonContent>
         <FormComponent label='Einkommenname*' error={errors.name}>
           <FormInput name='name' control={control} />
         </FormComponent>
@@ -46,10 +44,8 @@ export const IncomeModal = ({ onDismiss, selectedIncome }: IncomeModalProps): JS
         <FormComponent label='Beschreibung'>
           <FormTextarea name='description' control={control} />
         </FormComponent>
-      </PageContent>
-      <PageFooter>
-        <ButtonWithSaveIcon type='submit'>Einkommen speichern</ButtonWithSaveIcon>
-      </PageFooter>
+      </IonContent>
+      <ModalFooter>Einkommen speichern</ModalFooter>
     </form>
   )
 }

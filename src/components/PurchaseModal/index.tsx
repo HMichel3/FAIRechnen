@@ -1,14 +1,12 @@
-import { IonAlert } from '@ionic/react'
+import { IonAlert, IonContent } from '@ionic/react'
 import { Purchase } from '../../App/types'
-import { PageContent } from '../PageLayout/PageContent'
-import { PageFooter } from '../PageLayout/PageFooter'
-import { PageHeader } from '../PageLayout/PageHeader'
-import { ButtonWithSaveIcon } from '../ButtonWithSaveIcon'
 import { AdditionComponent } from './AdditionComponent'
 import { PurchaseComponent } from './PurchaseComponent'
 import { usePurchaseModal } from './usePurchaseModal'
 import { FormProvider } from 'react-hook-form'
 import { useRef } from 'react'
+import { ModalHeader } from '../modalComponents/ModalHeader'
+import { ModalFooter } from '../modalComponents/ModalFooter'
 
 export interface PurchaseModalProps {
   onDismiss: () => void
@@ -25,8 +23,8 @@ export const PurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalProp
   return (
     <FormProvider {...methods}>
       <form className='flex-column-full-height' onSubmit={onSubmit}>
-        <PageHeader title={selectedPurchase ? 'Einkauf bearbeiten' : 'Neuer Einkauf'} onCloseButton={onDismiss} />
-        <PageContent ref={pageContentRef}>
+        <ModalHeader onDismiss={onDismiss}>{selectedPurchase ? 'Einkauf bearbeiten' : 'Neuer Einkauf'}</ModalHeader>
+        <IonContent ref={pageContentRef}>
           <PurchaseComponent />
           <AdditionComponent pageContentRef={pageContentRef} />
           <IonAlert
@@ -36,10 +34,8 @@ export const PurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalProp
             message='Der Gesamtbetrag aller Zusätze darf den Einkaufswert nicht überschreiten.'
             buttons={[{ role: 'cancel', text: 'Okay' }]}
           />
-        </PageContent>
-        <PageFooter>
-          <ButtonWithSaveIcon type='submit'>Einkauf speichern</ButtonWithSaveIcon>
-        </PageFooter>
+        </IonContent>
+        <ModalFooter>Einkauf speichern</ModalFooter>
       </form>
     </FormProvider>
   )

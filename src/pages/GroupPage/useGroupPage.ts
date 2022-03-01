@@ -3,10 +3,10 @@ import { useIonRouter } from '@ionic/react'
 import { useEffect, useState } from 'react'
 import { Group } from '../../App/types'
 import { usePersistedStore } from '../../stores/usePersistedStore'
+import { isDark } from './utils'
 
 export const useGroupPage = () => {
   const theme = usePersistedStore.useTheme()
-  const setTheme = usePersistedStore.useSetTheme()
   const ionRouter = useIonRouter()
   const [showInfoSlides, setShowInfoSlides] = useState(false)
   const [showDeleteGroupAlert, setShowDeleteGroupAlert] = useState(false)
@@ -29,11 +29,8 @@ export const useGroupPage = () => {
   }, [ionRouter, showInfoSlides, setShowInfoSlides])
 
   useEffect(() => {
-    if (!theme) {
-      document.body.classList.remove('dark')
-      return
-    }
-    document.body.classList.add('dark')
+    if (isDark(theme)) return document.body.classList.add('dark')
+    document.body.classList.remove('dark')
   }, [theme])
 
   const onDeleteGroup = (groupId: Group['groupId']) => {
@@ -41,25 +38,17 @@ export const useGroupPage = () => {
     setShowDeleteGroupAlert(true)
   }
 
-  const onToggleDarkMode = () => {
-    if (!theme) {
-      setTheme('dark')
-      return
-    }
-    setTheme(null)
-  }
-
   const onToggleShowInfoSlides = () => {
     setShowInfoSlides(prevState => !prevState)
   }
 
   return {
+    theme,
     showInfoSlides,
     showDeleteGroupAlert,
     selectedGroupId,
     setShowDeleteGroupAlert,
     onDeleteGroup,
-    onToggleDarkMode,
     onToggleShowInfoSlides,
   }
 }

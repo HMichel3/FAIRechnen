@@ -1,13 +1,12 @@
-import { IonItem, IonLabel, IonRadio, IonRadioGroup } from '@ionic/react'
+import { IonContent, IonFooter, IonItem, IonLabel, IonRadio, IonRadioGroup, IonToolbar } from '@ionic/react'
 import { AnimatePresence } from 'framer-motion'
 import { AddManualCompensation } from './AddManualCompensation'
-import { PageContent } from '../PageLayout/PageContent'
-import { PageFooter } from '../PageLayout/PageFooter'
-import { PageHeader } from '../PageLayout/PageHeader'
 import { CompensationItem } from './CompensationItem'
-import { ButtonWithSaveIcon } from '../ButtonWithSaveIcon'
+import { IconButton } from '../IconButton'
 import clsx from 'clsx'
 import { useAddCompensationModal } from './useAddCompensationModal'
+import { ModalHeader } from '../modalComponents/ModalHeader'
+import { saveSharp } from 'ionicons/icons'
 
 export interface AddCompensationModalProps {
   onDismiss: () => void
@@ -27,8 +26,8 @@ export const AddCompensationModal = ({ onDismiss }: AddCompensationModalProps): 
 
   return (
     <div className='flex-column-full-height'>
-      <PageHeader title='Neue Zahlung' onCloseButton={onDismiss} />
-      <PageContent ref={pageContentRef}>
+      <ModalHeader onDismiss={onDismiss}>Neue Zahlung</ModalHeader>
+      <IonContent ref={pageContentRef}>
         <IonRadioGroup value={checkedRadio} onIonChange={({ detail }) => onCheckRadio(detail.value)}>
           {possibleCompensations.map(compensation => (
             <CompensationItem key={compensation.payerReceiverId} compensation={compensation} />
@@ -41,12 +40,18 @@ export const AddCompensationModal = ({ onDismiss }: AddCompensationModalProps): 
         <AnimatePresence exitBeforeEnter>
           {checkedRadio === 'manual' && <AddManualCompensation setManualCompensation={setManualCompensation} />}
         </AnimatePresence>
-      </PageContent>
-      <PageFooter>
-        <ButtonWithSaveIcon disabled={checkedRadio === 'manual' && !manualCompensation} onClick={onAddCompensation}>
-          Zahlung speichern
-        </ButtonWithSaveIcon>
-      </PageFooter>
+      </IonContent>
+      <IonFooter>
+        <IonToolbar color='dark'>
+          <IconButton
+            icon={saveSharp}
+            disabled={checkedRadio === 'manual' && !manualCompensation}
+            onClick={onAddCompensation}
+          >
+            Zahlung speichern
+          </IconButton>
+        </IonToolbar>
+      </IonFooter>
     </div>
   )
 }

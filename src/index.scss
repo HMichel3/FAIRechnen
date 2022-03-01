@@ -61,6 +61,9 @@ ion-item-divider {
 .form-input-no-margin::part(native) {
   border-radius: 0;
 }
+.item-border-color.transparent-line {
+  --border-color: transparent;
+}
 
 body.dark {
   .color-danger {

@@ -1,12 +1,25 @@
-import { IonBackdrop, IonBadge, IonLabel, IonSegment, IonSegmentButton, IonToolbar, useIonModal } from '@ionic/react'
+import {
+  IonBackButton,
+  IonBackdrop,
+  IonBadge,
+  IonButton,
+  IonButtons,
+  IonContent,
+  IonHeader,
+  IonIcon,
+  IonLabel,
+  IonPage,
+  IonSegment,
+  IonSegmentButton,
+  IonTitle,
+  IonToolbar,
+  useIonModal,
+} from '@ionic/react'
 import { cartSharp, serverSharp, pencilSharp, personSharp, shareSharp, walletSharp } from 'ionicons/icons'
 import { all, propEq } from 'ramda'
 import { RouteComponentProps } from 'react-router'
-import { PageLayout } from '../../components/PageLayout'
 import { PaymentSegment } from '../../components/PaymentSegment'
 import { MemberSegment } from '../../components/MemberSegment'
-import { PageContent } from '../../components/PageLayout/PageContent'
-import { PageHeader } from '../../components/PageLayout/PageHeader'
 import { AnimatePresence } from 'framer-motion'
 import clsx from 'clsx'
 import { CompleteGroup } from '../../App/types'
@@ -45,21 +58,28 @@ export const GroupInfoPage = ({
   const { showFab, showBackdrop, onClickFabButton, onClickFabButtonInList, onClickBackdrop } = useAddFabButton()
 
   return (
-    <PageLayout>
+    <IonPage>
       {showBackdrop && <IonBackdrop className='custom-backdrop' tappable={true} onIonBackdropTap={onClickBackdrop} />}
-      <PageHeader
-        title={group.name}
-        backButton
-        menuButtons={[
-          { icon: pencilSharp, onClick: () => setShowEditGroupNameAlert(true) },
-          { icon: shareSharp, onClick: onShareBill },
-        ]}
-      >
+      <IonHeader>
+        <IonToolbar color='dark'>
+          <IonButtons slot='start'>
+            <IonBackButton />
+          </IonButtons>
+          <IonTitle>{group.name}</IonTitle>
+          <IonButtons slot='end'>
+            <IonButton onClick={() => setShowEditGroupNameAlert(true)}>
+              <IonIcon slot='icon-only' icon={pencilSharp} />
+            </IonButton>
+            <IonButton onClick={onShareBill}>
+              <IonIcon slot='icon-only' icon={shareSharp} />
+            </IonButton>
+          </IonButtons>
+        </IonToolbar>
         <IonToolbar color='dark'>
           <IonSegment value={showSegment} onIonChange={({ detail }) => setShowSegment(detail.value!)}>
             <IonSegmentButton value='members'>
               <IonLabel>
-                <span>Mitglieder</span>
+                <IonLabel>Mitglieder</IonLabel>
                 <IonBadge className={clsx('no-background', { 'unselected-color': showSegment !== 'members' })}>
                   {groupMembers.length}
                 </IonBadge>
@@ -67,7 +87,7 @@ export const GroupInfoPage = ({
             </IonSegmentButton>
             <IonSegmentButton value='payments'>
               <IonLabel>
-                <span>Historie</span>
+                <IonLabel>Historie</IonLabel>
                 <IonBadge className={clsx('no-background', { 'unselected-color': showSegment !== 'payments' })}>
                   {groupPayments.length}
                 </IonBadge>
@@ -75,8 +95,8 @@ export const GroupInfoPage = ({
             </IonSegmentButton>
           </IonSegment>
         </IonToolbar>
-      </PageHeader>
-      <PageContent>
+      </IonHeader>
+      <IonContent>
         <AnimatePresence exitBeforeEnter>
           {/* Key prop is needed for AnimatePresence to work correctly on 2 different Components */}
           {showSegment === 'members' && <MemberSegment key='members' />}
@@ -126,7 +146,7 @@ export const GroupInfoPage = ({
             },
           ]}
         </AddFabButton>
-      </PageContent>
-    </PageLayout>
+      </IonContent>
+    </IonPage>
   )
 }

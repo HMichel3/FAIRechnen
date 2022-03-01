@@ -3,3 +3,5 @@ export const displayMemberQuantity = (memberQuantity: number) =>
 
 export const displayHistoryQuantity = (historyQuantity: number) =>
   historyQuantity === 1 ? `1 Eintrag` : `${historyQuantity} Einträge`
+
+export const isDark = (theme: 'dark' | 'white') => theme === 'dark'

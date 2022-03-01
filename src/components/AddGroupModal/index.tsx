@@ -1,12 +1,10 @@
-import { IonItemDivider, IonLabel } from '@ionic/react'
-import { PageContent } from '../PageLayout/PageContent'
-import { PageFooter } from '../PageLayout/PageFooter'
-import { PageHeader } from '../PageLayout/PageHeader'
-import { ButtonWithSaveIcon } from '../ButtonWithSaveIcon'
+import { IonContent, IonItemDivider, IonLabel } from '@ionic/react'
 import { useAddGroupModal } from './useAddGroupModal'
 import { isLast } from '../../App/utils'
 import { FormComponent } from '../formComponents/FormComponent'
 import { FormInput } from '../formComponents/FormInput'
+import { ModalHeader } from '../modalComponents/ModalHeader'
+import { ModalFooter } from '../modalComponents/ModalFooter'
 
 export interface AddGroupModalProps {
   onDismiss: () => void
@@ -17,8 +15,8 @@ export const AddGroupModal = ({ onDismiss }: AddGroupModalProps): JSX.Element =>
 
   return (
     <form className='flex-column-full-height' onSubmit={onSubmit}>
-      <PageHeader title='Neue Gruppe' onCloseButton={onDismiss} />
-      <PageContent ref={pageContentRef}>
+      <ModalHeader onDismiss={onDismiss}>Neue Gruppe</ModalHeader>
+      <IonContent ref={pageContentRef}>
         <IonItemDivider color='medium'>
           <IonLabel>Gruppe</IonLabel>
         </IonItemDivider>
@@ -37,10 +35,8 @@ export const AddGroupModal = ({ onDismiss }: AddGroupModalProps): JSX.Element =>
             <FormInput name={`memberNames.${index}.name`} control={control} />
           </FormComponent>
         ))}
-      </PageContent>
-      <PageFooter>
-        <ButtonWithSaveIcon type='submit'>Gruppe speichern</ButtonWithSaveIcon>
-      </PageFooter>
+      </IonContent>
+      <ModalFooter>Gruppe speichern</ModalFooter>
     </form>
   )
 }

@@ -2,8 +2,8 @@ import { SetState } from 'zustand'
 import { PersistedState } from '../usePersistedStore'
 
 export interface ThemeSlice {
-  theme: null | 'dark'
-  setTheme: (theme: null | 'dark') => void
+  theme: 'dark' | 'white'
+  setTheme: (theme: ThemeSlice['theme']) => void
 }
 
 export const createThemeSlice = (set: SetState<PersistedState>): ThemeSlice => ({
