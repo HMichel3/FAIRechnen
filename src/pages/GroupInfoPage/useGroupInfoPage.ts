@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { CompleteGroup } from '../../App/types'
-import { useDeepCompareEffect } from '../../hooks/useDeepCompareEffect'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
 import { Share } from '@capacitor/share'
@@ -18,10 +17,10 @@ export const useGroupInfoPage = (groupId: CompleteGroup['groupId']) => {
   const selectedGroup = useSelectedGroup(groupId)
   const { group, groupMembers, groupPayments } = selectedGroup
 
-  useDeepCompareEffect(() => {
+  useEffect(() => {
     // Saves the selectedGroup, to make it accessible in all child react components
     setSelectedGroup(selectedGroup)
-  }, [selectedGroup])
+  }, [selectedGroup, setSelectedGroup])
 
   // onUnmount
   useEffect(() => () => clearSelectedGroup(), [clearSelectedGroup])

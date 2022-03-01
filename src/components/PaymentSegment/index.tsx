@@ -12,7 +12,6 @@ import { useState } from 'react'
 import { IncomeInfo } from './IncomeInfo'
 import { FilterCheckbox } from './FilterCheckbox'
 import { filterGroupPayments, isIncome, isPurchase } from './utils'
-import { useDeepCompareMemo } from '../../hooks/useDeepCompareMemo'
 import { useStore } from '../../stores/useStore'
 import './index.scss'
 
@@ -26,10 +25,7 @@ export const PaymentSegment = (): JSX.Element => {
   const [showCompensations, setShowCompensations] = useState(true)
   const [showCantEditCompensation, setShowCantEditCompensation] = useState(false)
   const { onSelectPurchase, onSelectIncome } = usePaymentSegment()
-  const filteredGroupPayments = useDeepCompareMemo(
-    () => filterGroupPayments(groupPayments, showPurchases, showIncomes, showCompensations),
-    [groupPayments, showPurchases, showIncomes, showCompensations]
-  )
+  const filteredGroupPayments = filterGroupPayments(groupPayments, showPurchases, showIncomes, showCompensations)
 
   return (
     <motion.div variants={fadeOutLeftVariants} {...variantProps}>

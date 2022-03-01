@@ -3,7 +3,6 @@ import { AddCompensationModalProps } from '.'
 import { Compensation } from '../../App/types'
 import { findItemById } from '../../App/utils'
 import { compensationDTO } from '../../dtos/compensationDTO'
-import { useDeepCompareMemo } from '../../hooks/useDeepCompareMemo'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
 import { generatePossibleCompensations } from './utils'
@@ -24,8 +23,8 @@ export const useAddCompensationModal = (onDismiss: AddCompensationModalProps['on
   const showAnimationOnce = useStore.useSetShowAnimationOnce()
   const [manualCompensation, setManualCompensation] = useState<ManualCompensation | null>(null)
   const pageContentRef = useRef<HTMLIonContentElement>(null)
-  const possibleCompensations = useDeepCompareMemo(() => generatePossibleCompensations(groupMembers), [groupMembers])
-  const [checkedRadio, setCheckedRadio] = useState<string>(possibleCompensations[0]?.payerReceiverId)
+  const { current: possibleCompensations } = useRef(generatePossibleCompensations(groupMembers))
+  const [checkedRadio, setCheckedRadio] = useState<string>(possibleCompensations[0].payerReceiverId)
 
   const onAddCompensation = () => {
     let newCompensation: Compensation
