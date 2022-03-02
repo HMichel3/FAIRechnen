@@ -38,7 +38,10 @@ export const GroupPage = (): JSX.Element => {
     selectedGroupId,
     setShowDeleteGroupAlert,
     onDeleteGroup,
-    onToggleShowInfoSlides,
+    setShowInfoSlides,
+    showFirstInfoSlides,
+    onHideFirstInfoSlides,
+    pageRef,
   } = useGroupPage()
   const groups = usePersistedStore.useGroups()
   const deleteGroup = usePersistedStore.useDeleteGroup()
@@ -59,7 +62,7 @@ export const GroupPage = (): JSX.Element => {
         </IonHeader>
         <IonContent>
           <IonList>
-            <IonItem onClick={onToggleShowInfoSlides} lines='none'>
+            <IonItem onClick={() => setShowInfoSlides(true)} lines='none'>
               <IonIcon className='list-item-icon-color' icon={helpCircleSharp} slot='start' />
               <IonLabel>Hilfe</IonLabel>
             </IonItem>
@@ -70,7 +73,7 @@ export const GroupPage = (): JSX.Element => {
           </IonList>
         </IonContent>
       </IonMenu>
-      <IonPage id='main-content'>
+      <IonPage id='main-content' ref={pageRef}>
         <IonHeader>
           <IonToolbar color='dark'>
             <IonButtons slot='start'>
@@ -122,7 +125,14 @@ export const GroupPage = (): JSX.Element => {
       {showInfoSlides && (
         <IonPage className='info-slides-container'>
           <IonContent>
-            <InfoSlides onToggleShowInfoSlides={onToggleShowInfoSlides} />
+            <InfoSlides onToggleShowInfoSlides={() => setShowInfoSlides(false)} />
+          </IonContent>
+        </IonPage>
+      )}
+      {showFirstInfoSlides && (
+        <IonPage className='info-slides-container'>
+          <IonContent>
+            <InfoSlides onToggleShowInfoSlides={onHideFirstInfoSlides} />
           </IonContent>
         </IonPage>
       )}

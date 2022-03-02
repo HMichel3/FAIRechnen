@@ -3,8 +3,8 @@ import { informationCircleSharp, helpCircleSharp, bulbSharp } from 'ionicons/ico
 import { InfoSlideWithIcon } from './InfoSlideWithIcon'
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react'
 import { Pagination } from 'swiper'
-import img_group_overview from './images/Gruppenübersicht-bearbeitet.png'
-import img_group_info from './images/Gruppenmitglieder-bearbeitet.png'
+import GroupOverviewImage from './images/Gruppenübersicht-bearbeitet.png'
+import GroupInfoImage from './images/Gruppeninfo-bearbeitet.png'
 import { InfoSlideWithPicture } from './InfoSlideWithPicture'
 import 'swiper/swiper.min.css'
 import 'swiper/modules/pagination/pagination.min.css'
@@ -31,7 +31,7 @@ export const InfoSlides = ({ onToggleShowInfoSlides }: InfoSlidesProps): JSX.Ele
     <SwiperSlide style={{ flexDirection: 'column', justifyContent: 'start' }}>
       <InfoSlideWithPicture
         title='Gruppenübersicht'
-        imgSrc={img_group_overview}
+        imgSrc={GroupOverviewImage}
         imgAlt='Gruppenübersicht mit Bedienungshinweisen'
         onToggleShowInfoSlides={onToggleShowInfoSlides}
       />
@@ -39,7 +39,7 @@ export const InfoSlides = ({ onToggleShowInfoSlides }: InfoSlidesProps): JSX.Ele
     <SwiperSlide style={{ flexDirection: 'column', justifyContent: 'start' }}>
       <InfoSlideWithPicture
         title='Gruppeninfo'
-        imgSrc={img_group_info}
+        imgSrc={GroupInfoImage}
         imgAlt='Gruppeninfo mit Bedienungshinweisen'
         onToggleShowInfoSlides={onToggleShowInfoSlides}
       />
@@ -51,7 +51,7 @@ export const InfoSlides = ({ onToggleShowInfoSlides }: InfoSlidesProps): JSX.Ele
         title='Listeneinträge'
         onToggleShowInfoSlides={onToggleShowInfoSlides}
         firstParagraph='Durch das Anklicken einzelner Listeneinträge können diese entweder geöffnet oder bearbeitet werden.'
-        secondParagraph='Durch das Wischen einzelner Listeneinträge nach rechts wird ein Knopf sichtbar, über welchem diese gelöscht werden können.'
+        secondParagraph='Durch das Wischen einzelner Listeneinträge nach rechts wird ein Knopf sichtbar, über welchen diese gelöscht werden können.'
       />
     </SwiperSlide>
     <SwiperSlide style={{ flexDirection: 'column', justifyContent: 'start' }}>
@@ -60,7 +60,7 @@ export const InfoSlides = ({ onToggleShowInfoSlides }: InfoSlidesProps): JSX.Ele
         iconFontSize={216}
         title='Alles klar?'
         onToggleShowInfoSlides={onToggleShowInfoSlides}
-        firstParagraph='Über das Fragezeichen-Symbol in der Gruppenübersicht ist es möglich, diese Infos bei Bedarf erneut zu öffnen.'
+        firstParagraph='Über die Hilfe in den Optionen ist es möglich, diese Informationen bei Bedarf erneut zu öffnen.'
       >
         <IonButton color='medium' onClick={onToggleShowInfoSlides}>
           Kann losgehen!
