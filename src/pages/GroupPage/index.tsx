@@ -28,6 +28,7 @@ import { GroupInfo } from './GroupInfo'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { AddGroupModal } from '../../components/AddGroupModal'
 import { isDark } from './utils'
+import './index.scss'
 
 export const GroupPage = (): JSX.Element => {
   const {

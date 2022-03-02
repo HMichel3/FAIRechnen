@@ -5,6 +5,8 @@ import {
   IonButton,
   IonButtons,
   IonContent,
+  IonFab,
+  IonFabButton,
   IonHeader,
   IonIcon,
   IonLabel,
@@ -31,6 +33,7 @@ import { useState } from 'react'
 import { PurchaseModal } from '../../components/PurchaseModal'
 import { IncomeModal } from '../../components/IncomeModal'
 import { AddCompensationModal } from '../../components/AddCompensationModal'
+import './index.scss'
 
 interface GroupInfoPageProps
   extends RouteComponentProps<{
@@ -69,9 +72,6 @@ export const GroupInfoPage = ({
           <IonButtons slot='end'>
             <IonButton onClick={() => setShowEditGroupNameAlert(true)}>
               <IonIcon slot='icon-only' icon={pencilSharp} />
-            </IonButton>
-            <IonButton onClick={onShareBill}>
-              <IonIcon slot='icon-only' icon={shareSharp} />
             </IonButton>
           </IonButtons>
         </IonToolbar>
@@ -146,6 +146,11 @@ export const GroupInfoPage = ({
             },
           ]}
         </AddFabButton>
+        <IonFab vertical='bottom' horizontal='start' slot='fixed'>
+          <IonFabButton color='medium' onClick={onShareBill}>
+            <IonIcon icon={shareSharp} />
+          </IonFabButton>
+        </IonFab>
       </IonContent>
     </IonPage>
   )
