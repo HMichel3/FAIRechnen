@@ -15,18 +15,15 @@ export const FormSelect = <Type extends FieldValues>({
   multiple = false,
 }: FormSelectProps<Type>) => {
   const {
-    field: { ref, value, onChange, onBlur },
+    field: { value, onChange },
   } = useController({ name, control })
 
   return (
     <IonSelect
       interface='popover'
       interfaceOptions={{ cssClass: 'basic-select-popover' }}
-      ref={ref}
-      name={name}
       value={value}
       onIonChange={onChange}
-      onIonBlur={onBlur}
       multiple={multiple}
     >
       {selectOptions.map(selectOption => (

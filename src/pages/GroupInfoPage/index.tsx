@@ -129,14 +129,14 @@ export const GroupInfoPage = ({
               description: 'Geld wurde eingenommen (z.B. Pfand)',
               icon: serverSharp,
               onClick: () => showIncomeModal(),
-              disabled: groupMembers.length < 2,
+              disabled: groupMembers.length < 1,
             },
             {
               label: 'Einkauf hinzufügen',
               description: 'Geld wurde ausgegeben',
               icon: cartSharp,
               onClick: () => showPurchaseModal(),
-              disabled: groupMembers.length < 2,
+              disabled: groupMembers.length < 1,
             },
             {
               label: 'Mitglied hinzufügen',

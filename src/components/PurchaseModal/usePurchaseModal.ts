@@ -1,11 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { pick, map, prop, equals, includes, reject } from 'ramda'
+import { pick, map, prop, equals, omit } from 'ramda'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { PurchaseModalProps } from '.'
 import { Purchase, CompleteMember } from '../../App/types'
-import { addIdToBeneficiariesIfNeeded, getTotalAmountFromArray } from '../../App/utils'
+import { getTotalAmountFromArray } from '../../App/utils'
 import { purchaseDTO } from '../../dtos/purchaseDTO'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
@@ -15,7 +15,6 @@ const validationSchema = z.object({
   amount: z.number().positive({ message: 'Der Betrag muss größer als 0 sein!' }),
   purchaserId: z.string().min(1, { message: 'Pflichtfeld!' }),
   beneficiaryIds: z.string().array().nonempty({ message: 'Pflichtfeld!' }),
-  isPurchaserOnlyPaying: z.boolean(),
   description: z.string(),
   additions: z
     .object({
@@ -31,7 +30,6 @@ export interface PurchaseFormValues {
   amount: Purchase['amount']
   purchaserId: Purchase['purchaserId']
   beneficiaryIds: Purchase['beneficiaryIds']
-  isPurchaserOnlyPaying: boolean
   description: Purchase['description']
   additions: Purchase['additions']
 }
@@ -42,26 +40,14 @@ const defaultValues = (groupMembers: CompleteMember[], selectedPurchase?: Purcha
     return {
       name: '',
       amount: 0,
-      purchaserId: '',
+      purchaserId: groupMemberIds[0],
       beneficiaryIds: groupMemberIds,
-      isPurchaserOnlyPaying: false,
       description: '',
       additions: [],
     }
   }
 
-  const { name, amount, purchaserId, beneficiaryIds, description, additions } = selectedPurchase
-  // the payer could be included into the beneficiaries (we don't want this here)
-  const beneficiaryIdsWithoutPurchaser = reject(equals(purchaserId), beneficiaryIds)
-  return {
-    name,
-    amount,
-    purchaserId,
-    beneficiaryIds: beneficiaryIdsWithoutPurchaser,
-    isPurchaserOnlyPaying: !includes(purchaserId, beneficiaryIds),
-    description,
-    additions,
-  }
+  return omit(['groupId', 'purchaseId', 'timestamp'], selectedPurchase)
 }
 
 export const usePurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalProps) => {
@@ -75,41 +61,38 @@ export const usePurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalP
   })
   const [showAdditionError, setShowAdditionError] = useState(false)
 
-  const onSubmit = methods.handleSubmit(
-    ({ name, amount, purchaserId, beneficiaryIds, isPurchaserOnlyPaying, description, additions }) => {
-      setShowAdditionError(false)
-      if (getTotalAmountFromArray(methods.getValues('additions')) > methods.getValues('amount')) {
-        return setShowAdditionError(true)
-      }
-      const completeBeneficiaryIds = addIdToBeneficiariesIfNeeded(purchaserId, beneficiaryIds, isPurchaserOnlyPaying)
-      if (selectedPurchase) {
-        const neededSelectedPurchaseData = pick(['groupId', 'purchaseId', 'timestamp'], selectedPurchase)
-        const editedPurchase = purchaseDTO({
-          ...neededSelectedPurchaseData,
-          name,
-          amount,
-          purchaserId,
-          beneficiaryIds: completeBeneficiaryIds,
-          description,
-          additions,
-        })
-        if (!equals(selectedPurchase, editedPurchase)) editPurchase(editedPurchase)
-      } else {
-        const newPurchase = purchaseDTO({
-          groupId: group.groupId,
-          name,
-          amount,
-          purchaserId,
-          beneficiaryIds: completeBeneficiaryIds,
-          description,
-          additions,
-        })
-        addPurchase(newPurchase)
-      }
-      showAnimationOnce()
-      onDismiss()
+  const onSubmit = methods.handleSubmit(({ name, amount, purchaserId, beneficiaryIds, description, additions }) => {
+    setShowAdditionError(false)
+    if (getTotalAmountFromArray(methods.getValues('additions')) > methods.getValues('amount')) {
+      return setShowAdditionError(true)
     }
-  )
+    if (selectedPurchase) {
+      const selectedPurchaseData = pick(['groupId', 'purchaseId', 'timestamp'], selectedPurchase)
+      const editedPurchase = purchaseDTO({
+        ...selectedPurchaseData,
+        name,
+        amount,
+        purchaserId,
+        beneficiaryIds,
+        description,
+        additions,
+      })
+      if (!equals(selectedPurchase, editedPurchase)) editPurchase(editedPurchase)
+    } else {
+      const newPurchase = purchaseDTO({
+        groupId: group.groupId,
+        name,
+        amount,
+        purchaserId,
+        beneficiaryIds,
+        description,
+        additions,
+      })
+      addPurchase(newPurchase)
+    }
+    showAnimationOnce()
+    onDismiss()
+  })
 
   return { showAdditionError, setShowAdditionError, methods, onSubmit }
 }

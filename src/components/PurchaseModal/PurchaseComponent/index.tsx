@@ -1,41 +1,36 @@
-import { IonItem, IonItemDivider, IonLabel } from '@ionic/react'
+import { IonItemDivider, IonLabel } from '@ionic/react'
 import { FormComponent } from '../../formComponents/FormComponent'
 import { FormInput } from '../../formComponents/FormInput'
 import { FormCurrency } from '../../formComponents/FormCurrency'
-import { FormSelect } from '../../formComponents/FormSelect'
-import { FormCheckbox } from '../../formComponents/FormCheckbox'
 import { path } from 'ramda'
 import { useStore } from '../../../stores/useStore'
-import { usePurchaseComponent } from './usePurchaseComponent'
-import { removeItemsById } from '../../../App/utils'
 import { FormTextarea } from '../../formComponents/FormTextarea'
+import { FormRadioGroup } from '../../formComponents/FormRadioGroup'
+import { FormChipsComponent } from '../../formComponents/FormChipsComponent'
+import { FormCheckboxGroup } from '../../formComponents/FormCheckboxGroup'
+import { useFormContext } from 'react-hook-form'
 
 export const PurchaseComponent = (): JSX.Element => {
-  const { control, watch, errors } = usePurchaseComponent()
+  const { control, formState } = useFormContext()
   const { groupMembers } = useStore.useSelectedGroup()
-  const membersWithoutPurchaser = removeItemsById(watch('purchaserId'), groupMembers, 'memberId')
 
   return (
     <div className='purchase-component'>
       <IonItemDivider color='medium'>
         <IonLabel>Einkauf</IonLabel>
       </IonItemDivider>
-      <FormComponent label='Einkaufname*' error={errors.name}>
+      <FormComponent label='Einkaufname*' error={formState.errors.name}>
         <FormInput name='name' control={control} />
       </FormComponent>
-      <FormComponent label='Betrag*' error={errors.amount}>
+      <FormComponent label='Betrag*' error={formState.errors.amount}>
         <FormCurrency name='amount' control={control} />
       </FormComponent>
-      <FormComponent label='Einkäufer*' error={errors.purchaserId}>
-        <FormSelect name='purchaserId' control={control} selectOptions={groupMembers} />
-      </FormComponent>
-      <FormComponent label='Begünstigte*' error={path(['beneficiaryIds'], errors)}>
-        <FormSelect name='beneficiaryIds' control={control} selectOptions={membersWithoutPurchaser} multiple />
-      </FormComponent>
-      <IonItem className='form-input-margin' fill='outline' color='light' lines='none'>
-        <IonLabel color='light'>Bezahlen die Begünstigten alles?</IonLabel>
-        <FormCheckbox name='isPurchaserOnlyPaying' control={control} />
-      </IonItem>
+      <FormChipsComponent label='Einkäufer*'>
+        <FormRadioGroup name='purchaserId' control={control} selectOptions={groupMembers} />
+      </FormChipsComponent>
+      <FormChipsComponent label='Begünstigte*' error={path(['beneficiaryIds'], formState.errors)}>
+        <FormCheckboxGroup name='beneficiaryIds' control={control} selectOptions={groupMembers} />
+      </FormChipsComponent>
       <FormComponent label='Beschreibung'>
         <FormTextarea name='description' control={control} />
       </FormComponent>

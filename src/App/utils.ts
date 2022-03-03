@@ -26,6 +26,3 @@ export const displayCurrencyValue = (value: number) =>
     style: 'currency',
     currency: 'EUR',
   })
-
-export const addIdToBeneficiariesIfNeeded = (id: string, beneficiaryIds: string[], condition: boolean) =>
-  condition ? beneficiaryIds : [id, ...beneficiaryIds]

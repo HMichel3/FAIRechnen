@@ -9,18 +9,8 @@ interface FormTextareaProps<Type> {
 
 export const FormTextarea = <Type extends FieldValues>({ name, control }: FormTextareaProps<Type>) => {
   const {
-    field: { ref, value, onChange, onBlur },
+    field: { value, onChange },
   } = useController({ name, control })
 
-  return (
-    <IonTextarea
-      ref={ref}
-      name={name}
-      value={value}
-      onIonChange={onChange}
-      onIonBlur={onBlur}
-      autocapitalize='sentences'
-      autoGrow
-    />
-  )
+  return <IonTextarea value={value} onIonChange={onChange} autocapitalize='sentences' autoGrow />
 }

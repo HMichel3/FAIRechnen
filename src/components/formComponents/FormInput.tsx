@@ -8,17 +8,8 @@ interface FormInputProps<Type> {
 
 export const FormInput = <Type extends FieldValues>({ name, control }: FormInputProps<Type>) => {
   const {
-    field: { ref, value, onChange, onBlur },
+    field: { value, onChange },
   } = useController({ name, control })
 
-  return (
-    <IonInput
-      ref={ref}
-      name={name}
-      value={value}
-      onIonChange={onChange}
-      onIonBlur={onBlur}
-      autocapitalize='sentences'
-    />
-  )
+  return <IonInput value={value} onIonChange={onChange} autocapitalize='sentences' />
 }
