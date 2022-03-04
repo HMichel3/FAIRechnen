@@ -146,7 +146,8 @@ export const GroupInfoPage = ({
             },
           ]}
         </AddFabButton>
-        <IonFab vertical='bottom' horizontal='start' slot='fixed'>
+        {/* style needed, because otherwise you can click the button, even though the other FabButton is enabled */}
+        <IonFab vertical='bottom' horizontal='start' slot='fixed' style={{ zIndex: 10 }}>
           <IonFabButton color='medium' onClick={onShareBill}>
             <IonIcon icon={shareSharp} />
           </IonFabButton>
