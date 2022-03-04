@@ -61,6 +61,7 @@ export const InfoSlides = ({ onToggleShowInfoSlides }: InfoSlidesProps): JSX.Ele
         title='Alles klar?'
         onToggleShowInfoSlides={onToggleShowInfoSlides}
         firstParagraph='Über die Hilfe in den Optionen ist es möglich, diese Informationen bei Bedarf erneut zu öffnen.'
+        secondParagraph='PS: Alle Daten werden ausschließlich auf Deinem Handy gespeichert!'
       >
         <IonButton color='medium' onClick={onToggleShowInfoSlides}>
           Kann losgehen!
