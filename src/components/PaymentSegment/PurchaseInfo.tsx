@@ -2,7 +2,7 @@ import { Purchase } from '../../App/types'
 import { format } from 'date-fns'
 import { displayCurrencyValue, findItemById, findItemsByIds } from '../../App/utils'
 import { useStore } from '../../stores/useStore'
-import { displayAdditionQuantity, displayBeneficiaryNames } from './utils'
+import { displayAdditionQuantity, displayBeneficiaryNames, getAdditionPayerIdsNotInBeneficiaries } from './utils'
 import { IonLabel } from '@ionic/react'
 
 export interface PurchaseInfoProps {
@@ -12,8 +12,10 @@ export interface PurchaseInfoProps {
 export const PurchaseInfo = ({ purchase }: PurchaseInfoProps): JSX.Element => {
   const { groupMembers } = useStore.useSelectedGroup()
   const { name, amount, purchaserId, beneficiaryIds, additions, timestamp } = purchase
+  const additionPayerIds = getAdditionPayerIdsNotInBeneficiaries(additions, beneficiaryIds)
   const purchaser = findItemById(purchaserId, groupMembers, 'memberId')
   const beneficiaries = findItemsByIds(beneficiaryIds, groupMembers, 'memberId')
+  const additionPayers = findItemsByIds(additionPayerIds, groupMembers, 'memberId')
 
   return (
     <>
@@ -27,7 +29,7 @@ export const PurchaseInfo = ({ purchase }: PurchaseInfoProps): JSX.Element => {
       </div>
       <div className='small-label-component' style={{ display: 'flex' }}>
         <IonLabel style={{ flex: 1, paddingRight: 16 }}>
-          Für {displayBeneficiaryNames(beneficiaries, groupMembers)}
+          Für {displayBeneficiaryNames(beneficiaries, groupMembers, additionPayers)}
         </IonLabel>
         <div>{displayAdditionQuantity(additions.length)}</div>
       </div>
