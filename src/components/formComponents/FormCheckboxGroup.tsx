@@ -28,11 +28,18 @@ export const FormCheckboxGroup = <Type extends FieldValues>({
   return (
     <div className='form-chip-group'>
       {selectOptions.map(({ memberId, name }) => (
-        <IonChip className='form-chip' color='light' key={memberId} outline onClick={() => onCheckboxChange(memberId)}>
+        <IonChip
+          key={memberId}
+          className='form-chip'
+          color='light'
+          outline
+          style={{ borderRadius: 18 * 0.125 }} // same border-radius as the IonCheckbox
+          onClick={() => onCheckboxChange(memberId)}
+        >
           <IonCheckbox
             className='checkbox-input'
-            style={{ marginRight: 8 }}
             color='light'
+            style={{ marginRight: 9, marginLeft: 1, marginTop: 1, marginBottom: 1 }} // needed for same size as radio
             checked={includes(memberId, value)}
           />
           <IonLabel className='form-chip-label'>{name}</IonLabel>
