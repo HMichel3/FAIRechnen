@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { isEmpty, last } from 'ramda'
+import { isEmpty } from 'ramda'
 import { useRef, useEffect } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { z } from 'zod'
@@ -31,15 +31,18 @@ export const useAddGroupModal = (onDismiss: AddGroupModalProps['onDismiss']) => 
   })
   const { fields, append, remove } = useFieldArray({ control, name: 'memberNames' })
   const pageContentRef = useRef<HTMLIonContentElement>(null)
+  const memberNamesFields = watch('memberNames')
 
   useEffect(() => {
-    const adjustFieldArray = watch(({ memberNames }, { name }) => {
-      if (name === 'groupName' || isEmpty(last(memberNames)!.name)) return
+    if (!isEmpty(memberNamesFields.at(-1)?.name)) {
       append({ name: '' })
       setTimeout(() => pageContentRef.current?.scrollToBottom(), 300)
-    })
-    return () => adjustFieldArray.unsubscribe()
-  }, [watch, append])
+      return
+    }
+    if (isEmpty(memberNamesFields.at(-2)?.name)) {
+      remove(memberNamesFields.length - 1)
+    }
+  }, [memberNamesFields, append, remove])
 
   const onSubmit = handleSubmit(({ groupName, memberNames }) => {
     const newGroup = groupDTO({ name: groupName })

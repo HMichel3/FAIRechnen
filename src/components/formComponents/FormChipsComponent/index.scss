@@ -18,7 +18,13 @@
 
 .form-chip-label {
   font-size: 16px;
-  color: white;
+  color: black;
+}
+
+.dark {
+  .form-chip-label {
+    color: white;
+  }
 }
 
 .error-border {
