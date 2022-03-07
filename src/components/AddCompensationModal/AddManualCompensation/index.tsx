@@ -15,7 +15,11 @@ export const AddManualCompensation = ({ setManualCompensation }: AddManualCompen
   const { groupMembers, membersWithoutPayer, control } = useAddManualCompensation(setManualCompensation)
 
   return (
-    <motion.div style={{ marginLeft: 72, marginRight: 16 }} variants={fadeInOutTopVariants} {...variantProps}>
+    <motion.div
+      style={{ marginLeft: 72, marginRight: 16, marginBottom: 16 }}
+      variants={fadeInOutTopVariants}
+      {...variantProps}
+    >
       <FormComponent label='Zahler' noMargin>
         <FormSelect name='payerId' selectOptions={groupMembers} control={control} />
       </FormComponent>

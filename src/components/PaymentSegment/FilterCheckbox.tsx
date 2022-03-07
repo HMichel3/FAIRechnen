@@ -1,5 +1,8 @@
 import { IonCheckbox, IonItem, IonLabel } from '@ionic/react'
+import clsx from 'clsx'
 import { Dispatch, SetStateAction } from 'react'
+import { isDark } from '../../pages/GroupPage/utils'
+import { usePersistedStore } from '../../stores/usePersistedStore'
 
 interface FilterCheckboxProps {
   label: string
@@ -7,14 +10,18 @@ interface FilterCheckboxProps {
   setChecked: Dispatch<SetStateAction<boolean>>
 }
 
-export const FilterCheckbox = ({ label, checked, setChecked }: FilterCheckboxProps) => (
-  <IonItem className='ion-no-padding' color='medium' lines='none'>
-    <IonCheckbox
-      className='checkbox-input'
-      color='light'
-      checked={checked}
-      onIonChange={e => setChecked(e.detail.checked)}
-    />
-    <IonLabel color='light'>{label}</IonLabel>
-  </IonItem>
-)
+export const FilterCheckbox = ({ label, checked, setChecked }: FilterCheckboxProps) => {
+  const theme = usePersistedStore.useTheme()
+
+  return (
+    <IonItem className='ion-no-padding' lines='none'>
+      <IonCheckbox
+        className='checkbox-input'
+        color={clsx({ light: isDark(theme) })}
+        checked={checked}
+        onIonChange={e => setChecked(e.detail.checked)}
+      />
+      <IonLabel color={clsx({ light: isDark(theme) })}>{label}</IonLabel>
+    </IonItem>
+  )
+}

@@ -19,7 +19,15 @@ ion-fab-button[data-label] {
     right: 60px;
     bottom: 2px;
     padding: 9px 12px;
-    color: var(--ion-color-light-shade);
+    color: var(--ion-color-light-tint);
+  }
+}
+
+body.dark {
+  ion-fab-button[data-label] {
+    &::after {
+      color: var(--ion-color-light-shade);
+    }
   }
 }
 

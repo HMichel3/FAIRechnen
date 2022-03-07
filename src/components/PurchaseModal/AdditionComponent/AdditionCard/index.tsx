@@ -12,6 +12,9 @@ import { FormSelect } from '../../../formComponents/FormSelect'
 import { useStore } from '../../../../stores/useStore'
 import { useFormContext } from 'react-hook-form'
 import { useToggle } from '../../../../hooks/useToggle'
+import { usePersistedStore } from '../../../../stores/usePersistedStore'
+import { isDark } from '../../../../pages/GroupPage/utils'
+import clsx from 'clsx'
 import './index.scss'
 
 export interface AdditionCardProps {
@@ -21,6 +24,7 @@ export interface AdditionCardProps {
 }
 
 export const AdditionCard = ({ index, pageContentRef, setAdditionIndex }: AdditionCardProps): JSX.Element => {
+  const theme = usePersistedStore.useTheme()
   const { control, watch, formState } = useFormContext()
   const [showCardContent, toggleShowCardContent] = useToggle(isEmpty(watch(`additions.${index}.name`)))
   const { groupMembers } = useStore.useSelectedGroup()
@@ -49,7 +53,7 @@ export const AdditionCard = ({ index, pageContentRef, setAdditionIndex }: Additi
             style={{ marginInlineEnd: 12 }}
           />
           <IonLabel>{isEmpty(additionName) ? 'Zusatz' : additionName}</IonLabel>
-          <IonLabel color='light' slot='end' style={{ marginInlineStart: 16 }}>
+          <IonLabel slot='end' color={clsx({ light: isDark(theme) })} style={{ marginInlineStart: 16 }}>
             {displayCurrencyValue(additionAmount)}
           </IonLabel>
           <IonButton
