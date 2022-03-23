@@ -1,18 +1,18 @@
 import { IonCol, IonGrid, IonIcon, IonLabel, IonRow } from '@ionic/react'
-import { displayCurrencyValue, findItemById } from '../../App/utils'
+import { displayCurrencyValue, findItem } from '../../App/utils'
 import { arrowForwardSharp } from 'ionicons/icons'
 import { useStore } from '../../stores/useStore'
-import { AlmostCompensation } from '../AddCompensationModal/useAddCompensationModal'
+import { CompensationsWithoutTimestamp } from '../../App/types'
 
 interface CompensationInfoProps {
-  compensation: Omit<AlmostCompensation, 'payerReceiverId'>
+  compensation: CompensationsWithoutTimestamp
 }
 
 export const CompensationInfo = ({ compensation }: CompensationInfoProps): JSX.Element => {
-  const { groupMembers } = useStore.useSelectedGroup()
+  const { members } = useStore.useSelectedGroup()
   const { amount, payerId, receiverId } = compensation
-  const payer = findItemById(payerId, groupMembers, 'memberId')
-  const receiver = findItemById(receiverId, groupMembers, 'memberId')
+  const payer = findItem(payerId, members)
+  const receiver = findItem(receiverId, members)
 
   return (
     <IonGrid className='ion-no-padding'>

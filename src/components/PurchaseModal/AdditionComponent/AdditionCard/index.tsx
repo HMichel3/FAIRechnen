@@ -25,11 +25,11 @@ export interface AdditionCardProps {
 
 export const AdditionCard = ({ index, pageContentRef, setAdditionIndex }: AdditionCardProps): JSX.Element => {
   const theme = usePersistedStore.useTheme()
+  const { members } = useStore.useSelectedGroup()
   const { control, watch, formState } = useFormContext()
-  const [showCardContent, toggleShowCardContent] = useToggle(isEmpty(watch(`additions.${index}.name`)))
-  const { groupMembers } = useStore.useSelectedGroup()
   const additionName = watch(`additions.${index}.name`)
   const additionAmount = watch(`additions.${index}.amount`)
+  const [showCardContent, toggleShowCardContent] = useToggle(isEmpty(additionName))
 
   const onToggleShowCardContent = () => {
     toggleShowCardContent()
@@ -92,12 +92,7 @@ export const AdditionCard = ({ index, pageContentRef, setAdditionIndex }: Additi
                 error={path(['additions', index, 'payerIds'], formState.errors)}
                 noMargin
               >
-                <FormSelect
-                  name={`additions.${index}.payerIds`}
-                  selectOptions={groupMembers}
-                  control={control}
-                  multiple
-                />
+                <FormSelect name={`additions.${index}.payerIds`} selectOptions={members} control={control} multiple />
               </FormComponent>
             </IonCardContent>
           </motion.div>

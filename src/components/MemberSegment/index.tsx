@@ -1,50 +1,59 @@
 import { IonAlert } from '@ionic/react'
-import { displayCurrencyValue, isLast } from '../../App/utils'
+import { calculateMembersWithAmounts, displayCurrencyValue, isLast, isNegative, isPositive } from '../../App/utils'
 import { SlidingListItem } from '../SlidingListItem'
 import { motion } from 'framer-motion'
 import { variantProps, fadeOutRightVariants } from '../../App/animations'
 import { personSharp } from 'ionicons/icons'
 import { SmallLabelComponent } from '../SlidingListItem/SmallLabelComponent'
 import clsx from 'clsx'
-import { isNegative, isPositive } from 'ramda-adjunct'
-import { useMemberSegment } from './useMemberSegment'
 import { SimpleSaveAlert } from '../SimpleSaveAlert'
+import { useState } from 'react'
+import { usePersistedStore } from '../../stores/usePersistedStore'
+import { useStore } from '../../stores/useStore'
+import { Member } from '../../stores/types'
+import { isMemberInvolved } from './utils'
 
 export const MemberSegment = (): JSX.Element => {
-  const {
-    groupMembers,
-    selectedMember,
-    showEditMemberAlert,
-    setShowEditMemberAlert,
-    showCantDeleteMemberAlert,
-    setShowCantDeleteMemberAlert,
-    onEditMemberName,
-    onDeleteMember,
-    onSelectMember,
-  } = useMemberSegment()
+  const { id: groupId, members, purchases, incomes, compensations } = useStore.useSelectedGroup()
+  const editMemberName = usePersistedStore.useEditMemberName()
+  const deleteMember = usePersistedStore.useDeleteMember()
+  const [selectedMember, setSelectedMember] = useState<Member>()
+  const [showEditMemberAlert, setShowEditMemberAlert] = useState(false)
+  const [showCantDeleteMemberAlert, setShowCantDeleteMemberAlert] = useState(false)
+  const membersWithAmounts = calculateMembersWithAmounts(members, purchases, incomes, compensations)
+
+  const onSelectMember = (member: Member) => {
+    setSelectedMember(member)
+    setShowEditMemberAlert(true)
+  }
+
+  const onDeleteMember = (memberId: string) => {
+    if (isMemberInvolved(memberId, purchases, incomes, compensations)) return setShowCantDeleteMemberAlert(true)
+    deleteMember(groupId, memberId)
+  }
 
   return (
     <motion.div variants={fadeOutRightVariants} {...variantProps}>
-      {groupMembers.map(member => (
+      {membersWithAmounts.map(member => (
         <SlidingListItem
-          key={member.memberId}
+          key={member.id}
           label={member.name}
           endText={
             <div
               className={clsx({
-                'color-success': isPositive(member.amount),
-                'color-danger': isNegative(member.amount),
+                'color-success': isPositive(member.current),
+                'color-danger': isNegative(member.current),
               })}
             >
-              {displayCurrencyValue(member.amount)}
+              {displayCurrencyValue(member.current)}
             </div>
           }
-          onDelete={() => onDeleteMember(member)}
+          onDelete={() => onDeleteMember(member.id)}
           onSelect={() => onSelectMember(member)}
           icon={personSharp}
-          labelComponent={<SmallLabelComponent>{displayCurrencyValue(member.totalAmount)}</SmallLabelComponent>}
-          transparentLine={isLast(member, groupMembers)}
-          style={{ marginBottom: isLast(member, groupMembers) ? 80 : 0 }}
+          labelComponent={<SmallLabelComponent>{displayCurrencyValue(member.total)}</SmallLabelComponent>}
+          transparentLine={isLast(member, membersWithAmounts)}
+          style={{ marginBottom: isLast(member, membersWithAmounts) ? 80 : 0 }}
         />
       ))}
       <IonAlert
@@ -58,7 +67,7 @@ export const MemberSegment = (): JSX.Element => {
         isOpen={showEditMemberAlert}
         header='Mitglied umbenennen'
         setIsOpen={setShowEditMemberAlert}
-        onSave={onEditMemberName}
+        onSave={newValue => editMemberName(groupId, selectedMember!.id, newValue)}
         value={selectedMember?.name}
       />
     </motion.div>

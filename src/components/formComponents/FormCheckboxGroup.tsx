@@ -1,6 +1,7 @@
 import { IonLabel, IonChip, IonCheckbox } from '@ionic/react'
 import clsx from 'clsx'
-import { equals, includes, reject } from 'ramda'
+import produce from 'immer'
+import { includes, indexOf } from 'ramda'
 import { Control, FieldValues, Path, useController } from 'react-hook-form'
 import { isDark } from '../../pages/GroupPage/utils'
 import { usePersistedStore } from '../../stores/usePersistedStore'
@@ -9,7 +10,7 @@ import './FormChipsComponent/index.scss'
 interface FormCheckboxGroupProps<Type> {
   name: Path<Type>
   control: Control<Type>
-  selectOptions: { memberId: string; name: string }[]
+  selectOptions: { id: string; name: string }[]
 }
 
 export const FormCheckboxGroup = <Type extends FieldValues>({
@@ -22,31 +23,39 @@ export const FormCheckboxGroup = <Type extends FieldValues>({
   } = useController({ name, control })
   const theme = usePersistedStore.useTheme()
 
-  const onCheckboxChange = (memberId: string) => {
+  const onCheckboxChange = (memberId: string, value: string[], onChange: (...event: any[]) => void) => {
     if (includes(memberId, value)) {
-      return onChange(reject(equals(memberId), value))
+      const valueWithoutId = produce(value, draft => {
+        const memberIdIndex = indexOf(memberId, value)
+        if (memberIdIndex === -1) return
+        draft.splice(memberIdIndex, 1)
+      })
+      return onChange(valueWithoutId)
     }
-    onChange([...value, memberId])
+    const valueWithId = produce(value, draft => {
+      draft.push(memberId)
+    })
+    onChange(valueWithId)
   }
 
   return (
     <div className='form-chip-group'>
-      {selectOptions.map(({ memberId, name }) => (
+      {selectOptions.map(option => (
         <IonChip
-          key={memberId}
+          key={option.id}
           className='form-chip'
           color={clsx({ light: isDark(theme) })}
           outline
           style={{ borderRadius: 18 * 0.125 }} // same border-radius as the IonCheckbox
-          onClick={() => onCheckboxChange(memberId)}
+          onClick={() => onCheckboxChange(option.id, value, onChange)}
         >
           <IonCheckbox
             className='checkbox-input'
             color={clsx({ light: isDark(theme) })}
             style={{ marginRight: 9, marginLeft: 1, marginTop: 1, marginBottom: 1 }} // needed for same size as radio
-            checked={includes(memberId, value)}
+            checked={includes(option.id, value)}
           />
-          <IonLabel className='form-chip-label'>{name}</IonLabel>
+          <IonLabel className='form-chip-label'>{option.name}</IonLabel>
         </IonChip>
       ))}
     </div>

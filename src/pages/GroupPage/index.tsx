@@ -91,12 +91,12 @@ export const GroupPage = (): JSX.Element => {
           <IonReorderGroup disabled={!reorder} onIonItemReorder={({ detail }) => setGroups(detail.complete(groups))}>
             {groups.map(group => (
               <SlidingListItem
-                key={group.groupId}
+                key={group.id}
                 label={group.name}
-                routerLink={`/groups/${group.groupId}`}
-                onDelete={() => onDeleteGroup(group.groupId)}
+                routerLink={`/groups/${group.id}`}
+                onDelete={() => onDeleteGroup(group.id)}
                 icon={peopleSharp}
-                labelComponent={<GroupInfo groupId={group.groupId} />}
+                labelComponent={<GroupInfo groupId={group.id} />}
                 reorder={reorder}
                 transparentLine={isLast(group, groups)}
               />

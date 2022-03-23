@@ -1,20 +1,40 @@
-import { filter, find, findIndex, last, map, propEq, reduce, reject, update } from 'ramda'
+import produce from 'immer'
+import {
+  find,
+  findIndex,
+  last,
+  map,
+  propEq,
+  reduce,
+  curryN,
+  pipe,
+  type,
+  identical,
+  both,
+  lt,
+  gt,
+  includes,
+} from 'ramda'
+import { Purchase, Income, Compensation, Member } from '../stores/types'
+import { MemberWithAmounts } from './types'
 
-export const findItemById = <T>(id: string, array: T[], idName: keyof T) => find(propEq(idName as string, id), array)!
+// From ramda-adjunct
+const isNumber = curryN(1, pipe(type, identical('Number')))
+export const isPositive = both(isNumber, lt(0))
+export const isNegative = curryN(1, both(isNumber, gt(0)))
 
-export const findItemsById = <T>(id: string, array: T[], idName: keyof T) => filter(propEq(idName as string, id), array)
+export const findItem = <T extends { id: string }>(id: string, array: T[]): T => find(propEq('id', id), array)!
 
-export const findItemsByIds = <T>(ids: string[], array: T[], idName: keyof T) =>
-  map(id => findItemById(id, array, idName), ids)
+export const findItems = <T extends { id: string }>(ids: string[], array: T[]) => map(id => findItem(id, array), ids)
 
-/**
- * Removes one or multiple items, based on the id.
- */
-export const removeItemsById = <T>(id: string, array: T[], idName: keyof T) =>
-  reject(propEq(idName as string, id), array)
+export const findItemIndex = <T extends { id: string }>(id: string, array: T[]) => findIndex(propEq('id', id), array)
 
-export const updateArrayItemById = <T>(id: string, newItem: T, array: T[], idName: keyof T) =>
-  update(findIndex(propEq(idName as string, id), array), newItem, array)
+export const deleteItem = <T extends { id: string }>(id: string, array: T[]) =>
+  produce(array, draft => {
+    const index = findItemIndex(id, draft)
+    if (index === -1) return
+    draft.splice(index, 1)
+  })
 
 export const getTotalAmountFromArray = <T extends { amount: number }>(array: T[]) =>
   reduce((total, { amount }) => total + amount, 0, array)
@@ -25,4 +45,73 @@ export const displayCurrencyValue = (value: number) =>
   (value / 100).toLocaleString('de-DE', {
     style: 'currency',
     currency: 'EUR',
+  })
+
+export const calculateGroupTotalAmount = (purchases: Purchase[], incomes: Income[]) =>
+  getTotalAmountFromArray(purchases) - getTotalAmountFromArray(incomes)
+
+const calculatePurchaseAmounts = (memberId: string, purchases: Purchase[]) => {
+  let purchaseCurrent = 0
+  let purchasesTotal = 0
+  purchases.forEach(({ purchaserId, beneficiaryIds, amount, additions, memberAmount }) => {
+    additions.forEach(addition => {
+      if (includes(memberId, addition.payerIds)) {
+        purchaseCurrent += -addition.memberAmount
+      }
+    })
+    if (memberId === purchaserId) {
+      purchaseCurrent += amount
+      purchasesTotal += amount
+    }
+    if (includes(memberId, beneficiaryIds)) {
+      purchaseCurrent += -memberAmount
+    }
+  })
+  return { purchaseCurrent, purchasesTotal }
+}
+
+const calculateIncomeAmounts = (memberId: string, incomes: Income[]) => {
+  let incomesCurrent = 0
+  let incomesTotal = 0
+  incomes.forEach(({ earnerId, beneficiaryIds, amount, memberAmount }) => {
+    if (memberId === earnerId) {
+      incomesCurrent += -amount
+      incomesTotal += -amount
+    }
+    if (includes(memberId, beneficiaryIds)) {
+      incomesCurrent += memberAmount
+    }
+  })
+  return { incomesCurrent, incomesTotal }
+}
+
+const calculateCompensationAmount = (memberId: string, compensations: Compensation[]) => {
+  let compensationsCurrent = 0
+  compensations.forEach(({ payerId, receiverId, amount }) => {
+    if (memberId === payerId) {
+      compensationsCurrent += amount
+    }
+    if (memberId === receiverId) {
+      compensationsCurrent += -amount
+    }
+  })
+  return compensationsCurrent
+}
+
+export const calculateMembersWithAmounts = (
+  members: Member[],
+  purchases: Purchase[],
+  incomes: Income[],
+  compensations: Compensation[]
+) =>
+  members.map(member => {
+    const { purchaseCurrent, purchasesTotal } = calculatePurchaseAmounts(member.id, purchases)
+    const { incomesCurrent, incomesTotal } = calculateIncomeAmounts(member.id, incomes)
+    const compensationAmount = calculateCompensationAmount(member.id, compensations)
+    const current = purchaseCurrent + incomesCurrent + compensationAmount
+    const total = purchasesTotal + incomesTotal + compensationAmount
+    return produce(member as MemberWithAmounts, draft => {
+      draft['current'] = current
+      draft['total'] = total
+    })
   })

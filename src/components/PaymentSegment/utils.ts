@@ -1,45 +1,42 @@
-import { difference, includes, isEmpty, isNil, join, map, prop } from 'ramda'
-import { Purchase, Compensation, Income, CompleteMember, Addition } from '../../App/types'
+import produce from 'immer'
+import { descend, difference, includes, isEmpty, isNil, join, map, prop, sort } from 'ramda'
+import { Payment } from '../../App/types'
+import { Purchase, Income, Addition, Member, Compensation } from '../../stores/types'
 
-type Payment = Purchase | Compensation | Income
+export const isPurchase = (payment: Payment): payment is Purchase => !isNil((payment as Purchase).purchaserId)
 
-export const isPurchase = (payment: Payment): payment is Purchase => !isNil((payment as Purchase).purchaseId)
+export const isIncome = (payment: Payment): payment is Income => !isNil((payment as Income).earnerId)
 
-export const isIncome = (payment: Payment): payment is Income => !isNil((payment as Income).incomeId)
-
-export const displayBeneficiaryNames = (
-  beneficiaries: CompleteMember[],
-  groupMembers: CompleteMember[],
-  additionPayers?: CompleteMember[]
-) => {
-  const isForAllMembers = isEmpty(difference(groupMembers, beneficiaries))
+export const displayBeneficiaryNames = (beneficiaries: Member[], members: Member[], additionPayers?: Member[]) => {
+  const isForAllMembers = isEmpty(difference(members, beneficiaries))
   if (isForAllMembers) return 'Alle'
-  let beneficiaryNames = map(prop('name'), beneficiaries)
-  if (!isNil(additionPayers) && !isEmpty(additionPayers)) {
-    const additionsPayerNamesWithBrackets = additionPayers.map(({ name }) => `(${name})`)
-    beneficiaryNames = beneficiaryNames.concat(additionsPayerNamesWithBrackets)
-  }
-  return join(', ', beneficiaryNames)
+  const beneficiaryNames = map(prop('name'), beneficiaries)
+  const completeBeneficiaryNames = produce(beneficiaryNames, draft => {
+    if (isNil(additionPayers) || isEmpty(additionPayers)) return
+    const beneficiaryNamesWithBrackets = additionPayers.map(({ name }) => `(${name})`)
+    draft.push(...beneficiaryNamesWithBrackets)
+  })
+  return join(', ', completeBeneficiaryNames)
 }
 
 export const displayAdditionQuantity = (additionQuantity: number) =>
   additionQuantity === 1 ? '1 Zusatz' : `${additionQuantity} Zusätze`
 
-export const filterGroupPayments = (
-  payments: Payment[],
+export const mergeAndSortPayments = (
+  purchases: Purchase[],
+  incomes: Income[],
+  compensations: Compensation[],
   showPurchases: boolean,
   showIncomes: boolean,
   showCompensations: boolean
-) =>
-  payments.filter(payment => {
-    if (isPurchase(payment)) {
-      return showPurchases && payment
-    }
-    if (isIncome(payment)) {
-      return showIncomes && payment
-    }
-    return showCompensations && payment
+) => {
+  const payments = produce<Payment[]>([], draft => {
+    if (showPurchases) draft.push(...purchases)
+    if (showIncomes) draft.push(...incomes)
+    if (showCompensations) draft.push(...compensations)
   })
+  return sort(descend(prop('timestamp')), payments)
+}
 
 export const getAdditionPayerIdsNotInBeneficiaries = (additions: Addition[], beneficiaryIds: string[]) => {
   const additionPayerIdsSet = new Set<string>() // filters duplicates

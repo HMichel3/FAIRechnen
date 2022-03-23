@@ -4,8 +4,6 @@ import { useRef, useEffect } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { z } from 'zod'
 import { AddGroupModalProps } from '.'
-import { groupDTO } from '../../dtos/groupDTO'
-import { memberDTO } from '../../dtos/memberDTO'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
 
@@ -23,7 +21,6 @@ const defaultValues: GroupFormValues = { groupName: '', memberNames: [{ name: ''
 
 export const useAddGroupModal = (onDismiss: AddGroupModalProps['onDismiss']) => {
   const addGroup = usePersistedStore.useAddGroup()
-  const addMember = usePersistedStore.useAddMember()
   const showAnimationOnce = useStore.useSetShowAnimationOnce()
   const { watch, handleSubmit, control, formState } = useForm({
     resolver: zodResolver(validationSchema),
@@ -45,13 +42,7 @@ export const useAddGroupModal = (onDismiss: AddGroupModalProps['onDismiss']) => 
   }, [memberNamesFields, append, remove])
 
   const onSubmit = handleSubmit(({ groupName, memberNames }) => {
-    const newGroup = groupDTO({ name: groupName })
-    addGroup(newGroup)
-    memberNames.forEach(({ name }) => {
-      if (isEmpty(name)) return
-      const newMember = memberDTO({ groupId: newGroup.groupId, name })
-      addMember(newMember)
-    })
+    addGroup(groupName, memberNames)
     showAnimationOnce()
     onDismiss()
   })

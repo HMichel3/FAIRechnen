@@ -1,17 +1,21 @@
 import { SetState } from 'zustand'
-import { SelectedGroup } from '../../App/types'
+import { Group } from '../types'
 import { StoreState } from '../useStore'
 
 export interface SelectedGroupSlice {
-  selectedGroup: SelectedGroup
-  setSelectedGroup: (selectedGroup: SelectedGroup) => void
+  selectedGroup: Group
+  setSelectedGroup: (selectedGroup: Group) => void
   clearSelectedGroup: () => void
 }
 
-const initialSelectedGroup: SelectedGroup = {
-  group: { groupId: '', name: '', timestamp: 0, totalAmount: 0 },
-  groupMembers: [],
-  groupPayments: [],
+const initialSelectedGroup: Group = {
+  id: '',
+  name: '',
+  members: [],
+  purchases: [],
+  incomes: [],
+  compensations: [],
+  timestamp: 0,
 }
 
 export const createSelectedGroupSlice = (set: SetState<StoreState>): SelectedGroupSlice => ({

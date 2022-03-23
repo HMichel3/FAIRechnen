@@ -51,7 +51,7 @@ export const SlidingListItem = ({
       button
       detail={detail && isNil(endText)}
       routerLink={routerLink}
-      onClick={!routerLink ? onSelect : undefined}
+      onClick={onSelect}
       lines='inset'
     >
       {reorder ? (

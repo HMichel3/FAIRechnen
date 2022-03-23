@@ -8,7 +8,7 @@ import './FormChipsComponent/index.scss'
 interface FormRadioGroupProps<Type> {
   name: Path<Type>
   control: Control<Type>
-  selectOptions: { memberId: string; name: string }[]
+  selectOptions: { id: string; name: string }[]
 }
 
 export const FormRadioGroup = <Type extends FieldValues>({
@@ -23,16 +23,16 @@ export const FormRadioGroup = <Type extends FieldValues>({
 
   return (
     <IonRadioGroup className='form-chip-group' value={value}>
-      {selectOptions.map(({ memberId, name }) => (
+      {selectOptions.map(option => (
         <IonChip
-          key={memberId}
+          key={option.id}
           className='form-chip'
           color={clsx({ light: isDark(theme) })}
           outline
-          onClick={() => onChange(memberId)}
+          onClick={() => onChange(option.id)}
         >
-          <IonRadio style={{ marginRight: 8 }} color={clsx({ light: isDark(theme) })} value={memberId} />
-          <IonLabel className='form-chip-label'>{name}</IonLabel>
+          <IonRadio style={{ marginRight: 8 }} color={clsx({ light: isDark(theme) })} value={option.id} />
+          <IonLabel className='form-chip-label'>{option.name}</IonLabel>
         </IonChip>
       ))}
     </IonRadioGroup>

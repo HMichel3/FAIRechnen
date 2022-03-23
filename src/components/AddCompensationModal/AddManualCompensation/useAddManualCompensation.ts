@@ -1,10 +1,10 @@
 import { isEmpty } from 'ramda'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { Compensation } from '../../../App/types'
-import { removeItemsById } from '../../../App/utils'
+import { AddManualCompensationProps } from '.'
+import { deleteItem } from '../../../App/utils'
+import { Compensation } from '../../../stores/types'
 import { useStore } from '../../../stores/useStore'
-import { AddManualCompensationProps } from '../AddManualCompensation'
 
 interface CompensationFormValues {
   payerId: Compensation['payerId']
@@ -17,24 +17,22 @@ const defaultValues: CompensationFormValues = { payerId: '', receiverId: '', amo
 export const useAddManualCompensation = (
   setManualCompensation: AddManualCompensationProps['setManualCompensation']
 ) => {
-  const { groupMembers } = useStore.useSelectedGroup()
+  const { members } = useStore.useSelectedGroup()
   const { watch, setValue, control } = useForm({ defaultValues })
-  const membersWithoutPayer = removeItemsById(watch('payerId'), groupMembers, 'memberId')
+  const payerId = watch('payerId')
+  const receiverId = watch('receiverId')
+  const amount = watch('amount')
+  const membersWithoutPayer = deleteItem(payerId, members)
+  const isPayerEqualToReceiver = payerId === receiverId
 
   useEffect(() => {
-    const adjustReceiverId = watch(({ payerId, receiverId }, { name }) => {
-      if (name !== 'payerId' || payerId !== receiverId) return
-      setValue('receiverId', '')
-    })
-    const saveCompensation = watch(({ payerId, receiverId, amount }) => {
-      if (isEmpty(payerId) || isEmpty(receiverId) || amount <= 0) return setManualCompensation(null)
-      setManualCompensation({ payerId, receiverId, amount })
-    })
-    return () => {
-      adjustReceiverId.unsubscribe()
-      saveCompensation.unsubscribe()
-    }
-  }, [watch, setManualCompensation, setValue])
+    if (isPayerEqualToReceiver) setValue('receiverId', '')
+  }, [isPayerEqualToReceiver, setValue])
 
-  return { groupMembers, membersWithoutPayer, control }
+  useEffect(() => {
+    if (isEmpty(payerId) || isEmpty(receiverId) || amount <= 0) return setManualCompensation(null)
+    setManualCompensation({ payerId, receiverId, amount })
+  }, [amount, payerId, receiverId, setManualCompensation])
+
+  return { members, membersWithoutPayer, control }
 }

@@ -1,69 +1,20 @@
-export interface Group {
-  groupId: string
-  timestamp: number
-  name: string
+import { Compensation, Member, Income, Purchase, Addition } from '../stores/types'
+
+export type MemberWithAmounts = Member & {
+  current: number
+  total: number
 }
 
-export interface Member {
-  groupId: Group['groupId']
-  memberId: string
-  timestamp: number
-  name: string
+export type Payment = Purchase | Compensation | Income
+
+export type NewAddition = Pick<Addition, 'name' | 'amount' | 'payerIds'>
+
+export type NewPurchase = Pick<Purchase, 'name' | 'amount' | 'purchaserId' | 'beneficiaryIds' | 'description'> & {
+  additions: NewAddition[]
 }
 
-export interface Purchase {
-  groupId: Group['groupId']
-  purchaseId: string
-  timestamp: number
-  name: string
-  amount: number
-  purchaserId: Member['memberId']
-  beneficiaryIds: Member['memberId'][]
-  description: string
-  additions: Addition[]
-}
+export type NewIncome = Pick<Income, 'name' | 'amount' | 'earnerId' | 'beneficiaryIds' | 'description'>
 
-export interface Addition {
-  name: string
-  amount: number
-  payerIds: Member['memberId'][]
-}
+export type NewCompensation = Pick<Compensation, 'amount' | 'payerId' | 'receiverId'>
 
-export interface Compensation {
-  groupId: Group['groupId']
-  compensationId: string
-  timestamp: number
-  amount: number
-  payerId: Member['memberId']
-  receiverId: Member['memberId']
-}
-
-export interface Income {
-  groupId: Group['groupId']
-  incomeId: string
-  timestamp: number
-  name: string
-  amount: number
-  earnerId: Member['memberId']
-  beneficiaryIds: Member['memberId'][]
-  description: string
-}
-
-export interface CompleteGroup extends Group {
-  totalAmount: number
-}
-
-export interface CompleteMember extends Member {
-  amount: number
-  totalAmount: number
-  involved: boolean
-}
-
-export interface SelectedGroup {
-  group: CompleteGroup
-  groupMembers: CompleteMember[]
-  groupPayments: (Purchase | Compensation | Income)[]
-}
-
-// creates a copy of T, but makes K optional
-export type CopyWithPartial<T, K extends keyof T> = Omit<T, K> & Partial<T>
+export type CompensationsWithoutTimestamp = Pick<Compensation, 'id' | 'amount' | 'payerId' | 'receiverId'>

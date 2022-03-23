@@ -1,19 +1,19 @@
-import { Income } from '../../App/types'
 import { format } from 'date-fns'
-import { displayCurrencyValue, findItemById, findItemsByIds } from '../../App/utils'
-import { useStore } from '../../stores/useStore'
+import { displayCurrencyValue, findItem, findItems } from '../../App/utils'
 import { displayBeneficiaryNames } from './utils'
 import { IonLabel } from '@ionic/react'
+import { Income } from '../../stores/types'
+import { useStore } from '../../stores/useStore'
 
 export interface IncomeInfoProps {
   income: Income
 }
 
 export const IncomeInfo = ({ income }: IncomeInfoProps): JSX.Element => {
-  const { groupMembers } = useStore.useSelectedGroup()
+  const { members } = useStore.useSelectedGroup()
   const { name, amount, earnerId, beneficiaryIds, timestamp } = income
-  const earner = findItemById(earnerId, groupMembers, 'memberId')
-  const beneficiaries = findItemsByIds(beneficiaryIds, groupMembers, 'memberId')
+  const earner = findItem(earnerId, members)
+  const beneficiaries = findItems(beneficiaryIds, members)
 
   return (
     <>
@@ -26,7 +26,7 @@ export const IncomeInfo = ({ income }: IncomeInfoProps): JSX.Element => {
         <div>{format(timestamp, 'dd.MM.y, HH:mm')}</div>
       </div>
       <div className='small-label-component' style={{ display: 'flex' }}>
-        <IonLabel style={{ flex: 1 }}>Für {displayBeneficiaryNames(beneficiaries, groupMembers)}</IonLabel>
+        <IonLabel style={{ flex: 1 }}>Für {displayBeneficiaryNames(beneficiaries, members)}</IonLabel>
       </div>
     </>
   )

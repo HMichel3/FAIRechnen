@@ -1,6 +1,6 @@
 import { IonContent } from '@ionic/react'
 import { path } from 'ramda'
-import { Income } from '../../App/types'
+import { Income } from '../../stores/types'
 import { FormCheckboxGroup } from '../formComponents/FormCheckboxGroup'
 import { FormChipsComponent } from '../formComponents/FormChipsComponent'
 import { FormComponent } from '../formComponents/FormComponent'
@@ -18,7 +18,7 @@ export interface IncomeModalProps {
 }
 
 export const IncomeModal = ({ onDismiss, selectedIncome }: IncomeModalProps): JSX.Element => {
-  const { onSubmit, errors, control, groupMembers } = useIncomeModal({ onDismiss, selectedIncome })
+  const { onSubmit, errors, control, members } = useIncomeModal({ onDismiss, selectedIncome })
 
   return (
     <form className='flex-column-full-height' onSubmit={onSubmit}>
@@ -31,10 +31,10 @@ export const IncomeModal = ({ onDismiss, selectedIncome }: IncomeModalProps): JS
           <FormCurrency name='amount' control={control} />
         </FormComponent>
         <FormChipsComponent label='Verdiener*'>
-          <FormRadioGroup name='earnerId' control={control} selectOptions={groupMembers} />
+          <FormRadioGroup name='earnerId' control={control} selectOptions={members} />
         </FormChipsComponent>
         <FormChipsComponent label='Beteiligte*' error={path(['beneficiaryIds'], errors)}>
-          <FormCheckboxGroup name='beneficiaryIds' control={control} selectOptions={groupMembers} />
+          <FormCheckboxGroup name='beneficiaryIds' control={control} selectOptions={members} />
         </FormChipsComponent>
         <FormComponent label='Beschreibung'>
           <FormTextarea name='description' control={control} />

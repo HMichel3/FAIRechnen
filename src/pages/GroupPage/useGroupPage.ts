@@ -1,7 +1,6 @@
 import { App } from '@capacitor/app'
 import { useIonRouter } from '@ionic/react'
 import { useEffect, useRef, useState } from 'react'
-import { Group } from '../../App/types'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { isDark } from './utils'
 
@@ -37,7 +36,7 @@ export const useGroupPage = () => {
     setAlreadyVisited()
   }, [setAlreadyVisited])
 
-  const onDeleteGroup = (groupId: Group['groupId']) => {
+  const onDeleteGroup = (groupId: string) => {
     setSelectedGroupId(groupId)
     setShowDeleteGroupAlert(true)
   }

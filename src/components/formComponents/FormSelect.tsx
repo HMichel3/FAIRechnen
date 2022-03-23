@@ -4,7 +4,7 @@ import { Control, FieldValues, Path, useController } from 'react-hook-form'
 interface FormSelectProps<Type> {
   name: Path<Type>
   control: Control<Type>
-  selectOptions: { memberId: string; name: string }[]
+  selectOptions: { id: string; name: string }[]
   multiple?: boolean
 }
 
@@ -26,9 +26,9 @@ export const FormSelect = <Type extends FieldValues>({
       onIonChange={onChange}
       multiple={multiple}
     >
-      {selectOptions.map(selectOption => (
-        <IonSelectOption key={selectOption.memberId} value={selectOption.memberId}>
-          {selectOption.name}
+      {selectOptions.map(option => (
+        <IonSelectOption key={option.id} value={option.id}>
+          {option.name}
         </IonSelectOption>
       ))}
     </IonSelect>

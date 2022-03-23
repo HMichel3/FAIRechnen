@@ -1,5 +1,5 @@
 import { IonAlert, IonContent } from '@ionic/react'
-import { Purchase } from '../../App/types'
+import { Purchase } from '../../stores/types'
 import { AdditionComponent } from './AdditionComponent'
 import { PurchaseComponent } from './PurchaseComponent'
 import { usePurchaseModal } from './usePurchaseModal'

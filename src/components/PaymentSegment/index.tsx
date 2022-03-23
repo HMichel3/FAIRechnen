@@ -4,28 +4,59 @@ import { SlidingListItem } from '../SlidingListItem'
 import { motion } from 'framer-motion'
 import { fadeOutLeftVariants, variantProps } from '../../App/animations'
 import { cartSharp, serverSharp, walletSharp } from 'ionicons/icons'
-import { IonAlert } from '@ionic/react'
-import { usePaymentSegment } from './usePaymentSegment'
+import { IonAlert, useIonModal } from '@ionic/react'
 import { isLast } from '../../App/utils'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useState } from 'react'
 import { IncomeInfo } from './IncomeInfo'
 import { FilterCheckbox } from './FilterCheckbox'
-import { filterGroupPayments, isIncome, isPurchase } from './utils'
+import { isIncome, isPurchase, mergeAndSortPayments } from './utils'
 import { useStore } from '../../stores/useStore'
+import { Income, Purchase } from '../../stores/types'
+import { PurchaseModal } from '../PurchaseModal'
+import { IncomeModal } from '../IncomeModal'
 import './index.scss'
 
 export const PaymentSegment = (): JSX.Element => {
   const deletePurchase = usePersistedStore.useDeletePurchase()
   const deleteIncome = usePersistedStore.useDeleteIncome()
   const deleteCompensation = usePersistedStore.useDeleteCompensation()
-  const { groupPayments } = useStore.useSelectedGroup()
+  const { id: groupId, purchases, incomes, compensations } = useStore.useSelectedGroup()
+
+  const [selectedPurchase, setSelectedPurchase] = useState<Purchase>()
+  const [selectedIncome, setSelectedIncome] = useState<Income>()
   const [showPurchases, setShowPurchases] = useState(true)
   const [showIncomes, setShowIncomes] = useState(true)
   const [showCompensations, setShowCompensations] = useState(true)
   const [showCantEditCompensation, setShowCantEditCompensation] = useState(false)
-  const { onSelectPurchase, onSelectIncome } = usePaymentSegment()
-  const filteredGroupPayments = filterGroupPayments(groupPayments, showPurchases, showIncomes, showCompensations)
+
+  const [showPurchaseModal, dismissPurchaseModal] = useIonModal(PurchaseModal, {
+    onDismiss: () => dismissPurchaseModal(),
+    selectedPurchase: selectedPurchase,
+  })
+  const [showIncomeModal, dismissIncomeModal] = useIonModal(IncomeModal, {
+    onDismiss: () => dismissIncomeModal(),
+    selectedIncome: selectedIncome,
+  })
+
+  const filteredGroupPayments = mergeAndSortPayments(
+    purchases,
+    incomes,
+    compensations,
+    showPurchases,
+    showIncomes,
+    showCompensations
+  )
+
+  const onSelectPurchase = (purchase: Purchase) => {
+    setSelectedPurchase(purchase)
+    showPurchaseModal()
+  }
+
+  const onSelectIncome = (income: Income) => {
+    setSelectedIncome(income)
+    showIncomeModal()
+  }
 
   return (
     <motion.div variants={fadeOutLeftVariants} {...variantProps}>
@@ -38,8 +69,8 @@ export const PaymentSegment = (): JSX.Element => {
         if (isPurchase(groupPayment)) {
           return (
             <SlidingListItem
-              key={groupPayment.purchaseId}
-              onDelete={() => deletePurchase(groupPayment.purchaseId)}
+              key={groupPayment.id}
+              onDelete={() => deletePurchase(groupId, groupPayment.id)}
               onSelect={() => onSelectPurchase(groupPayment)}
               labelComponent={<PurchaseInfo purchase={groupPayment} />}
               icon={cartSharp}
@@ -52,8 +83,8 @@ export const PaymentSegment = (): JSX.Element => {
         if (isIncome(groupPayment)) {
           return (
             <SlidingListItem
-              key={groupPayment.incomeId}
-              onDelete={() => deleteIncome(groupPayment.incomeId)}
+              key={groupPayment.id}
+              onDelete={() => deleteIncome(groupId, groupPayment.id)}
               onSelect={() => onSelectIncome(groupPayment)}
               labelComponent={<IncomeInfo income={groupPayment} />}
               icon={serverSharp}
@@ -65,8 +96,8 @@ export const PaymentSegment = (): JSX.Element => {
         }
         return (
           <SlidingListItem
-            key={groupPayment.compensationId}
-            onDelete={() => deleteCompensation(groupPayment.compensationId)}
+            key={groupPayment.id}
+            onDelete={() => deleteCompensation(groupId, groupPayment.id)}
             onSelect={() => setShowCantEditCompensation(true)}
             labelComponent={<CompensationInfo compensation={groupPayment} />}
             icon={walletSharp}

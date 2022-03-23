@@ -1,30 +1,52 @@
-import { Income, Purchase } from '../App/types'
-import { getTotalAmountFromArray } from '../App/utils'
+import produce from 'immer'
+import { NewAddition, NewIncome, NewPurchase } from '../App/types'
+import { Addition, Income, Purchase } from './types'
 
 const calculateNewAmount = (amount: number, beneficiaryIds: string[]) => {
   const memberCount = beneficiaryIds.length
   const memberAmount = Math.round(amount / memberCount)
-  return memberAmount * memberCount
+  const newAmount = memberAmount * memberCount
+  return [newAmount, memberAmount]
+}
+
+const calculateNewAdditions = (additions: NewAddition[]) => {
+  let newAdditionsAmount = 0
+  const newAdditions: Addition[] = additions.map(addition => {
+    const [newAdditionAmount, additionMemberAmount] = calculateNewAmount(addition.amount, addition.payerIds)
+    newAdditionsAmount += newAdditionAmount
+    return produce(addition as Addition, draft => {
+      draft.amount = newAdditionAmount
+      draft['memberAmount'] = additionMemberAmount
+    })
+  })
+  return { newAdditionsAmount, newAdditions }
 }
 
 // ensures that all amounts can be distributed completely
-export const calculateNewPurchase = (purchase: Purchase): Purchase => {
+export const calculateNewPurchase = (purchase: NewPurchase) => {
   // calculate all new addition amounts
-  const newAdditions = purchase.additions.map(addition => {
-    const amount = calculateNewAmount(addition.amount, addition.payerIds)
-    return { ...addition, amount }
-  })
-  const newAdditionsAmount = getTotalAmountFromArray(newAdditions)
+  const { newAdditionsAmount, newAdditions } = calculateNewAdditions(purchase.additions)
 
   // calculate new purchase amount
   const purchaseAmountWithoutAdditions = purchase.amount - newAdditionsAmount
-  const newPurchaseAmount = calculateNewAmount(purchaseAmountWithoutAdditions, purchase.beneficiaryIds)
+  const [newPurchaseAmount, purchaseMemberAmount] = calculateNewAmount(
+    purchaseAmountWithoutAdditions,
+    purchase.beneficiaryIds
+  )
 
-  return { ...purchase, amount: newPurchaseAmount + newAdditionsAmount, additions: newAdditions }
+  return produce(purchase as Omit<Purchase, 'id' | 'timestamp'>, draft => {
+    draft.amount = newPurchaseAmount + newAdditionsAmount
+    draft.additions = newAdditions
+    draft['memberAmount'] = purchaseMemberAmount
+  })
 }
 
 // ensures that all incomes can be distributed completely
-export const calculateNewIncome = (income: Income): Income => {
-  const newIncomeAmount = calculateNewAmount(income.amount, income.beneficiaryIds)
-  return { ...income, amount: newIncomeAmount }
+export const calculateNewIncome = (income: NewIncome) => {
+  const [newIncomeAmount, incomeMemberAmount] = calculateNewAmount(income.amount, income.beneficiaryIds)
+
+  return produce(income as Omit<Income, 'id' | 'timestamp'>, draft => {
+    draft.amount = newIncomeAmount
+    draft['memberAmount'] = incomeMemberAmount
+  })
 }

@@ -12,7 +12,7 @@ import { useFormContext } from 'react-hook-form'
 
 export const PurchaseComponent = (): JSX.Element => {
   const { control, formState } = useFormContext()
-  const { groupMembers } = useStore.useSelectedGroup()
+  const { members } = useStore.useSelectedGroup()
 
   return (
     <div className='purchase-component'>
@@ -26,10 +26,10 @@ export const PurchaseComponent = (): JSX.Element => {
         <FormCurrency name='amount' control={control} />
       </FormComponent>
       <FormChipsComponent label='Einkäufer*'>
-        <FormRadioGroup name='purchaserId' control={control} selectOptions={groupMembers} />
+        <FormRadioGroup name='purchaserId' control={control} selectOptions={members} />
       </FormChipsComponent>
       <FormChipsComponent label='Begünstigte*' error={path(['beneficiaryIds'], formState.errors)}>
-        <FormCheckboxGroup name='beneficiaryIds' control={control} selectOptions={groupMembers} />
+        <FormCheckboxGroup name='beneficiaryIds' control={control} selectOptions={members} />
       </FormChipsComponent>
       <FormComponent label='Beschreibung'>
         <FormTextarea name='description' control={control} />

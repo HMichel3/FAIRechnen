@@ -18,26 +18,27 @@ import {
   useIonModal,
 } from '@ionic/react'
 import { cartSharp, serverSharp, pencilSharp, personSharp, shareSharp, walletSharp } from 'ionicons/icons'
-import { all, propEq } from 'ramda'
 import { RouteComponentProps } from 'react-router'
 import { PaymentSegment } from '../../components/PaymentSegment'
 import { MemberSegment } from '../../components/MemberSegment'
 import { AnimatePresence } from 'framer-motion'
 import clsx from 'clsx'
-import { CompleteGroup } from '../../App/types'
-import { useGroupInfoPage } from './useGroupInfoPage'
 import { AddFabButton } from '../../components/AddFabButton'
 import { useAddFabButton } from '../../components/AddFabButton/useAddFabButton'
 import { SimpleSaveAlert } from '../../components/SimpleSaveAlert'
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { PurchaseModal } from '../../components/PurchaseModal'
 import { IncomeModal } from '../../components/IncomeModal'
 import { AddCompensationModal } from '../../components/AddCompensationModal'
+import { usePersistedStore } from '../../stores/usePersistedStore'
+import { useStore } from '../../stores/useStore'
+import { generateBill } from './utils'
+import { Share } from '@capacitor/share'
 import './index.scss'
 
 interface GroupInfoPageProps
   extends RouteComponentProps<{
-    id: CompleteGroup['groupId']
+    id: string
   }> {}
 
 export const GroupInfoPage = ({
@@ -45,10 +46,16 @@ export const GroupInfoPage = ({
     params: { id: groupId },
   },
 }: GroupInfoPageProps): JSX.Element => {
-  const { group, groupMembers, groupPayments, onEditGroupName, onAddNewMember, onShareBill } = useGroupInfoPage(groupId)
+  const group = usePersistedStore(useCallback(store => store.getGroup(groupId), [groupId]))
+  const editGroup = usePersistedStore.useEditGroupName()
+  const addMember = usePersistedStore.useAddMember()
+  const setSelectedGroup = useStore.useSetSelectedGroup()
+  const clearSelectedGroup = useStore.useClearSelectedGroup()
+
   const [showSegment, setShowSegment] = useState('members')
   const [showEditGroupNameAlert, setShowEditGroupNameAlert] = useState(false)
   const [showAddMemberAlert, setShowAddMemberAlert] = useState(false)
+
   const [showPurchaseModal, dismissPurchaseModal] = useIonModal(PurchaseModal, {
     onDismiss: () => dismissPurchaseModal(),
   })
@@ -59,6 +66,22 @@ export const GroupInfoPage = ({
     onDismiss: () => dismissAddCompensationModal(),
   })
   const { showFab, showBackdrop, onClickFabButton, onClickFabButtonInList, onClickBackdrop } = useAddFabButton()
+
+  useEffect(() => {
+    // saves the selected Group in the store, to make it accessible
+    setSelectedGroup(group)
+  }, [group, setSelectedGroup])
+
+  // onUnmount
+  useEffect(() => () => clearSelectedGroup(), [clearSelectedGroup])
+
+  const onShareBill = () => {
+    Share.share({
+      title: 'FAIRechnen Rechnung',
+      text: generateBill(group.name, group.members, group.purchases, group.incomes, group.compensations),
+      dialogTitle: 'Rechnung teilen',
+    })
+  }
 
   return (
     <IonPage>
@@ -81,7 +104,7 @@ export const GroupInfoPage = ({
               <IonLabel>
                 <IonLabel>Mitglieder</IonLabel>
                 <IonBadge className={clsx('no-background', { 'unselected-color': showSegment !== 'members' })}>
-                  {groupMembers.length}
+                  {group.members.length}
                 </IonBadge>
               </IonLabel>
             </IonSegmentButton>
@@ -89,7 +112,7 @@ export const GroupInfoPage = ({
               <IonLabel>
                 <IonLabel>Historie</IonLabel>
                 <IonBadge className={clsx('no-background', { 'unselected-color': showSegment !== 'payments' })}>
-                  {groupPayments.length}
+                  {group.purchases.length + group.incomes.length + group.compensations.length}
                 </IonBadge>
               </IonLabel>
             </IonSegmentButton>
@@ -106,14 +129,14 @@ export const GroupInfoPage = ({
           isOpen={showEditGroupNameAlert}
           header='Gruppe umbenennen'
           setIsOpen={setShowEditGroupNameAlert}
-          onSave={onEditGroupName}
+          onSave={newValue => editGroup(groupId, newValue)}
           value={group.name}
         />
         <SimpleSaveAlert
           isOpen={showAddMemberAlert}
           header='Neues Mitglied'
           setIsOpen={setShowAddMemberAlert}
-          onSave={onAddNewMember}
+          onSave={newValue => addMember(groupId, newValue)}
         />
         <AddFabButton {...{ showFab, onClickFabButton, onClickFabButtonInList, onClickBackdrop }}>
           {[
@@ -122,21 +145,21 @@ export const GroupInfoPage = ({
               description: 'Neue Zahlung zwischen den Personen',
               icon: walletSharp,
               onClick: () => showAddCompensationModal(),
-              disabled: groupMembers.length < 2 || all(propEq('amount', 0), groupMembers),
+              disabled: group.members.length < 2,
             },
             {
               label: 'Einkommen hinzufügen',
               description: 'Geld wurde eingenommen (z.B. Pfand)',
               icon: serverSharp,
               onClick: () => showIncomeModal(),
-              disabled: groupMembers.length < 1,
+              disabled: group.members.length < 1,
             },
             {
               label: 'Einkauf hinzufügen',
               description: 'Geld wurde ausgegeben',
               icon: cartSharp,
               onClick: () => showPurchaseModal(),
-              disabled: groupMembers.length < 1,
+              disabled: group.members.length < 1,
             },
             {
               label: 'Mitglied hinzufügen',

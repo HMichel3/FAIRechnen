@@ -1,25 +1,47 @@
-import { GetState, SetState } from 'zustand'
-import { Compensation, Group } from '../../App/types'
-import { findItemsById, removeItemsById } from '../../App/utils'
+import { SetState } from 'zustand'
 import { PersistedState } from '../usePersistedStore'
+import { v4 as uuid } from 'uuid'
+import produce from 'immer'
+import { NewCompensation } from '../../App/types'
+import { findItemIndex } from '../../App/utils'
+import { Compensation } from '../types'
 
 export interface CompensationSlice {
-  compensations: Compensation[]
-  addCompensation: (compensation: Compensation) => void
-  deleteCompensation: (compensationId: Compensation['compensationId']) => void
-  deleteGroupCompensations: (groupId: Group['groupId']) => void
-  getGroupCompensations: (groupId: Group['groupId']) => Compensation[]
+  addCompensation: (groupId: string, newCompensation: NewCompensation) => void
+  deleteCompensation: (groupId: string, compensationId: string) => void
+  deleteGroupCompensations: (groupId: string) => void
 }
 
-export const createCompensationSlice = (
-  set: SetState<PersistedState>,
-  get: GetState<PersistedState>
-): CompensationSlice => ({
-  compensations: [],
-  addCompensation: compensation => set(s => ({ compensations: [...s.compensations, compensation] })),
-  deleteCompensation: compensationId =>
-    set(s => ({ compensations: removeItemsById(compensationId, s.compensations, 'compensationId') })),
+export const createCompensationSlice = (set: SetState<PersistedState>): CompensationSlice => ({
+  addCompensation: (groupId, newCompensation) =>
+    set(
+      produce<PersistedState>(store => {
+        const groupIndex = findItemIndex(groupId, store.groups)
+        if (groupIndex === -1) return
+        store.groups[groupIndex].compensations.push(
+          produce(newCompensation as Compensation, draft => {
+            draft['id'] = uuid()
+            draft['timestamp'] = Date.now()
+          })
+        )
+      })
+    ),
+  deleteCompensation: (groupId, compensationId) =>
+    set(
+      produce<PersistedState>(store => {
+        const groupIndex = findItemIndex(groupId, store.groups)
+        if (groupIndex === -1) return
+        const compensationIndex = findItemIndex(compensationId, store.groups[groupIndex].compensations)
+        if (compensationIndex === -1) return
+        store.groups[groupIndex].compensations.splice(compensationIndex, 1)
+      })
+    ),
   deleteGroupCompensations: groupId =>
-    set(s => ({ compensations: removeItemsById(groupId, s.compensations, 'groupId') })),
-  getGroupCompensations: groupId => findItemsById(groupId, get().compensations, 'groupId'),
+    set(
+      produce<PersistedState>(store => {
+        const groupIndex = findItemIndex(groupId, store.groups)
+        if (groupIndex === -1) return
+        store.groups[groupIndex].compensations = []
+      })
+    ),
 })

@@ -39,10 +39,10 @@ const usePersistedStoreBase = create<PersistedState>(
   persist(
     (set, get) => ({
       ...createGroupSlice(set, get),
-      ...createMemberSlice(set, get),
-      ...createPurchaseSlice(set, get),
-      ...createIncomeSlice(set, get),
-      ...createCompensationSlice(set, get),
+      ...createMemberSlice(set),
+      ...createPurchaseSlice(set),
+      ...createIncomeSlice(set),
+      ...createCompensationSlice(set),
       ...createThemeSlice(set),
       ...createAlreadyVisitedSlice(set),
       _hasHydrated: false,
