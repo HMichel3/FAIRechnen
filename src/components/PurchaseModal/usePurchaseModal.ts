@@ -46,13 +46,13 @@ export const usePurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalP
   const editPurchase = usePersistedStore.useEditPurchase()
   const { id: groupId, members } = useStore.useSelectedGroup()
   const showAnimationOnce = useStore.useSetShowAnimationOnce()
-  const methods = useForm({
+  const { handleSubmit, control } = useForm({
     resolver: zodResolver(validationSchema),
     defaultValues: defaultValues(members, selectedPurchase),
   })
   const [showAdditionError, setShowAdditionError] = useState(false)
 
-  const onSubmit = methods.handleSubmit(newPurchase => {
+  const onSubmit = handleSubmit(newPurchase => {
     setShowAdditionError(false)
     if (getTotalAmountFromArray(newPurchase.additions) > newPurchase.amount) {
       return setShowAdditionError(true)
@@ -66,5 +66,5 @@ export const usePurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalP
     onDismiss()
   })
 
-  return { showAdditionError, setShowAdditionError, methods, onSubmit }
+  return { showAdditionError, setShowAdditionError, onSubmit, control }
 }

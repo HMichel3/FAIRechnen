@@ -4,19 +4,20 @@ import { RefObject, useState } from 'react'
 import { AdditionCard } from './AdditionCard'
 import { displayCurrencyValue, getTotalAmountFromArray } from '../../../App/utils'
 import { isNil } from 'ramda'
-import { useFieldArray, useFormContext } from 'react-hook-form'
+import { Control, useFieldArray, useWatch } from 'react-hook-form'
+import { NewPurchase } from '../../../App/types'
 import './index.scss'
 
 export interface AdditionComponentProps {
   pageContentRef: RefObject<HTMLIonContentElement>
+  control: Control<NewPurchase>
 }
 
-export const AdditionComponent = ({ pageContentRef }: AdditionComponentProps): JSX.Element => {
-  const { control, watch } = useFormContext()
+export const AdditionComponent = ({ pageContentRef, control }: AdditionComponentProps): JSX.Element => {
   const { fields, append, remove } = useFieldArray({ control, name: 'additions' })
+  const additions = useWatch({ control, name: 'additions' })
   // the additionIndex is needed for the delete-alert (can't move it into the additionCard, because of memory leak)
   const [additionIndex, setAdditionIndex] = useState<number | null>(null)
-  const additionsTotalAmount = getTotalAmountFromArray(watch('additions'))
 
   const onAddAddition = () => {
     append({ name: '', amount: 0, payerIds: [] })
@@ -28,7 +29,7 @@ export const AdditionComponent = ({ pageContentRef }: AdditionComponentProps): J
       <IonItemDivider color='medium'>
         <div>
           <div>
-            <IonLabel>Zusätze ({displayCurrencyValue(additionsTotalAmount)})</IonLabel>
+            <IonLabel>Zusätze ({displayCurrencyValue(getTotalAmountFromArray(additions))})</IonLabel>
           </div>
           <div className='smaller-label-component'>
             <IonLabel>Artikel, die nur für einzelne Mitglieder gekauft werden</IonLabel>
@@ -41,7 +42,7 @@ export const AdditionComponent = ({ pageContentRef }: AdditionComponentProps): J
         </IonButtons>
       </IonItemDivider>
       {fields.map((field, index) => (
-        <AdditionCard key={field.id} {...{ index, pageContentRef, setAdditionIndex }} />
+        <AdditionCard key={field.id} {...{ index, pageContentRef, setAdditionIndex, control }} />
       ))}
       <IonAlert
         cssClass='delete-alert'

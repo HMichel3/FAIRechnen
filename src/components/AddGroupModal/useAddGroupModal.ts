@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { isEmpty } from 'ramda'
 import { useRef, useEffect } from 'react'
-import { useForm, useFieldArray } from 'react-hook-form'
+import { useForm, useFieldArray, useWatch } from 'react-hook-form'
 import { z } from 'zod'
 import { AddGroupModalProps } from '.'
 import { usePersistedStore } from '../../stores/usePersistedStore'
@@ -22,13 +22,13 @@ const defaultValues: GroupFormValues = { groupName: '', memberNames: [{ name: ''
 export const useAddGroupModal = (onDismiss: AddGroupModalProps['onDismiss']) => {
   const addGroup = usePersistedStore.useAddGroup()
   const showAnimationOnce = useStore.useSetShowAnimationOnce()
-  const { watch, handleSubmit, control, formState } = useForm({
+  const { handleSubmit, control, formState } = useForm({
     resolver: zodResolver(validationSchema),
     defaultValues,
   })
   const { fields, append, remove } = useFieldArray({ control, name: 'memberNames' })
+  const memberNamesFields = useWatch({ control, name: 'memberNames' })
   const pageContentRef = useRef<HTMLIonContentElement>(null)
-  const memberNamesFields = watch('memberNames')
 
   useEffect(() => {
     if (!isEmpty(memberNamesFields.at(-1)?.name)) {

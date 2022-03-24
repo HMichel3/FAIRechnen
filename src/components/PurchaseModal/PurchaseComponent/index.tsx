@@ -8,27 +8,32 @@ import { FormTextarea } from '../../formComponents/FormTextarea'
 import { FormRadioGroup } from '../../formComponents/FormRadioGroup'
 import { FormChipsComponent } from '../../formComponents/FormChipsComponent'
 import { FormCheckboxGroup } from '../../formComponents/FormCheckboxGroup'
-import { useFormContext } from 'react-hook-form'
+import { Control, useFormState } from 'react-hook-form'
+import { NewPurchase } from '../../../App/types'
 
-export const PurchaseComponent = (): JSX.Element => {
-  const { control, formState } = useFormContext()
+interface PurchaseComponentProps {
+  control: Control<NewPurchase>
+}
+
+export const PurchaseComponent = ({ control }: PurchaseComponentProps): JSX.Element => {
   const { members } = useStore.useSelectedGroup()
+  const { errors } = useFormState({ control })
 
   return (
     <div className='purchase-component'>
       <IonItemDivider color='medium'>
         <IonLabel>Einkauf</IonLabel>
       </IonItemDivider>
-      <FormComponent label='Einkaufname*' error={formState.errors.name}>
+      <FormComponent label='Einkaufname*' error={errors.name}>
         <FormInput name='name' control={control} />
       </FormComponent>
-      <FormComponent label='Betrag*' error={formState.errors.amount}>
+      <FormComponent label='Betrag*' error={errors.amount}>
         <FormCurrency name='amount' control={control} />
       </FormComponent>
       <FormChipsComponent label='Einkäufer*'>
         <FormRadioGroup name='purchaserId' control={control} selectOptions={members} />
       </FormChipsComponent>
-      <FormChipsComponent label='Begünstigte*' error={path(['beneficiaryIds'], formState.errors)}>
+      <FormChipsComponent label='Begünstigte*' error={path(['beneficiaryIds'], errors)}>
         <FormCheckboxGroup name='beneficiaryIds' control={control} selectOptions={members} />
       </FormChipsComponent>
       <FormComponent label='Beschreibung'>

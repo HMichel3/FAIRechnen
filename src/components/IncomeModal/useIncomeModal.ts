@@ -36,7 +36,7 @@ export const useIncomeModal = ({ onDismiss, selectedIncome }: IncomeModalProps) 
   const editIncome = usePersistedStore.useEditIncome()
   const { id: groupId, members } = useStore.useSelectedGroup()
   const showAnimationOnce = useStore.useSetShowAnimationOnce()
-  const { handleSubmit, formState, control, watch } = useForm({
+  const { handleSubmit, formState, control } = useForm({
     resolver: zodResolver(validationSchema),
     defaultValues: defaultValues(members, selectedIncome),
   })
@@ -51,5 +51,5 @@ export const useIncomeModal = ({ onDismiss, selectedIncome }: IncomeModalProps) 
     onDismiss()
   })
 
-  return { onSubmit, errors: formState.errors, control, members, watch }
+  return { onSubmit, errors: formState.errors, control, members }
 }

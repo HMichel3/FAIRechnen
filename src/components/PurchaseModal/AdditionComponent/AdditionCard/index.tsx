@@ -10,25 +10,27 @@ import { FormComponent } from '../../../formComponents/FormComponent'
 import { FormCurrency } from '../../../formComponents/FormCurrency'
 import { FormSelect } from '../../../formComponents/FormSelect'
 import { useStore } from '../../../../stores/useStore'
-import { useFormContext } from 'react-hook-form'
+import { Control, useFormState, useWatch } from 'react-hook-form'
 import { useToggle } from '../../../../hooks/useToggle'
 import { usePersistedStore } from '../../../../stores/usePersistedStore'
 import { isDark } from '../../../../pages/GroupPage/utils'
 import clsx from 'clsx'
+import { NewPurchase } from '../../../../App/types'
 import './index.scss'
 
 export interface AdditionCardProps {
   index: number
   pageContentRef: RefObject<HTMLIonContentElement>
   setAdditionIndex: Dispatch<SetStateAction<number | null>>
+  control: Control<NewPurchase>
 }
 
-export const AdditionCard = ({ index, pageContentRef, setAdditionIndex }: AdditionCardProps): JSX.Element => {
+export const AdditionCard = ({ index, pageContentRef, setAdditionIndex, control }: AdditionCardProps): JSX.Element => {
   const theme = usePersistedStore.useTheme()
   const { members } = useStore.useSelectedGroup()
-  const { control, watch, formState } = useFormContext()
-  const additionName = watch(`additions.${index}.name`)
-  const additionAmount = watch(`additions.${index}.amount`)
+  const { errors } = useFormState({ control })
+  const additionName = useWatch({ control, name: `additions.${index}.name` })
+  const additionAmount = useWatch({ control, name: `additions.${index}.amount` })
   const [showCardContent, toggleShowCardContent] = useToggle(isEmpty(additionName))
 
   const onToggleShowCardContent = () => {
@@ -73,7 +75,7 @@ export const AdditionCard = ({ index, pageContentRef, setAdditionIndex }: Additi
               <FormComponent
                 className='addition-card-input'
                 label='Zusatzname'
-                error={path(['additions', index, 'name'], formState.errors)}
+                error={path(['additions', index, 'name'], errors)}
                 noMargin
               >
                 <FormInput name={`additions.${index}.name`} control={control} />
@@ -81,7 +83,7 @@ export const AdditionCard = ({ index, pageContentRef, setAdditionIndex }: Additi
               <FormComponent
                 className='addition-card-input'
                 label='Betrag'
-                error={path(['additions', index, 'amount'], formState.errors)}
+                error={path(['additions', index, 'amount'], errors)}
                 noMargin
               >
                 <FormCurrency name={`additions.${index}.amount`} control={control} />
@@ -89,7 +91,7 @@ export const AdditionCard = ({ index, pageContentRef, setAdditionIndex }: Additi
               <FormComponent
                 className='addition-card-select'
                 label='Beteiligte'
-                error={path(['additions', index, 'payerIds'], formState.errors)}
+                error={path(['additions', index, 'payerIds'], errors)}
                 noMargin
               >
                 <FormSelect name={`additions.${index}.payerIds`} selectOptions={members} control={control} multiple />
