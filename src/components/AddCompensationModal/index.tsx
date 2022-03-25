@@ -50,7 +50,7 @@ export const AddCompensationModal = ({ onDismiss }: AddCompensationModalProps): 
 
   return (
     <div className='flex-column-full-height'>
-      <ModalHeader onDismiss={onDismiss}>Neue Zahlung</ModalHeader>
+      <ModalHeader title='Neue Zahlung' onDismiss={onDismiss} />
       <IonContent ref={pageContentRef}>
         <IonRadioGroup value={checkedRadio} onIonChange={({ detail }) => onCheckRadio(detail.value)}>
           {possibleCompensations.map(compensation => (

@@ -46,7 +46,7 @@ export const usePurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalP
   const editPurchase = usePersistedStore.useEditPurchase()
   const { id: groupId, members } = useStore.useSelectedGroup()
   const showAnimationOnce = useStore.useSetShowAnimationOnce()
-  const { handleSubmit, control } = useForm({
+  const { handleSubmit, watch, formState, control } = useForm({
     resolver: zodResolver(validationSchema),
     defaultValues: defaultValues(members, selectedPurchase),
   })
@@ -66,5 +66,5 @@ export const usePurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalP
     onDismiss()
   })
 
-  return { showAdditionError, setShowAdditionError, onSubmit, control }
+  return { showAdditionError, setShowAdditionError, onSubmit, watch, errors: formState.errors, control }
 }

@@ -138,7 +138,12 @@ export const GroupInfoPage = ({
           setIsOpen={setShowAddMemberAlert}
           onSave={newValue => addMember(groupId, newValue)}
         />
-        <AddFabButton {...{ showFab, onClickFabButton, onClickFabButtonInList, onClickBackdrop }}>
+        <AddFabButton
+          showFab={showFab}
+          onClickFabButton={onClickFabButton}
+          onClickFabButtonInList={onClickFabButtonInList}
+          onClickBackdrop={onClickBackdrop}
+        >
           {[
             {
               label: 'Zahlung hinzufügen',

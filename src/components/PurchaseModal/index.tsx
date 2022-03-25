@@ -1,11 +1,13 @@
-import { IonAlert, IonContent } from '@ionic/react'
+import { IonAlert, IonContent, IonLabel, IonSegment, IonSegmentButton, IonToolbar } from '@ionic/react'
 import { Purchase } from '../../stores/types'
-import { AdditionComponent } from './AdditionComponent'
-import { PurchaseComponent } from './PurchaseComponent'
+import { AdditionSegment } from './AdditionSegment'
+import { PurchaseSegment } from './PurchaseSegment'
 import { usePurchaseModal } from './usePurchaseModal'
-import { useRef } from 'react'
-import { ModalHeader } from '../modalComponents/ModalHeader'
+import { useEffect, useRef, useState } from 'react'
 import { ModalFooter } from '../modalComponents/ModalFooter'
+import { AnimatePresence } from 'framer-motion'
+import { displayCurrencyValue, getTotalAmountFromArray } from '../../App/utils'
+import { ModalHeader } from '../modalComponents/ModalHeader'
 
 export interface PurchaseModalProps {
   onDismiss: () => void
@@ -13,18 +15,40 @@ export interface PurchaseModalProps {
 }
 
 export const PurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalProps): JSX.Element => {
-  const { showAdditionError, setShowAdditionError, onSubmit, control } = usePurchaseModal({
+  const { showAdditionError, setShowAdditionError, onSubmit, watch, errors, control } = usePurchaseModal({
     onDismiss,
     selectedPurchase,
   })
+  const [showSegment, setShowSegment] = useState('purchase')
   const pageContentRef = useRef<HTMLIonContentElement>(null)
+
+  useEffect(() => {
+    if (errors.name || errors.amount || errors.beneficiaryIds) return setShowSegment('purchase')
+    if (errors.additions) setShowSegment('additions')
+  }, [errors])
 
   return (
     <form className='flex-column-full-height' onSubmit={onSubmit}>
-      <ModalHeader onDismiss={onDismiss}>{selectedPurchase ? 'Einkauf bearbeiten' : 'Neuer Einkauf'}</ModalHeader>
+      <ModalHeader title={selectedPurchase ? 'Einkauf bearbeiten' : 'Neuer Einkauf'} onDismiss={onDismiss}>
+        <IonToolbar color='dark'>
+          <IonSegment value={showSegment} onIonChange={({ detail }) => setShowSegment(detail.value!)}>
+            <IonSegmentButton value='purchase'>
+              <IonLabel>Einkauf ({displayCurrencyValue(watch('amount'))})</IonLabel>
+            </IonSegmentButton>
+            <IonSegmentButton value='additions'>
+              <IonLabel>Zusätze ({displayCurrencyValue(getTotalAmountFromArray(watch('additions')))})</IonLabel>
+            </IonSegmentButton>
+          </IonSegment>
+        </IonToolbar>
+      </ModalHeader>
       <IonContent ref={pageContentRef}>
-        <PurchaseComponent {...{ control }} />
-        <AdditionComponent {...{ pageContentRef, control }} />
+        <AnimatePresence exitBeforeEnter>
+          {/* Key prop is needed for AnimatePresence to work correctly on 2 different Components */}
+          {showSegment === 'purchase' && <PurchaseSegment key='purchase' control={control} />}
+          {showSegment === 'additions' && (
+            <AdditionSegment key='additions' pageContentRef={pageContentRef} control={control} />
+          )}
+        </AnimatePresence>
         <IonAlert
           isOpen={showAdditionError}
           onDidDismiss={() => setShowAdditionError(false)}

@@ -22,7 +22,7 @@ export const IncomeModal = ({ onDismiss, selectedIncome }: IncomeModalProps): JS
 
   return (
     <form className='flex-column-full-height' onSubmit={onSubmit}>
-      <ModalHeader onDismiss={onDismiss}>{selectedIncome ? 'Einkommen bearbeiten' : 'Neues Einkommen'}</ModalHeader>
+      <ModalHeader title={selectedIncome ? 'Einkommen bearbeiten' : 'Neues Einkommen'} onDismiss={onDismiss} />
       <IonContent>
         <FormComponent label='Einkommenname*' error={errors.name}>
           <FormInput name='name' control={control} />

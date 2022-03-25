@@ -15,7 +15,7 @@ export const AddGroupModal = ({ onDismiss }: AddGroupModalProps): JSX.Element =>
 
   return (
     <form className='flex-column-full-height' onSubmit={onSubmit}>
-      <ModalHeader onDismiss={onDismiss}>Neue Gruppe</ModalHeader>
+      <ModalHeader title='Neue Gruppe' onDismiss={onDismiss} />
       <IonContent ref={pageContentRef}>
         <IonItemDivider color='medium'>
           <IonLabel>Gruppe</IonLabel>

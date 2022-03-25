@@ -2,20 +2,20 @@ import { IonAlert, IonButton, IonButtons, IonIcon, IonItemDivider, IonLabel } fr
 import { addSharp } from 'ionicons/icons'
 import { RefObject, useState } from 'react'
 import { AdditionCard } from './AdditionCard'
-import { displayCurrencyValue, getTotalAmountFromArray } from '../../../App/utils'
 import { isNil } from 'ramda'
-import { Control, useFieldArray, useWatch } from 'react-hook-form'
+import { Control, useFieldArray } from 'react-hook-form'
 import { NewPurchase } from '../../../App/types'
+import { motion } from 'framer-motion'
+import { fadeOutLeftVariants, variantProps } from '../../../App/animations'
 import './index.scss'
 
-export interface AdditionComponentProps {
+export interface AdditionSegmentProps {
   pageContentRef: RefObject<HTMLIonContentElement>
   control: Control<NewPurchase>
 }
 
-export const AdditionComponent = ({ pageContentRef, control }: AdditionComponentProps): JSX.Element => {
+export const AdditionSegment = ({ pageContentRef, control }: AdditionSegmentProps): JSX.Element => {
   const { fields, append, remove } = useFieldArray({ control, name: 'additions' })
-  const additions = useWatch({ control, name: 'additions' })
   // the additionIndex is needed for the delete-alert (can't move it into the additionCard, because of memory leak)
   const [additionIndex, setAdditionIndex] = useState<number | null>(null)
 
@@ -25,14 +25,14 @@ export const AdditionComponent = ({ pageContentRef, control }: AdditionComponent
   }
 
   return (
-    <div className='addition-component'>
-      <IonItemDivider color='medium'>
+    <motion.div variants={fadeOutLeftVariants} {...variantProps}>
+      <IonItemDivider color='medium' className='fixed-divider'>
         <div>
           <div>
-            <IonLabel>Zusätze ({displayCurrencyValue(getTotalAmountFromArray(additions))})</IonLabel>
+            <IonLabel>Artikel, welche nur für einzelne Mitglieder sind</IonLabel>
           </div>
           <div className='smaller-label-component'>
-            <IonLabel>Artikel, die nur für einzelne Mitglieder gekauft werden</IonLabel>
+            <IonLabel>Werden vor der Verrechnung des Einkaufs abgezogen</IonLabel>
           </div>
         </div>
         <IonButtons style={{ marginRight: 1, marginLeft: 0 }} slot='end'>
@@ -41,9 +41,11 @@ export const AdditionComponent = ({ pageContentRef, control }: AdditionComponent
           </IonButton>
         </IonButtons>
       </IonItemDivider>
-      {fields.map((field, index) => (
-        <AdditionCard key={field.id} {...{ index, pageContentRef, setAdditionIndex, control }} />
-      ))}
+      <div className='addition-cards'>
+        {fields.map((field, index) => (
+          <AdditionCard key={field.id} index={index} setAdditionIndex={setAdditionIndex} control={control} />
+        ))}
+      </div>
       <IonAlert
         cssClass='delete-alert'
         isOpen={!isNil(additionIndex)}
@@ -54,6 +56,6 @@ export const AdditionComponent = ({ pageContentRef, control }: AdditionComponent
           { text: 'Löschen', handler: () => remove(additionIndex!) },
         ]}
       />
-    </div>
+    </motion.div>
   )
 }

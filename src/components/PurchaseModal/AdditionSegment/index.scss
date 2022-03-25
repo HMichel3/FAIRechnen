@@ -1,0 +1,16 @@
+.smaller-label-component {
+  font-size: 12px;
+  margin-top: 3px;
+  color: var(--ion-color-light);
+}
+
+.fixed-divider {
+  position: fixed;
+  // height from fixed-divider + margin from addition-card
+  margin-top: -58px;
+}
+
+.addition-cards {
+  // height from fixed-divider + margin from addition-card
+  margin-top: 58px;
+}
