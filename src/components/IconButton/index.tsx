@@ -1,5 +1,6 @@
 import { IonButton, IonIcon } from '@ionic/react'
 import { MouseEventHandler } from 'react'
+import './index.scss'
 
 interface IconButtonProps {
   children: string
@@ -17,8 +18,7 @@ export const IconButton = ({
   disabled = false,
 }: IconButtonProps): JSX.Element => (
   <IonButton
-    className='ion-margin-horizontal ion-margin-top'
-    style={{ marginBottom: 24 }}
+    className='icon-button'
     color='medium'
     expand='block'
     type={type}

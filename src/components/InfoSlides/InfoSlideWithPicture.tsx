@@ -11,11 +11,11 @@ interface InfoSlideWithPictureProps {
 export const InfoSlideWithPicture = ({ title, imgSrc, imgAlt, onToggleShowInfoSlides }: InfoSlideWithPictureProps) => (
   <>
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-      <h1 className='ion-margin'>{title}</h1>
+      <h1 className='default-margin'>{title}</h1>
       <IonButton fill='clear' color='light' onClick={onToggleShowInfoSlides}>
         <IonIcon size='large' slot='icon-only' icon={closeSharp} />
       </IonButton>
     </div>
-    <IonImg className='ion-margin picture-border' src={imgSrc} alt={imgAlt} />
+    <IonImg className='default-margin picture-border' src={imgSrc} alt={imgAlt} />
   </>
 )

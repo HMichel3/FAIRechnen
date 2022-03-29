@@ -9,7 +9,7 @@ interface ModalHeaderProps {
 export const ModalHeader = ({ title, onDismiss, children }: ModalHeaderProps): JSX.Element => (
   <IonHeader>
     <IonToolbar color='dark'>
-      <IonTitle className='ion-padding-horizontal'>{title}</IonTitle>
+      <IonTitle className='default-padding-horizontal'>{title}</IonTitle>
       <IonButtons slot='end'>
         <IonButton color='danger' onClick={onDismiss}>
           Abbrechen

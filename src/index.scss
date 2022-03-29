@@ -68,6 +68,23 @@ ion-select::part(text) {
   /* doesn't matter what size is set, but it must be width (min-width isn't working!) */
   width: 16px;
 }
+// ion-margin causing problems on android
+.default-margin-top {
+  margin-top: 16px;
+}
+.default-margin-right {
+  margin-right: 16px;
+}
+.default-margin {
+  margin-top: 16px;
+  margin-bottom: 16px;
+  margin-left: 16px;
+  margin-right: 16px;
+}
+.default-padding-horizontal {
+  padding-left: 16px;
+  padding-right: 16px;
+}
 
 body.dark {
   .color-danger {

@@ -6,5 +6,5 @@ interface InfoSlideParagraphProps {
 }
 
 export const InfoSlideParagraph = ({ text, isFirst }: InfoSlideParagraphProps): JSX.Element => (
-  <p className={clsx('info-slide-paragraph', { 'ion-margin-top': isFirst })}>{text}</p>
+  <p className={clsx('info-slide-paragraph', { 'default-margin-top': isFirst })}>{text}</p>
 )

@@ -32,7 +32,7 @@ export const InfoSlideWithIcon = ({
   return (
     <>
       <IonButton
-        className='ion-align-self-end ion-margin-top'
+        className='ion-align-self-end default-margin-top'
         fill='clear'
         color='light'
         onClick={onToggleShowInfoSlides}

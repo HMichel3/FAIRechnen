@@ -61,7 +61,7 @@ export const SlidingListItem = ({
       ) : (
         icon && <IonIcon className='list-item-icon-color' icon={icon} slot='start' />
       )}
-      <IonLabel className={clsx({ 'ion-margin-end': detail && isNil(endText) })}>
+      <IonLabel className={clsx({ 'default-margin-right': detail && isNil(endText) })}>
         {label && <IonLabel>{label}</IonLabel>}
         {labelComponent}
       </IonLabel>

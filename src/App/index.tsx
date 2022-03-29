@@ -1,12 +1,11 @@
 import { Redirect, Route } from 'react-router-dom'
-import { IonApp, IonRouterOutlet, IonSpinner, setupIonicReact } from '@ionic/react'
+import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react'
 import { IonReactRouter } from '@ionic/react-router'
 import { GroupPage } from '../pages/GroupPage'
 import { GroupInfoPage } from '../pages/GroupInfoPage'
 import { useStore } from '../stores/useStore'
 import { SuccessAnimation } from '../lotties/SuccessAnimation'
 import { usePersistedStore } from '../stores/usePersistedStore'
-import './index.scss'
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css'
@@ -29,17 +28,12 @@ import '../theme/variables.css'
 
 setupIonicReact()
 
-export const App = (): JSX.Element => {
+export const App = (): JSX.Element | null => {
   const hasHydrated = usePersistedStore.use_hasHydrated()
   const showAnimation = useStore.useShowAnimation()
 
   // Wait for zustand to be loaded with data from database
-  if (!hasHydrated)
-    return (
-      <div className='loading-wrapper'>
-        <IonSpinner />
-      </div>
-    )
+  if (!hasHydrated) return null
 
   return (
     <IonApp>
