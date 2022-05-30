@@ -41,7 +41,7 @@
     "workbox-routing": "^6.5.2",
     "workbox-strategies": "^6.5.2",
     "workbox-streams": "^6.5.2",
-    "zod": "^3.14.2",
+    "zod": "^3.17.3",
     "zustand": "^3.6.9"
   },
   "scripts": {

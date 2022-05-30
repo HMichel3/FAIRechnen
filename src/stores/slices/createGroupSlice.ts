@@ -2,7 +2,7 @@ import { GetState, SetState } from 'zustand'
 import { PersistedState } from '../usePersistedStore'
 import produce from 'immer'
 import { v4 as uuid } from 'uuid'
-import { isEmpty, trim } from 'ramda'
+import { isEmpty } from 'ramda'
 import { Group } from '../types'
 import { findItem, findItemIndex } from '../../App/utils'
 
@@ -25,7 +25,7 @@ export const createGroupSlice = (set: SetState<PersistedState>, get: GetState<Pe
           .map(({ name }) => ({ id: uuid(), name, timestamp: Date.now() }))
         store.groups.unshift({
           id: uuid(),
-          name: trim(groupName),
+          name: groupName,
           members,
           purchases: [],
           incomes: [],

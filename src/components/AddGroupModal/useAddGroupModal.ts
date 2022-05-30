@@ -8,7 +8,7 @@ import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
 
 const validationSchema = z.object({
-  groupName: z.string().min(1, { message: 'Pflichtfeld!' }),
+  groupName: z.string().trim().min(1),
   memberNames: z.object({ name: z.string() }).array(),
 })
 

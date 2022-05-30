@@ -1,7 +1,7 @@
 import { IconButton } from '../../IconButton'
 import { useFormContext } from 'react-hook-form'
 import { saveSharp, trashBinSharp } from 'ionicons/icons'
-import { isEmpty } from 'ramda'
+import { isEmpty, trim } from 'ramda'
 import { GroupFormValues } from '../useAddGroupModal'
 import { GroupTemplate } from '../../../stores/types'
 import { isTemplateInGroupTemplates } from './utils'
@@ -22,7 +22,7 @@ export const GroupTemplateButton = ({
   const { watch } = useFormContext<GroupFormValues>()
 
   switch (true) {
-    case !isEmpty(watch('groupName')) && !isTemplateInGroupTemplates(watch('groupName'), groupTemplates):
+    case !isEmpty(trim(watch('groupName'))) && !isTemplateInGroupTemplates(trim(watch('groupName')), groupTemplates):
       return (
         <IconButton
           className='default-margin'
@@ -35,7 +35,7 @@ export const GroupTemplateButton = ({
           Als Vorlage speichern
         </IconButton>
       )
-    case !isEmpty(groupTemplateId) && isTemplateInGroupTemplates(watch('groupName'), groupTemplates):
+    case !isEmpty(groupTemplateId) && isTemplateInGroupTemplates(trim(watch('groupName')), groupTemplates):
       return (
         <IconButton
           className='default-margin'

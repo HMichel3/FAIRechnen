@@ -11,16 +11,16 @@ import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
 
 const validationSchema = z.object({
-  name: z.string().min(1, { message: 'Pflichtfeld!' }),
-  amount: z.number().positive({ message: 'Der Betrag muss größer als 0 sein!' }),
-  purchaserId: z.string().min(1, { message: 'Pflichtfeld!' }),
-  beneficiaryIds: z.string().array().nonempty({ message: 'Pflichtfeld!' }),
+  name: z.string().trim().min(1),
+  amount: z.number().positive(),
+  purchaserId: z.string().min(1),
+  beneficiaryIds: z.string().array().nonempty(),
   description: z.string(),
   additions: z
     .object({
-      name: z.string().min(1, { message: 'Pflichtfeld!' }),
-      amount: z.number().positive({ message: 'Der Betrag muss größer als 0 sein!' }),
-      payerIds: z.string().array().nonempty({ message: 'Pflichtfeld!' }),
+      name: z.string().trim().min(1),
+      amount: z.number().positive(),
+      payerIds: z.string().array().nonempty(),
     })
     .array(),
 })
