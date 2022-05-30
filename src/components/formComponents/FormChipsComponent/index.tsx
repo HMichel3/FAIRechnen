@@ -16,7 +16,7 @@ export const FormChipsComponent = ({ label, children, error }: FormChipsComponen
   const theme = usePersistedStore.useTheme()
 
   return (
-    <div className={clsx('form-input-margin form-chips-component', { 'error-border': error })}>
+    <div className={clsx('default-margin form-chips-component', { 'error-border': error })}>
       <IonLabel position='stacked' color={clsx({ light: isDark(theme) })} style={{ marginLeft: 16 }}>
         {label}
       </IonLabel>

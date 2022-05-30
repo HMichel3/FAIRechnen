@@ -51,3 +51,10 @@ export type Compensation = {
   receiverId: Member['id']
   timestamp: number
 }
+
+export type GroupTemplate = {
+  id: string
+  name: Group['name']
+  memberNames: Member['name'][]
+  timestamp: number
+}

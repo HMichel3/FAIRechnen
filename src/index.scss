@@ -55,9 +55,6 @@ ion-item-divider {
   opacity: var(--ion-backdrop-opacity);
   z-index: 11;
 }
-.form-input-margin {
-  margin: 8px 16px;
-}
 .form-input-no-margin::part(native) {
   border-radius: 0;
 }
@@ -80,6 +77,18 @@ ion-select::part(text) {
   margin-bottom: 16px;
   margin-left: 16px;
   margin-right: 16px;
+  &-small {
+    margin-top: 8px;
+    margin-bottom: 8px;
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+  &-small-top {
+    margin-top: 8px;
+    margin-bottom: 16px;
+    margin-left: 16px;
+    margin-right: 16px;
+  }
 }
 .default-padding-horizontal {
   padding-left: 16px;

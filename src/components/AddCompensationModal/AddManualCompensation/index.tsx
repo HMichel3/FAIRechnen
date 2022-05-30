@@ -20,13 +20,13 @@ export const AddManualCompensation = ({ setManualCompensation }: AddManualCompen
       variants={fadeInOutTopVariants}
       {...variantProps}
     >
-      <FormComponent label='Zahler' noMargin>
+      <FormComponent className='form-input-no-margin' label='Zahler'>
         <FormSelect name='payerId' selectOptions={members} control={control} />
       </FormComponent>
-      <FormComponent label='Empfänger' noMargin>
+      <FormComponent className='form-input-no-margin' label='Empfänger'>
         <FormSelect name='receiverId' selectOptions={membersWithoutPayer} control={control} />
       </FormComponent>
-      <FormComponent label='Betrag' noMargin>
+      <FormComponent className='form-input-no-margin' label='Betrag'>
         <FormCurrency name='amount' control={control} />
       </FormComponent>
     </motion.div>

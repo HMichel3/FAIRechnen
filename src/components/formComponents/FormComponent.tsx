@@ -12,7 +12,6 @@ interface FormComponentProps {
   error?: FieldError
   onDelete?: () => void
   className?: string
-  noMargin?: boolean
 }
 
 export const FormComponent = ({
@@ -20,16 +19,12 @@ export const FormComponent = ({
   children,
   error,
   onDelete,
-  className,
-  noMargin = false,
+  className = 'default-margin',
 }: FormComponentProps): JSX.Element => {
   const theme = usePersistedStore.useTheme()
 
   return (
-    <IonItem
-      className={clsx('form-component', !noMargin ? 'form-input-margin' : 'form-input-no-margin', className)}
-      fill='outline'
-    >
+    <IonItem className={clsx('form-component', className)} fill='outline'>
       <IonLabel position='stacked' color={clsx({ light: isDark(theme) })}>
         {label}
       </IonLabel>

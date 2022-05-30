@@ -38,7 +38,7 @@ export const AdditionCard = ({ index, setAdditionIndex, control }: AdditionCardP
   }
 
   return (
-    <IonCard className='form-input-margin'>
+    <IonCard className='default-margin'>
       <IonCardTitle>
         <IonItem lines='none'>
           <IonIcon
@@ -72,26 +72,23 @@ export const AdditionCard = ({ index, setAdditionIndex, control }: AdditionCardP
           <motion.div variants={fadeInOutTopVariants} {...variantProps}>
             <IonCardContent style={{ paddingTop: 0 }}>
               <FormComponent
-                className='addition-card-input'
+                className='addition-card-input form-input-no-margin'
                 label='Zusatzname'
                 error={path(['additions', index, 'name'], errors)}
-                noMargin
               >
                 <FormInput name={`additions.${index}.name`} control={control} />
               </FormComponent>
               <FormComponent
-                className='addition-card-input'
+                className='addition-card-input form-input-no-margin'
                 label='Betrag'
                 error={path(['additions', index, 'amount'], errors)}
-                noMargin
               >
                 <FormCurrency name={`additions.${index}.amount`} control={control} />
               </FormComponent>
               <FormComponent
-                className='addition-card-select'
+                className='addition-card-select form-input-no-margin'
                 label='Beteiligte'
                 error={path(['additions', index, 'payerIds'], errors)}
-                noMargin
               >
                 <FormSelect name={`additions.${index}.payerIds`} selectOptions={members} control={control} multiple />
               </FormComponent>

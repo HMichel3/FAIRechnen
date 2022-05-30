@@ -9,6 +9,7 @@ import { createPurchaseSlice, PurchaseSlice } from './slices/createPurchaseSlice
 import { createThemeSlice, ThemeSlice } from './slices/createThemeSlice'
 import { createIncomeSlice, IncomeSlice } from './slices/createIncomeSlice'
 import { AlreadyVisitedSlice, createAlreadyVisitedSlice } from './slices/createAlreadyVisitedSlice'
+import { createGroupTemplateSlice, GroupTemplateSlice } from './slices/createGroupTemplateSlice'
 
 const ionicStorage = new Storage({
   name: '__db',
@@ -33,7 +34,8 @@ export type PersistedState = GroupSlice &
   IncomeSlice &
   CompensationSlice &
   ThemeSlice &
-  AlreadyVisitedSlice & { _hasHydrated: boolean }
+  AlreadyVisitedSlice &
+  GroupTemplateSlice & { _hasHydrated: boolean }
 
 const usePersistedStoreBase = create<PersistedState>(
   persist(
@@ -45,6 +47,7 @@ const usePersistedStoreBase = create<PersistedState>(
       ...createCompensationSlice(set),
       ...createThemeSlice(set),
       ...createAlreadyVisitedSlice(set),
+      ...createGroupTemplateSlice(set),
       _hasHydrated: false,
     }),
     {

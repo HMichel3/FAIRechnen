@@ -12,7 +12,7 @@ const validationSchema = z.object({
   memberNames: z.object({ name: z.string() }).array(),
 })
 
-interface GroupFormValues {
+export interface GroupFormValues {
   groupName: string
   memberNames: { name: string }[]
 }
@@ -22,12 +22,9 @@ const defaultValues: GroupFormValues = { groupName: '', memberNames: [{ name: ''
 export const useAddGroupModal = (onDismiss: AddGroupModalProps['onDismiss']) => {
   const addGroup = usePersistedStore.useAddGroup()
   const showAnimationOnce = useStore.useSetShowAnimationOnce()
-  const { handleSubmit, control, formState } = useForm({
-    resolver: zodResolver(validationSchema),
-    defaultValues,
-  })
-  const { fields, append, remove } = useFieldArray({ control, name: 'memberNames' })
-  const memberNamesFields = useWatch({ control, name: 'memberNames' })
+  const methods = useForm({ resolver: zodResolver(validationSchema), defaultValues })
+  const { fields, append, remove, replace } = useFieldArray({ control: methods.control, name: 'memberNames' })
+  const memberNamesFields = useWatch({ control: methods.control, name: 'memberNames' })
   const pageContentRef = useRef<HTMLIonContentElement>(null)
 
   useEffect(() => {
@@ -41,11 +38,11 @@ export const useAddGroupModal = (onDismiss: AddGroupModalProps['onDismiss']) => 
     }
   }, [memberNamesFields, append, remove])
 
-  const onSubmit = handleSubmit(({ groupName, memberNames }) => {
+  const onSubmit = methods.handleSubmit(({ groupName, memberNames }) => {
     addGroup(groupName, memberNames)
     showAnimationOnce()
     onDismiss()
   })
 
-  return { pageContentRef, formState, fields, remove, onSubmit, control }
+  return { pageContentRef, fields, remove, onSubmit, replace, methods }
 }
