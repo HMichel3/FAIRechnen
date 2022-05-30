@@ -1,5 +1,5 @@
 import { IonAlert } from '@ionic/react'
-import { isEmpty } from 'ramda'
+import { isEmpty, trim } from 'ramda'
 import { Dispatch, SetStateAction } from 'react'
 import { useStore } from '../../stores/useStore'
 
@@ -38,7 +38,7 @@ export const SimpleSaveAlert = ({
       inputs={[
         {
           name: 'newValue',
-          ...(value && { value: value }),
+          ...(value && { value }),
           placeholder: placeholder,
         },
       ]}
@@ -46,7 +46,7 @@ export const SimpleSaveAlert = ({
         { role: 'cancel', text: 'Abbrechen' },
         {
           text: 'Speichern',
-          handler: ({ newValue }) => onHandler(newValue),
+          handler: ({ newValue }) => onHandler(trim(newValue)),
         },
       ]}
     />
