@@ -34,6 +34,7 @@ import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
 import { generateBill } from './utils'
 import { Share } from '@capacitor/share'
+import { Show } from '../../components/SolidComponents/Show'
 import './index.scss'
 
 interface GroupInfoPageProps
@@ -85,7 +86,9 @@ export const GroupInfoPage = ({
 
   return (
     <IonPage>
-      {showBackdrop && <IonBackdrop className='custom-backdrop' tappable={true} onIonBackdropTap={onClickBackdrop} />}
+      <Show when={showBackdrop}>
+        <IonBackdrop className='custom-backdrop' tappable={true} onIonBackdropTap={onClickBackdrop} />
+      </Show>
       <IonHeader>
         <IonToolbar color='dark'>
           <IonButtons slot='start'>

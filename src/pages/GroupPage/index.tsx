@@ -28,6 +28,7 @@ import { GroupInfo } from './GroupInfo'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { AddGroupModal } from '../../components/AddGroupModal'
 import { isDark } from './utils'
+import { Show } from '../../components/SolidComponents/Show'
 import './index.scss'
 
 export const GroupPage = (): JSX.Element => {
@@ -122,20 +123,20 @@ export const GroupPage = (): JSX.Element => {
           </IonToolbar>
         </IonFooter>
       </IonPage>
-      {showInfoSlides && (
+      <Show when={showInfoSlides}>
         <IonPage className='info-slides-container'>
           <IonContent>
             <InfoSlides onToggleShowInfoSlides={() => setShowInfoSlides(false)} />
           </IonContent>
         </IonPage>
-      )}
-      {showFirstInfoSlides && (
+      </Show>
+      <Show when={showFirstInfoSlides}>
         <IonPage className='info-slides-container'>
           <IonContent>
             <InfoSlides onToggleShowInfoSlides={onHideFirstInfoSlides} />
           </IonContent>
         </IonPage>
-      )}
+      </Show>
     </>
   )
 }

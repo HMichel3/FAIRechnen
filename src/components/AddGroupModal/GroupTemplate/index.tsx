@@ -15,7 +15,7 @@ import { useFormContext } from 'react-hook-form'
 import { findItem } from '../../../App/utils'
 import { isDark } from '../../../pages/GroupPage/utils'
 import { usePersistedStore } from '../../../stores/usePersistedStore'
-import { Show } from '../../CustomSolidComponents/Show'
+import { Show } from '../../SolidComponents/Show'
 import { GroupTemplateButton } from './GroupTemplateButton'
 import { GroupFormValues } from '../useAddGroupModal'
 

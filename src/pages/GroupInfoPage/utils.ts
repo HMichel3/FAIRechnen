@@ -15,7 +15,7 @@ const generateOnePossibleCompensationChain = (membersWithAmounts: MemberWithAmou
   const addedCompensations: CompensationsWithoutTimestamp[] = []
   for (let result; (result = generatePossibleCompensations(membersWithAmounts)); ) {
     if (isEmpty(result)) break
-    const { amount, payerId, receiverId } = result[0]
+    const { amount, payerId, receiverId } = result.at(0)!
     membersWithAmounts = produce(membersWithAmounts, draft => {
       const payerIndex = findItemIndex(payerId, draft)
       const receiverIndex = findItemIndex(receiverId, draft)
@@ -23,7 +23,7 @@ const generateOnePossibleCompensationChain = (membersWithAmounts: MemberWithAmou
       draft[payerIndex].current += amount
       draft[receiverIndex].current += -amount
     })
-    addedCompensations.push(result[0])
+    addedCompensations.push(result.at(0)!)
   }
   return addedCompensations
 }

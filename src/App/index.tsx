@@ -6,6 +6,7 @@ import { GroupInfoPage } from '../pages/GroupInfoPage'
 import { useStore } from '../stores/useStore'
 import { SuccessAnimation } from '../lotties/SuccessAnimation'
 import { usePersistedStore } from '../stores/usePersistedStore'
+import { Show } from '../components/SolidComponents/Show'
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css'
@@ -43,7 +44,9 @@ export const App = (): JSX.Element | null => {
           <Route exact path='/groups/:id' component={GroupInfoPage} />
           <Redirect exact from='/' to='/groups' />
         </IonRouterOutlet>
-        {showAnimation && <SuccessAnimation />}
+        <Show when={showAnimation}>
+          <SuccessAnimation />
+        </Show>
       </IonReactRouter>
     </IonApp>
   )

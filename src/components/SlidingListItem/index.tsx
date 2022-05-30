@@ -12,6 +12,7 @@ import clsx from 'clsx'
 import { repeatSharp } from 'ionicons/icons'
 import { isNil } from 'ramda'
 import { MouseEventHandler } from 'react'
+import { Show } from '../SolidComponents/Show'
 
 interface SlidingListItemProps {
   label?: string
@@ -62,14 +63,16 @@ export const SlidingListItem = ({
         icon && <IonIcon className='list-item-icon-color' icon={icon} slot='start' />
       )}
       <IonLabel className={clsx({ 'default-margin-right': detail && isNil(endText) })}>
-        {label && <IonLabel>{label}</IonLabel>}
+        <Show when={!isNil(label)}>
+          <IonLabel>{label}</IonLabel>
+        </Show>
         {labelComponent}
       </IonLabel>
-      {endText && (
+      <Show when={!isNil(endText)}>
         <IonText className='ion-text-end' slot='end'>
           {endText}
         </IonText>
-      )}
+      </Show>
     </IonItem>
   </IonItemSliding>
 )

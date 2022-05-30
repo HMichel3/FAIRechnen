@@ -27,7 +27,7 @@ export const AddCompensationModal = ({ onDismiss }: AddCompensationModalProps): 
   const pageContentRef = useRef<HTMLIonContentElement>(null)
   const membersWithAmounts = calculateMembersWithAmounts(members, purchases, incomes, compensations)
   const { current: possibleCompensations } = useRef(generatePossibleCompensations(membersWithAmounts))
-  const [checkedRadio, setCheckedRadio] = useState<string>(possibleCompensations[0]?.id ?? 'manual')
+  const [checkedRadio, setCheckedRadio] = useState<string>(possibleCompensations.at(0)?.id ?? 'manual')
 
   const onAddCompensation = () => {
     let newCompensation: NewCompensation

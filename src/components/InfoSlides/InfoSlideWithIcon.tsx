@@ -1,6 +1,8 @@
 import { IonIcon, IonButton } from '@ionic/react'
 import { closeSharp } from 'ionicons/icons'
+import { isNil } from 'ramda'
 import { ReactNode } from 'react'
+import { Show } from '../SolidComponents/Show'
 import { InfoSlideParagraph } from './InfoSlideParagraph'
 
 interface InfoSlideWithIconProps {
@@ -42,8 +44,12 @@ export const InfoSlideWithIcon = ({
       <IonIcon color='medium' style={{ fontSize: iconFontSize, marginTop: iconMarginTop }} icon={icon} />
       <h1 style={{ marginTop: titleMarginTop }}>{title}</h1>
       <InfoSlideParagraph isFirst text={firstParagraph} />
-      {secondParagraph && <InfoSlideParagraph text={secondParagraph} />}
-      {thirdParagraph && <InfoSlideParagraph text={thirdParagraph} />}
+      <Show when={!isNil(secondParagraph)}>
+        <InfoSlideParagraph text={secondParagraph!} />
+      </Show>
+      <Show when={!isNil(thirdParagraph)}>
+        <InfoSlideParagraph text={thirdParagraph!} />
+      </Show>
       {children}
     </>
   )

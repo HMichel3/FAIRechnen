@@ -1,7 +1,7 @@
 import { IonButton, IonCard, IonCardContent, IonCardTitle, IonIcon, IonItem, IonLabel } from '@ionic/react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { chevronDownSharp, chevronUpSharp, trashBinSharp } from 'ionicons/icons'
-import { isEmpty, isNil, path } from 'ramda'
+import { isEmpty, isNil, path, trim } from 'ramda'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { fadeInOutTopVariants, variantProps } from '../../../../App/animations'
 import { displayCurrencyValue } from '../../../../App/utils'
@@ -48,7 +48,7 @@ export const AdditionCard = ({ index, setAdditionIndex, control }: AdditionCardP
             style={{ marginInlineEnd: 12 }}
             onClick={onToggleShowCardContent}
           />
-          <IonLabel onClick={onToggleShowCardContent}>{isEmpty(additionName) ? 'Zusatz' : additionName}</IonLabel>
+          <IonLabel onClick={onToggleShowCardContent}>{isEmpty(trim(additionName)) ? 'Zusatz' : additionName}</IonLabel>
           <IonLabel
             slot='end'
             color={clsx({ light: isDark(theme) })}
