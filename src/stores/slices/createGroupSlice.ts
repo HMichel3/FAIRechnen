@@ -8,15 +8,19 @@ import { findItem, findItemIndex } from '../../App/utils'
 
 export interface GroupSlice {
   groups: Group[]
+  groupArchive: Group[]
   addGroup: (groupName: Group['name'], memberNames: { name: string }[]) => void
   editGroupName: (groupId: string, groupName: Group['name']) => void
   deleteGroup: (groupId: string) => void
+  archiveGroup: (groupId: string) => void
+  restoreGroup: (groupId: string) => void
   setGroups: (groups: Group[]) => void // needed for reordering
   getGroup: (groupId: string) => Group
 }
 
 export const createGroupSlice = (set: SetState<PersistedState>, get: GetState<PersistedState>): GroupSlice => ({
   groups: [],
+  groupArchive: [],
   addGroup: (groupName, memberNames) =>
     set(
       produce<PersistedState>(store => {
@@ -45,13 +49,27 @@ export const createGroupSlice = (set: SetState<PersistedState>, get: GetState<Pe
   deleteGroup: groupId =>
     set(
       produce<PersistedState>(store => {
-        store.deleteGroupMembers(groupId)
-        store.deleteGroupPurchases(groupId)
-        store.deleteGroupIncomes(groupId)
-        store.deleteGroupCompensations(groupId)
         const groupIndex = findItemIndex(groupId, store.groups)
         if (groupIndex === -1) return
         store.groups.splice(groupIndex, 1)
+      })
+    ),
+  archiveGroup: groupId =>
+    set(
+      produce<PersistedState>(store => {
+        const groupIndex = findItemIndex(groupId, store.groups)
+        if (groupIndex === -1) return
+        store.groupArchive.push(store.groups[groupIndex])
+        store.groups.splice(groupIndex, 1)
+      })
+    ),
+  restoreGroup: groupId =>
+    set(
+      produce<PersistedState>(store => {
+        const groupArchiveIndex = findItemIndex(groupId, store.groupArchive)
+        if (groupArchiveIndex === -1) return
+        store.groups.unshift(store.groupArchive[groupArchiveIndex])
+        store.groupArchive.splice(groupArchiveIndex, 1)
       })
     ),
   setGroups: groups => set({ groups }),

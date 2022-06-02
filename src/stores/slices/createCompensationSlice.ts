@@ -9,7 +9,6 @@ import { Compensation } from '../types'
 export interface CompensationSlice {
   addCompensation: (groupId: string, newCompensation: NewCompensation) => void
   deleteCompensation: (groupId: string, compensationId: string) => void
-  deleteGroupCompensations: (groupId: string) => void
 }
 
 export const createCompensationSlice = (set: SetState<PersistedState>): CompensationSlice => ({
@@ -34,14 +33,6 @@ export const createCompensationSlice = (set: SetState<PersistedState>): Compensa
         const compensationIndex = findItemIndex(compensationId, store.groups[groupIndex].compensations)
         if (compensationIndex === -1) return
         store.groups[groupIndex].compensations.splice(compensationIndex, 1)
-      })
-    ),
-  deleteGroupCompensations: groupId =>
-    set(
-      produce<PersistedState>(store => {
-        const groupIndex = findItemIndex(groupId, store.groups)
-        if (groupIndex === -1) return
-        store.groups[groupIndex].compensations = []
       })
     ),
 })

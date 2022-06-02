@@ -11,7 +11,6 @@ export interface PurchaseSlice {
   addPurchase: (groupId: string, newPurchase: NewPurchase) => void
   editPurchase: (groupId: string, purchaseId: string, newPurchase: NewPurchase) => void
   deletePurchase: (groupId: string, purchaseId: string) => void
-  deleteGroupPurchases: (groupId: string) => void
 }
 
 export const createPurchaseSlice = (set: SetState<PersistedState>): PurchaseSlice => ({
@@ -55,14 +54,6 @@ export const createPurchaseSlice = (set: SetState<PersistedState>): PurchaseSlic
         const purchaseIndex = findItemIndex(purchaseId, store.groups[groupIndex].purchases)
         if (purchaseIndex === -1) return
         store.groups[groupIndex].purchases.splice(purchaseIndex, 1)
-      })
-    ),
-  deleteGroupPurchases: groupId =>
-    set(
-      produce<PersistedState>(store => {
-        const groupIndex = findItemIndex(groupId, store.groups)
-        if (groupIndex === -1) return
-        store.groups[groupIndex].purchases = []
       })
     ),
 })

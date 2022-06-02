@@ -10,8 +10,6 @@ export const useGroupPage = () => {
   const setAlreadyVisited = usePersistedStore.useSetAlreadyVisited()
   const ionRouter = useIonRouter()
   const [showInfoSlides, setShowInfoSlides] = useState(false)
-  const [showDeleteGroupAlert, setShowDeleteGroupAlert] = useState(false)
-  const [selectedGroupId, setSelectedGroupId] = useState('')
   const [showFirstInfoSlides, setShowFirstInfoSlides] = useState(!alreadyVisited)
   // needed to remove the ion-page-invisible to show the page after the firstInfoSlide is closed
   const pageRef = useRef(null)
@@ -36,27 +34,11 @@ export const useGroupPage = () => {
     setAlreadyVisited()
   }, [setAlreadyVisited])
 
-  const onDeleteGroup = (groupId: string) => {
-    setSelectedGroupId(groupId)
-    setShowDeleteGroupAlert(true)
-  }
-
   const onHideFirstInfoSlides = () => {
     setShowFirstInfoSlides(false)
     // @ts-ignore typing on pageRef is not correct from ionic
     pageRef.current?.classList.remove('ion-page-invisible')
   }
 
-  return {
-    theme,
-    showInfoSlides,
-    showDeleteGroupAlert,
-    selectedGroupId,
-    setShowDeleteGroupAlert,
-    onDeleteGroup,
-    setShowInfoSlides,
-    showFirstInfoSlides,
-    onHideFirstInfoSlides,
-    pageRef,
-  }
+  return { theme, showInfoSlides, setShowInfoSlides, showFirstInfoSlides, onHideFirstInfoSlides, pageRef }
 }

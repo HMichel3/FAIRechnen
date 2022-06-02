@@ -11,7 +11,6 @@ export interface IncomeSlice {
   addIncome: (groupId: string, newIncome: NewIncome) => void
   editIncome: (groupId: string, incomeId: string, newIncome: NewIncome) => void
   deleteIncome: (groupId: string, incomeId: string) => void
-  deleteGroupIncomes: (groupId: string) => void
 }
 
 export const createIncomeSlice = (set: SetState<PersistedState>): IncomeSlice => ({
@@ -53,14 +52,6 @@ export const createIncomeSlice = (set: SetState<PersistedState>): IncomeSlice =>
         const incomeIndex = findItemIndex(incomeId, store.groups[groupIndex].incomes)
         if (incomeIndex === -1) return
         store.groups[groupIndex].incomes.splice(incomeIndex, 1)
-      })
-    ),
-  deleteGroupIncomes: groupId =>
-    set(
-      produce<PersistedState>(store => {
-        const groupIndex = findItemIndex(groupId, store.groups)
-        if (groupIndex === -1) return
-        store.groups[groupIndex].incomes = []
       })
     ),
 })

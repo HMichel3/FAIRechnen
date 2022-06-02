@@ -9,7 +9,6 @@ export interface MemberSlice {
   addMember: (groupId: string, memberName: Member['name']) => void
   editMemberName: (groupId: string, memberId: string, name: Member['name']) => void
   deleteMember: (groupId: string, memberId: string) => void
-  deleteGroupMembers: (groupId: string) => void
 }
 
 export const createMemberSlice = (set: SetState<PersistedState>): MemberSlice => ({
@@ -39,14 +38,6 @@ export const createMemberSlice = (set: SetState<PersistedState>): MemberSlice =>
         const memberIndex = findItemIndex(memberId, store.groups[groupIndex].members)
         if (memberIndex === -1) return
         store.groups[groupIndex].members.splice(memberIndex, 1)
-      })
-    ),
-  deleteGroupMembers: groupId =>
-    set(
-      produce<PersistedState>(store => {
-        const groupIndex = findItemIndex(groupId, store.groups)
-        if (groupIndex === -1) return
-        store.groups[groupIndex].members = []
       })
     ),
 })
