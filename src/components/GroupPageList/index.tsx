@@ -24,6 +24,8 @@ export const GroupPageList = ({ reorder }: GroupPageListProps) => {
   const [selectedGroupId, setSelectedGroupId] = useState('')
   const [showGroupArchive, setShowGroupArchive] = useState(false)
 
+  // needed to prevent an error while reordering restored groups
+  const copiedGroups = [...groups]
   const isGroupArchiveEmpty = isEmpty(groupArchive)
 
   useEffect(() => {
@@ -37,8 +39,8 @@ export const GroupPageList = ({ reorder }: GroupPageListProps) => {
 
   return (
     <>
-      <IonReorderGroup disabled={!reorder} onIonItemReorder={({ detail }) => setGroups(detail.complete(groups))}>
-        {groups.map(group => (
+      <IonReorderGroup disabled={!reorder} onIonItemReorder={({ detail }) => setGroups(detail.complete(copiedGroups))}>
+        {copiedGroups.map(group => (
           <SlidingListItem
             key={group.id}
             label={group.name}
@@ -47,10 +49,10 @@ export const GroupPageList = ({ reorder }: GroupPageListProps) => {
             icon={peopleSharp}
             labelComponent={<GroupInfo groupId={group.id} />}
             reorder={reorder}
-            lines={isLast(group, groups) ? 'full' : 'inset'}
-            transparentLine={isLast(group, groups) && isEmpty(groupArchive)}
-            className={clsx({ 'item-thick-full-line': isLast(group, groups) && !isEmpty(groupArchive) })}
-            iconClassName={clsx({ 'item-smaller-icon-margin': isLast(group, groups) && !isEmpty(groupArchive) })}
+            lines={isLast(group, copiedGroups) ? 'full' : 'inset'}
+            transparentLine={isLast(group, copiedGroups) && isEmpty(groupArchive)}
+            className={clsx({ 'item-thick-full-line': isLast(group, copiedGroups) && !isEmpty(groupArchive) })}
+            iconClassName={clsx({ 'item-smaller-icon-margin': isLast(group, copiedGroups) && !isEmpty(groupArchive) })}
             rightSlideOption={
               <IonItemOption className='sliding-archive' color='warning' onClick={() => archiveGroup(group.id)}>
                 Archivieren
