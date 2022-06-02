@@ -52,6 +52,7 @@ export const InfoSlides = ({ onToggleShowInfoSlides }: InfoSlidesProps): JSX.Ele
         onToggleShowInfoSlides={onToggleShowInfoSlides}
         firstParagraph='Durch das Anklicken einzelner Listeneinträge können diese entweder geöffnet oder bearbeitet werden.'
         secondParagraph='Durch das Wischen einzelner Listeneinträge nach rechts wird ein Knopf sichtbar, über welchen diese gelöscht werden können.'
+        thirdParagraph='Durch das Wischen einzelner Gruppen nach links wird ein Knopf sichtbar, über welchen diese archiviert oder wiederhergestellt werden können.'
       />
     </SwiperSlide>
     <SwiperSlide style={{ flexDirection: 'column', justifyContent: 'start' }}>
