@@ -12,8 +12,8 @@ interface ArchivedGroupsProps {
 }
 
 export const ArchivedGroups = ({ showGroupArchive, setShowGroupArchive }: ArchivedGroupsProps) => {
-  const groupArchive = usePersistedStore.useGroupArchive()
-  const restoreGroup = usePersistedStore.useRestoreGroup()
+  const groupArchive = usePersistedStore(s => s.groupArchive)
+  const restoreGroup = usePersistedStore(s => s.restoreGroup)
 
   return (
     <>

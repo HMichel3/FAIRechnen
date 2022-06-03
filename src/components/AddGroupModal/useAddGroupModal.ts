@@ -20,8 +20,8 @@ export interface GroupFormValues {
 const defaultValues: GroupFormValues = { groupName: '', memberNames: [{ name: '' }] }
 
 export const useAddGroupModal = (onDismiss: AddGroupModalProps['onDismiss']) => {
-  const addGroup = usePersistedStore.useAddGroup()
-  const showAnimationOnce = useStore.useSetShowAnimationOnce()
+  const addGroup = usePersistedStore(s => s.addGroup)
+  const setShowAnimation = useStore(s => s.setShowAnimation)
   const methods = useForm({ resolver: zodResolver(validationSchema), defaultValues })
   const { fields, append, remove, replace } = useFieldArray({ control: methods.control, name: 'memberNames' })
   const memberNamesFields = useWatch({ control: methods.control, name: 'memberNames' })
@@ -40,7 +40,7 @@ export const useAddGroupModal = (onDismiss: AddGroupModalProps['onDismiss']) => 
 
   const onSubmit = methods.handleSubmit(({ groupName, memberNames }) => {
     addGroup(groupName, memberNames)
-    showAnimationOnce()
+    setShowAnimation()
     onDismiss()
   })
 

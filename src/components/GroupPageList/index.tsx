@@ -15,11 +15,11 @@ interface GroupPageListProps {
 }
 
 export const GroupPageList = ({ reorder }: GroupPageListProps) => {
-  const groups = usePersistedStore.useGroups()
-  const groupArchive = usePersistedStore.useGroupArchive()
-  const setGroups = usePersistedStore.useSetGroups()
-  const deleteGroup = usePersistedStore.useDeleteGroup()
-  const archiveGroup = usePersistedStore.useArchiveGroup()
+  const groups = usePersistedStore(s => s.groups)
+  const groupArchive = usePersistedStore(s => s.groupArchive)
+  const setGroups = usePersistedStore(s => s.setGroups)
+  const deleteGroup = usePersistedStore(s => s.deleteGroup)
+  const archiveGroup = usePersistedStore(s => s.archiveGroup)
   const [showDeleteGroupAlert, setShowDeleteGroupAlert] = useState(false)
   const [selectedGroupId, setSelectedGroupId] = useState('')
   const [showGroupArchive, setShowGroupArchive] = useState(false)
@@ -49,7 +49,7 @@ export const GroupPageList = ({ reorder }: GroupPageListProps) => {
             icon={peopleSharp}
             labelComponent={<GroupInfo groupId={group.id} />}
             reorder={reorder}
-            lines={isLast(group, copiedGroups) ? 'full' : 'inset'}
+            lines={isLast(group, copiedGroups) && !isEmpty(groupArchive) ? 'full' : 'inset'}
             transparentLine={isLast(group, copiedGroups) && isEmpty(groupArchive)}
             className={clsx({ 'item-thick-full-line': isLast(group, copiedGroups) && !isEmpty(groupArchive) })}
             iconClassName={clsx({ 'item-smaller-icon-margin': isLast(group, copiedGroups) && !isEmpty(groupArchive) })}

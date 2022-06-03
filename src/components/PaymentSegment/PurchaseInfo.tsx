@@ -10,7 +10,7 @@ export interface PurchaseInfoProps {
 }
 
 export const PurchaseInfo = ({ purchase }: PurchaseInfoProps): JSX.Element => {
-  const { members } = useStore.useSelectedGroup()
+  const { members } = useStore(s => s.selectedGroup)
   const { name, amount, purchaserId, beneficiaryIds, additions, timestamp } = purchase
   const additionPayerIds = getAdditionPayerIdsNotInBeneficiaries(additions, beneficiaryIds)
   const purchaser = findItem(purchaserId, members)

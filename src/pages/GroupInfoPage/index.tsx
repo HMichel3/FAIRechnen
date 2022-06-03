@@ -26,7 +26,7 @@ import clsx from 'clsx'
 import { AddFabButton } from '../../components/AddFabButton'
 import { useAddFabButton } from '../../components/AddFabButton/useAddFabButton'
 import { SimpleSaveAlert } from '../../components/SimpleSaveAlert'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { PurchaseModal } from '../../components/PurchaseModal'
 import { IncomeModal } from '../../components/IncomeModal'
 import { AddCompensationModal } from '../../components/AddCompensationModal'
@@ -35,6 +35,7 @@ import { useStore } from '../../stores/useStore'
 import { generateBill } from './utils'
 import { Share } from '@capacitor/share'
 import { Show } from '../../components/SolidComponents/Show'
+import { SuccessAnimation } from '../../lotties/SuccessAnimation'
 import './index.scss'
 
 interface GroupInfoPageProps
@@ -47,11 +48,12 @@ export const GroupInfoPage = ({
     params: { id: groupId },
   },
 }: GroupInfoPageProps): JSX.Element => {
-  const group = usePersistedStore(useCallback(store => store.getGroup(groupId), [groupId]))
-  const editGroup = usePersistedStore.useEditGroupName()
-  const addMember = usePersistedStore.useAddMember()
-  const setSelectedGroup = useStore.useSetSelectedGroup()
-  const clearSelectedGroup = useStore.useClearSelectedGroup()
+  const group = usePersistedStore(s => s.getGroup(groupId))
+  const editGroupName = usePersistedStore(s => s.editGroupName)
+  const addMember = usePersistedStore(s => s.addMember)
+  const setSelectedGroup = useStore(s => s.setSelectedGroup)
+  const clearSelectedGroup = useStore(s => s.clearSelectedGroup)
+  const showAnimation = useStore(s => s.showAnimation)
 
   const [showSegment, setShowSegment] = useState('members')
   const [showEditGroupNameAlert, setShowEditGroupNameAlert] = useState(false)
@@ -132,7 +134,7 @@ export const GroupInfoPage = ({
           isOpen={showEditGroupNameAlert}
           header='Gruppe umbenennen'
           setIsOpen={setShowEditGroupNameAlert}
-          onSave={newValue => editGroup(groupId, newValue)}
+          onSave={newValue => editGroupName(groupId, newValue)}
           value={group.name}
         />
         <SimpleSaveAlert
@@ -184,6 +186,9 @@ export const GroupInfoPage = ({
           </IonFabButton>
         </IonFab>
       </IonContent>
+      <Show when={showAnimation}>
+        <SuccessAnimation />
+      </Show>
     </IonPage>
   )
 }

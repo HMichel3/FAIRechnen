@@ -1,5 +1,5 @@
-import { SetState } from 'zustand'
-import { PersistedState } from '../usePersistedStore'
+import { StateCreator } from 'zustand'
+import { PersistImmer, PersistedState } from '../usePersistedStore'
 import { calculateNewPurchase } from '../utils'
 import { v4 as uuid } from 'uuid'
 import produce from 'immer'
@@ -13,47 +13,41 @@ export interface PurchaseSlice {
   deletePurchase: (groupId: string, purchaseId: string) => void
 }
 
-export const createPurchaseSlice = (set: SetState<PersistedState>): PurchaseSlice => ({
+export const createPurchaseSlice: StateCreator<PersistedState, PersistImmer, [], PurchaseSlice> = set => ({
   addPurchase: (groupId, newPurchase) =>
-    set(
-      produce<PersistedState>(store => {
-        const groupIndex = findItemIndex(groupId, store.groups)
-        if (groupIndex === -1) return
-        store.groups[groupIndex].purchases.push(
-          produce(calculateNewPurchase(newPurchase) as Purchase, draft => {
-            draft['id'] = uuid()
-            draft['timestamp'] = Date.now()
-          })
-        )
-      })
-    ),
+    set(store => {
+      const groupIndex = findItemIndex(groupId, store.groups)
+      if (groupIndex === -1) return
+      store.groups[groupIndex].purchases.push(
+        produce(calculateNewPurchase(newPurchase) as Purchase, draft => {
+          draft['id'] = uuid()
+          draft['timestamp'] = Date.now()
+        })
+      )
+    }),
   editPurchase: (groupId, purchaseId, newPurchase) =>
-    set(
-      produce<PersistedState>(store => {
-        const groupIndex = findItemIndex(groupId, store.groups)
-        if (groupIndex === -1) return
-        const purchaseIndex = findItemIndex(purchaseId, store.groups[groupIndex].purchases)
-        if (purchaseIndex === -1) return
-        const { name, amount, purchaserId, beneficiaryIds, description, additions, memberAmount } =
-          calculateNewPurchase(newPurchase)
-        const purchase = store.groups[groupIndex].purchases[purchaseIndex]
-        purchase.name = name
-        purchase.amount = amount
-        purchase.purchaserId = purchaserId
-        purchase.beneficiaryIds = beneficiaryIds
-        purchase.description = description
-        purchase.additions = additions
-        purchase.memberAmount = memberAmount
-      })
-    ),
+    set(store => {
+      const groupIndex = findItemIndex(groupId, store.groups)
+      if (groupIndex === -1) return
+      const purchaseIndex = findItemIndex(purchaseId, store.groups[groupIndex].purchases)
+      if (purchaseIndex === -1) return
+      const { name, amount, purchaserId, beneficiaryIds, description, additions, memberAmount } =
+        calculateNewPurchase(newPurchase)
+      const purchase = store.groups[groupIndex].purchases[purchaseIndex]
+      purchase.name = name
+      purchase.amount = amount
+      purchase.purchaserId = purchaserId
+      purchase.beneficiaryIds = beneficiaryIds
+      purchase.description = description
+      purchase.additions = additions
+      purchase.memberAmount = memberAmount
+    }),
   deletePurchase: (groupId, purchaseId) =>
-    set(
-      produce<PersistedState>(store => {
-        const groupIndex = findItemIndex(groupId, store.groups)
-        if (groupIndex === -1) return
-        const purchaseIndex = findItemIndex(purchaseId, store.groups[groupIndex].purchases)
-        if (purchaseIndex === -1) return
-        store.groups[groupIndex].purchases.splice(purchaseIndex, 1)
-      })
-    ),
+    set(store => {
+      const groupIndex = findItemIndex(groupId, store.groups)
+      if (groupIndex === -1) return
+      const purchaseIndex = findItemIndex(purchaseId, store.groups[groupIndex].purchases)
+      if (purchaseIndex === -1) return
+      store.groups[groupIndex].purchases.splice(purchaseIndex, 1)
+    }),
 })

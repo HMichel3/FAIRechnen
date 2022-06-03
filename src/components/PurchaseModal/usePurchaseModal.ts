@@ -42,10 +42,10 @@ const defaultValues = (members: Member[], selectedPurchase?: Purchase): NewPurch
 }
 
 export const usePurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalProps) => {
-  const addPurchase = usePersistedStore.useAddPurchase()
-  const editPurchase = usePersistedStore.useEditPurchase()
-  const { id: groupId, members } = useStore.useSelectedGroup()
-  const showAnimationOnce = useStore.useSetShowAnimationOnce()
+  const addPurchase = usePersistedStore(s => s.addPurchase)
+  const editPurchase = usePersistedStore(s => s.editPurchase)
+  const { id: groupId, members } = useStore(s => s.selectedGroup)
+  const setShowAnimation = useStore(s => s.setShowAnimation)
   const { handleSubmit, watch, formState, control } = useForm({
     resolver: zodResolver(validationSchema),
     defaultValues: defaultValues(members, selectedPurchase),
@@ -62,7 +62,7 @@ export const usePurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalP
     } else {
       addPurchase(groupId, newPurchase)
     }
-    showAnimationOnce()
+    setShowAnimation()
     onDismiss()
   })
 

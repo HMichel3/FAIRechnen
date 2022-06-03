@@ -32,10 +32,10 @@ interface GroupTemplateProps {
 }
 
 export const GroupTemplate = ({ replace }: GroupTemplateProps) => {
-  const groupTemplates = usePersistedStore.useGroupTemplates()
-  const addGroupTemplate = usePersistedStore.useAddGroupTemplate()
-  const deleteGroupTemplate = usePersistedStore.useDeleteGroupTemplate()
-  const theme = usePersistedStore.useTheme()
+  const groupTemplates = usePersistedStore(s => s.groupTemplates)
+  const addGroupTemplate = usePersistedStore(s => s.addGroupTemplate)
+  const deleteGroupTemplate = usePersistedStore(s => s.deleteGroupTemplate)
+  const theme = usePersistedStore(s => s.theme)
   const [groupTemplateId, setGroupTemplateId] = useState('')
   const { reset, setValue, getValues } = useFormContext<GroupFormValues>()
 

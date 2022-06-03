@@ -21,7 +21,7 @@ export const FormCheckboxGroup = <Type extends FieldValues>({
   const {
     field: { value, onChange },
   } = useController({ name, control })
-  const theme = usePersistedStore.useTheme()
+  const theme = usePersistedStore(s => s.theme)
 
   const onCheckboxChange = (memberId: string, value: string[], onChange: (...event: any[]) => void) => {
     if (includes(memberId, value)) {

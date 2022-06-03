@@ -13,7 +13,7 @@ interface FormChipsComponentProps {
 }
 
 export const FormChipsComponent = ({ label, children, error }: FormChipsComponentProps) => {
-  const theme = usePersistedStore.useTheme()
+  const theme = usePersistedStore(s => s.theme)
 
   return (
     <div className={clsx('default-margin form-chips-component', { 'error-border': error })}>

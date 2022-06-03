@@ -20,13 +20,13 @@ export const SimpleSaveAlert = ({
   value,
   placeholder = 'Name eingeben',
 }: SimpleSaveAlertProps) => {
-  const showAnimationOnce = useStore.useSetShowAnimationOnce()
+  const setShowAnimation = useStore(s => s.setShowAnimation)
 
   const onHandler = (newValue: string) => {
     if (isEmpty(newValue)) return false
     if (value === newValue) return true
     onSave(newValue)
-    showAnimationOnce()
+    setShowAnimation()
   }
 
   return (

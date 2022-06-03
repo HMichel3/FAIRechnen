@@ -25,20 +25,23 @@ import { AddGroupModal } from '../../components/AddGroupModal'
 import { isDark } from './utils'
 import { Show } from '../../components/SolidComponents/Show'
 import { GroupPageList } from '../../components/GroupPageList'
+import { SuccessAnimation } from '../../lotties/SuccessAnimation'
+import { useStore } from '../../stores/useStore'
 import './index.scss'
 
 export const GroupPage = (): JSX.Element => {
   const { theme, showInfoSlides, setShowInfoSlides, showFirstInfoSlides, onHideFirstInfoSlides, pageRef } =
     useGroupPage()
-  const groups = usePersistedStore.useGroups()
-  const setTheme = usePersistedStore.useSetTheme()
+  const groups = usePersistedStore(s => s.groups)
+  const setTheme = usePersistedStore(s => s.setTheme)
+  const showAnimation = useStore(s => s.showAnimation)
   const [reorder, setReorder] = useState(false)
   const [showAddGroupModal, dismissAddGroupModal] = useIonModal(AddGroupModal, {
     onDismiss: () => dismissAddGroupModal(),
   })
 
   return (
-    <>
+    <div className='group-page'>
       <IonMenu side='start' contentId='main-content' swipeGesture={!showInfoSlides}>
         <IonHeader>
           <IonToolbar color='dark'>
@@ -82,6 +85,9 @@ export const GroupPage = (): JSX.Element => {
             </IconButton>
           </IonToolbar>
         </IonFooter>
+        <Show when={showAnimation}>
+          <SuccessAnimation />
+        </Show>
       </IonPage>
       <Show when={showInfoSlides}>
         <IonPage className='info-slides-container'>
@@ -97,6 +103,6 @@ export const GroupPage = (): JSX.Element => {
           </IonContent>
         </IonPage>
       </Show>
-    </>
+    </div>
   )
 }

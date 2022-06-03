@@ -5,9 +5,9 @@ import { usePersistedStore } from '../../stores/usePersistedStore'
 import { isDark } from './utils'
 
 export const useGroupPage = () => {
-  const theme = usePersistedStore.useTheme()
-  const alreadyVisited = usePersistedStore.useAlreadyVisited()
-  const setAlreadyVisited = usePersistedStore.useSetAlreadyVisited()
+  const theme = usePersistedStore(s => s.theme)
+  const alreadyVisited = usePersistedStore(s => s.alreadyVisited)
+  const setAlreadyVisited = usePersistedStore(s => s.setAlreadyVisited)
   const ionRouter = useIonRouter()
   const [showInfoSlides, setShowInfoSlides] = useState(false)
   const [showFirstInfoSlides, setShowFirstInfoSlides] = useState(!alreadyVisited)

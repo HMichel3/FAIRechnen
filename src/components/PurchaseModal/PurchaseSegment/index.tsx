@@ -17,7 +17,7 @@ interface PurchaseSegmentProps {
 }
 
 export const PurchaseSegment = ({ control }: PurchaseSegmentProps): JSX.Element => {
-  const { members } = useStore.useSelectedGroup()
+  const { members } = useStore(s => s.selectedGroup)
   const { errors } = useFormState({ control })
 
   return (

@@ -18,10 +18,10 @@ import { IncomeModal } from '../IncomeModal'
 import './index.scss'
 
 export const PaymentSegment = (): JSX.Element => {
-  const deletePurchase = usePersistedStore.useDeletePurchase()
-  const deleteIncome = usePersistedStore.useDeleteIncome()
-  const deleteCompensation = usePersistedStore.useDeleteCompensation()
-  const { id: groupId, purchases, incomes, compensations } = useStore.useSelectedGroup()
+  const deletePurchase = usePersistedStore(s => s.deletePurchase)
+  const deleteIncome = usePersistedStore(s => s.deleteIncome)
+  const deleteCompensation = usePersistedStore(s => s.deleteCompensation)
+  const { id: groupId, purchases, incomes, compensations } = useStore(s => s.selectedGroup)
 
   const [selectedPurchase, setSelectedPurchase] = useState<Purchase>()
   const [selectedIncome, setSelectedIncome] = useState<Income>()

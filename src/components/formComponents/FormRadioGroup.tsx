@@ -19,7 +19,7 @@ export const FormRadioGroup = <Type extends FieldValues>({
   const {
     field: { value, onChange },
   } = useController({ name, control })
-  const theme = usePersistedStore.useTheme()
+  const theme = usePersistedStore(s => s.theme)
 
   return (
     <IonRadioGroup className='form-chip-group' value={value}>

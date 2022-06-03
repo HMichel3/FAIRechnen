@@ -1,8 +1,7 @@
-import produce from 'immer'
-import { SetState } from 'zustand'
+import { StateCreator } from 'zustand'
 import { findItemIndex } from '../../App/utils'
 import { GroupTemplate } from '../types'
-import { PersistedState } from '../usePersistedStore'
+import { PersistImmer, PersistedState } from '../usePersistedStore'
 import { v4 as uuid } from 'uuid'
 
 export interface GroupTemplateSlice {
@@ -11,23 +10,19 @@ export interface GroupTemplateSlice {
   deleteGroupTemplate: (groupTemplateId: string) => void
 }
 
-export const createGroupTemplateSlice = (set: SetState<PersistedState>): GroupTemplateSlice => ({
+export const createGroupTemplateSlice: StateCreator<PersistedState, PersistImmer, [], GroupTemplateSlice> = set => ({
   groupTemplates: [],
   addGroupTemplate: (groupName, memberNames) => {
     const id = uuid()
-    set(
-      produce<PersistedState>(store => {
-        store.groupTemplates.push({ id, name: groupName, memberNames, timestamp: Date.now() })
-      })
-    )
+    set(store => {
+      store.groupTemplates.push({ id, name: groupName, memberNames, timestamp: Date.now() })
+    })
     return id
   },
   deleteGroupTemplate: groupTemplateId =>
-    set(
-      produce<PersistedState>(store => {
-        const groupTemplateIndex = findItemIndex(groupTemplateId, store.groupTemplates)
-        if (groupTemplateIndex === -1) return
-        store.groupTemplates.splice(groupTemplateIndex, 1)
-      })
-    ),
+    set(store => {
+      const groupTemplateIndex = findItemIndex(groupTemplateId, store.groupTemplates)
+      if (groupTemplateIndex === -1) return
+      store.groupTemplates.splice(groupTemplateIndex, 1)
+    }),
 })

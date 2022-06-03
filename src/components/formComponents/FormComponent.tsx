@@ -23,7 +23,7 @@ export const FormComponent = ({
   onDelete,
   className = 'default-margin',
 }: FormComponentProps): JSX.Element => {
-  const theme = usePersistedStore.useTheme()
+  const theme = usePersistedStore(s => s.theme)
 
   return (
     <IonItem className={clsx('form-component', className)} fill='outline'>

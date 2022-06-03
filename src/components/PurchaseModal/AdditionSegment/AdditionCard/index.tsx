@@ -24,8 +24,8 @@ export interface AdditionCardProps {
 }
 
 export const AdditionCard = ({ index, setAdditionIndex, control }: AdditionCardProps): JSX.Element => {
-  const theme = usePersistedStore.useTheme()
-  const { members } = useStore.useSelectedGroup()
+  const theme = usePersistedStore(s => s.theme)
+  const { members } = useStore(s => s.selectedGroup)
   const { errors } = useFormState({ control })
   const additionName = useWatch({ control, name: `additions.${index}.name` })
   const additionAmount = useWatch({ control, name: `additions.${index}.amount` })

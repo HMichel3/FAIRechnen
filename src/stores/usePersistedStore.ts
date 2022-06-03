@@ -1,7 +1,7 @@
 import create from 'zustand'
 import { Drivers, Storage } from '@ionic/storage'
-import { createSelectorHooks } from 'auto-zustand-selectors-hook'
 import { persist, StateStorage } from 'zustand/middleware'
+import { immer } from 'zustand/middleware/immer'
 import { createCompensationSlice, CompensationSlice } from './slices/createCompensationSlice'
 import { createGroupSlice, GroupSlice } from './slices/createGroupSlice'
 import { createMemberSlice, MemberSlice } from './slices/createMemberSlice'
@@ -37,19 +37,21 @@ export type PersistedState = GroupSlice &
   AlreadyVisitedSlice &
   GroupTemplateSlice & { _hasHydrated: boolean }
 
-const usePersistedStoreBase = create<PersistedState>(
+export type PersistImmer = [['zustand/persist', unknown], ['zustand/immer', never]]
+
+export const usePersistedStore = create<PersistedState>()(
   persist(
-    (set, get) => ({
-      ...createGroupSlice(set, get),
-      ...createMemberSlice(set),
-      ...createPurchaseSlice(set),
-      ...createIncomeSlice(set),
-      ...createCompensationSlice(set),
-      ...createThemeSlice(set),
-      ...createAlreadyVisitedSlice(set),
-      ...createGroupTemplateSlice(set),
+    immer((...a) => ({
+      ...createGroupSlice(...a),
+      ...createMemberSlice(...a),
+      ...createPurchaseSlice(...a),
+      ...createIncomeSlice(...a),
+      ...createCompensationSlice(...a),
+      ...createThemeSlice(...a),
+      ...createAlreadyVisitedSlice(...a),
+      ...createGroupTemplateSlice(...a),
       _hasHydrated: false,
-    }),
+    })),
     {
       name: 'store-storage',
       getStorage: () => {
@@ -65,6 +67,3 @@ const usePersistedStoreBase = create<PersistedState>(
     }
   )
 )
-
-// automatically creates hook style selectors
-export const usePersistedStore = createSelectorHooks(usePersistedStoreBase)

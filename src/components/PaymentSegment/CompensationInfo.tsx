@@ -9,7 +9,7 @@ interface CompensationInfoProps {
 }
 
 export const CompensationInfo = ({ compensation }: CompensationInfoProps): JSX.Element => {
-  const { members } = useStore.useSelectedGroup()
+  const { members } = useStore(s => s.selectedGroup)
   const { amount, payerId, receiverId } = compensation
   const payer = findItem(payerId, members)
   const receiver = findItem(receiverId, members)

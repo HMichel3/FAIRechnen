@@ -17,7 +17,7 @@ const defaultValues: CompensationFormValues = { payerId: '', receiverId: '', amo
 export const useAddManualCompensation = (
   setManualCompensation: AddManualCompensationProps['setManualCompensation']
 ) => {
-  const { members } = useStore.useSelectedGroup()
+  const { members } = useStore(s => s.selectedGroup)
   const { setValue, control } = useForm({ defaultValues })
   const payerId = useWatch({ control, name: 'payerId' })
   const receiverId = useWatch({ control, name: 'receiverId' })

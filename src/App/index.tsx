@@ -3,10 +3,7 @@ import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react'
 import { IonReactRouter } from '@ionic/react-router'
 import { GroupPage } from '../pages/GroupPage'
 import { GroupInfoPage } from '../pages/GroupInfoPage'
-import { useStore } from '../stores/useStore'
-import { SuccessAnimation } from '../lotties/SuccessAnimation'
 import { usePersistedStore } from '../stores/usePersistedStore'
-import { Show } from '../components/SolidComponents/Show'
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css'
@@ -30,8 +27,7 @@ import '../theme/variables.css'
 setupIonicReact()
 
 export const App = (): JSX.Element | null => {
-  const hasHydrated = usePersistedStore.use_hasHydrated()
-  const showAnimation = useStore.useShowAnimation()
+  const hasHydrated = usePersistedStore(s => s._hasHydrated)
 
   // Wait for zustand to be loaded with data from database
   if (!hasHydrated) return null
@@ -44,9 +40,6 @@ export const App = (): JSX.Element | null => {
           <Route exact path='/groups/:id' component={GroupInfoPage} />
           <Redirect exact from='/' to='/groups' />
         </IonRouterOutlet>
-        <Show when={showAnimation}>
-          <SuccessAnimation />
-        </Show>
       </IonReactRouter>
     </IonApp>
   )

@@ -10,7 +10,7 @@ export interface IncomeInfoProps {
 }
 
 export const IncomeInfo = ({ income }: IncomeInfoProps): JSX.Element => {
-  const { members } = useStore.useSelectedGroup()
+  const { members } = useStore(s => s.selectedGroup)
   const { name, amount, earnerId, beneficiaryIds, timestamp } = income
   const earner = findItem(earnerId, members)
   const beneficiaries = findItems(beneficiaryIds, members)

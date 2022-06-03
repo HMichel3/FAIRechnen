@@ -1,4 +1,3 @@
-import { useCallback } from 'react'
 import { calculateGroupTotalAmount, displayCurrencyValue } from '../../App/utils'
 import { SmallLabelComponent } from '../../components/SlidingListItem/SmallLabelComponent'
 import { usePersistedStore } from '../../stores/usePersistedStore'
@@ -9,7 +8,7 @@ interface GroupInfoProps {
 }
 
 export const GroupInfo = ({ groupId }: GroupInfoProps): JSX.Element | null => {
-  const group = usePersistedStore(useCallback(store => store.getGroup(groupId), [groupId]))
+  const group = usePersistedStore(s => s.getGroup(groupId))
 
   if (!group) return null
 

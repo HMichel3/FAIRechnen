@@ -1,17 +1,15 @@
-import { SetState } from 'zustand'
+import { StateCreator } from 'zustand'
 import { StoreState } from '../useStore'
 
 export interface AnimationSlice {
   showAnimation: boolean
-  setShowAnimationOnce: () => void
+  setShowAnimation: () => void
 }
 
-export const createAnimationSlice = (set: SetState<StoreState>): AnimationSlice => ({
+export const createAnimationSlice: StateCreator<StoreState, [], [], AnimationSlice> = set => ({
   showAnimation: false,
-  setShowAnimationOnce: () => {
+  setShowAnimation: () => {
     set({ showAnimation: true })
-    setTimeout(() => {
-      set({ showAnimation: false })
-    }, 1000)
+    setTimeout(() => set({ showAnimation: false }), 1000)
   },
 })

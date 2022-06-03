@@ -19,10 +19,10 @@ export interface AddCompensationModalProps {
 }
 
 export const AddCompensationModal = ({ onDismiss }: AddCompensationModalProps): JSX.Element => {
-  const theme = usePersistedStore.useTheme()
-  const addCompensation = usePersistedStore.useAddCompensation()
-  const { id: groupId, members, purchases, incomes, compensations } = useStore.useSelectedGroup()
-  const showAnimationOnce = useStore.useSetShowAnimationOnce()
+  const theme = usePersistedStore(s => s.theme)
+  const addCompensation = usePersistedStore(s => s.addCompensation)
+  const { id: groupId, members, purchases, incomes, compensations } = useStore(s => s.selectedGroup)
+  const setShowAnimation = useStore(s => s.setShowAnimation)
   const [manualCompensation, setManualCompensation] = useState<NewCompensation | null>(null)
   const pageContentRef = useRef<HTMLIonContentElement>(null)
   const membersWithAmounts = calculateMembersWithAmounts(members, purchases, incomes, compensations)
@@ -37,7 +37,7 @@ export const AddCompensationModal = ({ onDismiss }: AddCompensationModalProps): 
       newCompensation = pick(['amount', 'payerId', 'receiverId'], findItem(checkedRadio, possibleCompensations))
     }
     addCompensation(groupId, newCompensation)
-    showAnimationOnce()
+    setShowAnimation()
     onDismiss()
   }
 

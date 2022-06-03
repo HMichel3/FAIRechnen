@@ -14,9 +14,9 @@ import { Member } from '../../stores/types'
 import { isMemberInvolved } from './utils'
 
 export const MemberSegment = (): JSX.Element => {
-  const { id: groupId, members, purchases, incomes, compensations } = useStore.useSelectedGroup()
-  const editMemberName = usePersistedStore.useEditMemberName()
-  const deleteMember = usePersistedStore.useDeleteMember()
+  const { id: groupId, members, purchases, incomes, compensations } = useStore(s => s.selectedGroup)
+  const editMemberName = usePersistedStore(s => s.editMemberName)
+  const deleteMember = usePersistedStore(s => s.deleteMember)
   const [selectedMember, setSelectedMember] = useState<Member>()
   const [showEditMemberAlert, setShowEditMemberAlert] = useState(false)
   const [showCantDeleteMemberAlert, setShowCantDeleteMemberAlert] = useState(false)

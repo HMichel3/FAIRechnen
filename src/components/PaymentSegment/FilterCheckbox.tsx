@@ -11,7 +11,7 @@ interface FilterCheckboxProps {
 }
 
 export const FilterCheckbox = ({ label, checked, setChecked }: FilterCheckboxProps) => {
-  const theme = usePersistedStore.useTheme()
+  const theme = usePersistedStore(s => s.theme)
 
   return (
     <IonItem className='ion-no-padding' lines='none'>

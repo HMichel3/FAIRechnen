@@ -1,4 +1,4 @@
-import { SetState } from 'zustand'
+import { StateCreator } from 'zustand'
 import { Group } from '../types'
 import { StoreState } from '../useStore'
 
@@ -18,7 +18,7 @@ const initialSelectedGroup: Group = {
   timestamp: 0,
 }
 
-export const createSelectedGroupSlice = (set: SetState<StoreState>): SelectedGroupSlice => ({
+export const createSelectedGroupSlice: StateCreator<StoreState, [], [], SelectedGroupSlice> = set => ({
   selectedGroup: initialSelectedGroup,
   setSelectedGroup: selectedGroup => set({ selectedGroup }),
   clearSelectedGroup: () => set({ selectedGroup: initialSelectedGroup }),

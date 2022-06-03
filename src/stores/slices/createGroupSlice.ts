@@ -1,6 +1,5 @@
-import { GetState, SetState } from 'zustand'
-import { PersistedState } from '../usePersistedStore'
-import produce from 'immer'
+import { StateCreator } from 'zustand'
+import { PersistImmer, PersistedState } from '../usePersistedStore'
 import { v4 as uuid } from 'uuid'
 import { isEmpty } from 'ramda'
 import { Group } from '../types'
@@ -18,60 +17,50 @@ export interface GroupSlice {
   getGroup: (groupId: string) => Group
 }
 
-export const createGroupSlice = (set: SetState<PersistedState>, get: GetState<PersistedState>): GroupSlice => ({
+export const createGroupSlice: StateCreator<PersistedState, PersistImmer, [], GroupSlice> = (set, get) => ({
   groups: [],
   groupArchive: [],
   addGroup: (groupName, memberNames) =>
-    set(
-      produce<PersistedState>(store => {
-        const members = memberNames
-          .filter(({ name }) => !isEmpty(name))
-          .map(({ name }) => ({ id: uuid(), name, timestamp: Date.now() }))
-        store.groups.unshift({
-          id: uuid(),
-          name: groupName,
-          members,
-          purchases: [],
-          incomes: [],
-          compensations: [],
-          timestamp: Date.now(),
-        })
+    set(store => {
+      const members = memberNames
+        .filter(({ name }) => !isEmpty(name))
+        .map(({ name }) => ({ id: uuid(), name, timestamp: Date.now() }))
+      store.groups.unshift({
+        id: uuid(),
+        name: groupName,
+        members,
+        purchases: [],
+        incomes: [],
+        compensations: [],
+        timestamp: Date.now(),
       })
-    ),
+    }),
   editGroupName: (groupId, groupName) =>
-    set(
-      produce<PersistedState>(store => {
-        const groupIndex = findItemIndex(groupId, store.groups)
-        if (groupIndex === -1) return
-        store.groups[groupIndex].name = groupName
-      })
-    ),
+    set(store => {
+      const groupIndex = findItemIndex(groupId, store.groups)
+      if (groupIndex === -1) return
+      store.groups[groupIndex].name = groupName
+    }),
   deleteGroup: groupId =>
-    set(
-      produce<PersistedState>(store => {
-        const groupIndex = findItemIndex(groupId, store.groups)
-        if (groupIndex === -1) return
-        store.groups.splice(groupIndex, 1)
-      })
-    ),
+    set(store => {
+      const groupIndex = findItemIndex(groupId, store.groups)
+      if (groupIndex === -1) return
+      store.groups.splice(groupIndex, 1)
+    }),
   archiveGroup: groupId =>
-    set(
-      produce<PersistedState>(store => {
-        const groupIndex = findItemIndex(groupId, store.groups)
-        if (groupIndex === -1) return
-        store.groupArchive.push(store.groups[groupIndex])
-        store.groups.splice(groupIndex, 1)
-      })
-    ),
+    set(store => {
+      const groupIndex = findItemIndex(groupId, store.groups)
+      if (groupIndex === -1) return
+      store.groupArchive.push(store.groups[groupIndex])
+      store.groups.splice(groupIndex, 1)
+    }),
   restoreGroup: groupId =>
-    set(
-      produce<PersistedState>(store => {
-        const groupArchiveIndex = findItemIndex(groupId, store.groupArchive)
-        if (groupArchiveIndex === -1) return
-        store.groups.unshift(store.groupArchive[groupArchiveIndex])
-        store.groupArchive.splice(groupArchiveIndex, 1)
-      })
-    ),
+    set(store => {
+      const groupArchiveIndex = findItemIndex(groupId, store.groupArchive)
+      if (groupArchiveIndex === -1) return
+      store.groups.unshift(store.groupArchive[groupArchiveIndex])
+      store.groupArchive.splice(groupArchiveIndex, 1)
+    }),
   setGroups: groups => set({ groups }),
   getGroup: groupId => findItem(groupId, get().groups),
 })

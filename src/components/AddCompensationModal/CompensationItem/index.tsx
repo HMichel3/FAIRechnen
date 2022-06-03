@@ -9,7 +9,7 @@ interface CompensationItemProps {
 }
 
 export const CompensationItem = ({ compensation }: CompensationItemProps): JSX.Element => {
-  const theme = usePersistedStore.useTheme()
+  const theme = usePersistedStore(s => s.theme)
 
   return (
     <IonItem className='item-border-color'>

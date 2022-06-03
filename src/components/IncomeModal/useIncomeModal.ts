@@ -32,10 +32,10 @@ const defaultValues = (members: Member[], selectedIncome?: Income): NewIncome =>
 }
 
 export const useIncomeModal = ({ onDismiss, selectedIncome }: IncomeModalProps) => {
-  const addIncome = usePersistedStore.useAddIncome()
-  const editIncome = usePersistedStore.useEditIncome()
-  const { id: groupId, members } = useStore.useSelectedGroup()
-  const showAnimationOnce = useStore.useSetShowAnimationOnce()
+  const addIncome = usePersistedStore(s => s.addIncome)
+  const editIncome = usePersistedStore(s => s.editIncome)
+  const { id: groupId, members } = useStore(s => s.selectedGroup)
+  const setShowAnimation = useStore(s => s.setShowAnimation)
   const { handleSubmit, formState, control } = useForm({
     resolver: zodResolver(validationSchema),
     defaultValues: defaultValues(members, selectedIncome),
@@ -47,7 +47,7 @@ export const useIncomeModal = ({ onDismiss, selectedIncome }: IncomeModalProps) 
     } else {
       addIncome(groupId, newIncome)
     }
-    showAnimationOnce()
+    setShowAnimation()
     onDismiss()
   })
 
