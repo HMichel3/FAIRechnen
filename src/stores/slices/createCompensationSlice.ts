@@ -1,5 +1,4 @@
-import { StateCreator } from 'zustand'
-import { PersistImmer, PersistedState } from '../usePersistedStore'
+import { PersistImmer } from '../usePersistedStore'
 import { v4 as uuid } from 'uuid'
 import produce from 'immer'
 import { NewCompensation } from '../../App/types'
@@ -11,7 +10,7 @@ export interface CompensationSlice {
   deleteCompensation: (groupId: string, compensationId: string) => void
 }
 
-export const createCompensationSlice: StateCreator<PersistedState, PersistImmer, [], CompensationSlice> = set => ({
+export const createCompensationSlice: PersistImmer<CompensationSlice> = set => ({
   addCompensation: (groupId, newCompensation) =>
     set(store => {
       const groupIndex = findItemIndex(groupId, store.groups)

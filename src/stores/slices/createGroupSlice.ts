@@ -1,5 +1,4 @@
-import { StateCreator } from 'zustand'
-import { PersistImmer, PersistedState } from '../usePersistedStore'
+import { PersistImmer } from '../usePersistedStore'
 import { v4 as uuid } from 'uuid'
 import { isEmpty } from 'ramda'
 import { Group } from '../types'
@@ -17,7 +16,7 @@ export interface GroupSlice {
   getGroup: (groupId: string) => Group
 }
 
-export const createGroupSlice: StateCreator<PersistedState, PersistImmer, [], GroupSlice> = (set, get) => ({
+export const createGroupSlice: PersistImmer<GroupSlice> = (set, get) => ({
   groups: [],
   groupArchive: [],
   addGroup: (groupName, memberNames) =>

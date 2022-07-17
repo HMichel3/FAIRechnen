@@ -1,6 +1,5 @@
-import { StateCreator } from 'zustand'
 import { Member } from '../types'
-import { PersistImmer, PersistedState } from '../usePersistedStore'
+import { PersistImmer } from '../usePersistedStore'
 import { v4 as uuid } from 'uuid'
 import { findItemIndex } from '../../App/utils'
 
@@ -10,7 +9,7 @@ export interface MemberSlice {
   deleteMember: (groupId: string, memberId: string) => void
 }
 
-export const createMemberSlice: StateCreator<PersistedState, PersistImmer, [], MemberSlice> = set => ({
+export const createMemberSlice: PersistImmer<MemberSlice> = set => ({
   addMember: (groupId, memberName) =>
     set(store => {
       const groupIndex = findItemIndex(groupId, store.groups)

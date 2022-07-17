@@ -1,12 +1,11 @@
-import { StateCreator } from 'zustand'
-import { PersistImmer, PersistedState } from '../usePersistedStore'
+import { PersistImmer } from '../usePersistedStore'
 
 export interface AlreadyVisitedSlice {
   alreadyVisited: boolean
   setAlreadyVisited: () => void
 }
 
-export const createAlreadyVisitedSlice: StateCreator<PersistedState, PersistImmer, [], AlreadyVisitedSlice> = set => ({
+export const createAlreadyVisitedSlice: PersistImmer<AlreadyVisitedSlice> = set => ({
   alreadyVisited: false,
   setAlreadyVisited: () => set({ alreadyVisited: true }),
 })

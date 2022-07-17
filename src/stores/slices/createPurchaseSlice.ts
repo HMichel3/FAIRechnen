@@ -1,5 +1,4 @@
-import { StateCreator } from 'zustand'
-import { PersistImmer, PersistedState } from '../usePersistedStore'
+import { PersistImmer } from '../usePersistedStore'
 import { calculateNewPurchase } from '../utils'
 import { v4 as uuid } from 'uuid'
 import produce from 'immer'
@@ -13,7 +12,7 @@ export interface PurchaseSlice {
   deletePurchase: (groupId: string, purchaseId: string) => void
 }
 
-export const createPurchaseSlice: StateCreator<PersistedState, PersistImmer, [], PurchaseSlice> = set => ({
+export const createPurchaseSlice: PersistImmer<PurchaseSlice> = set => ({
   addPurchase: (groupId, newPurchase) =>
     set(store => {
       const groupIndex = findItemIndex(groupId, store.groups)

@@ -1,4 +1,4 @@
-import create from 'zustand'
+import create, { StateCreator } from 'zustand'
 import { Drivers, Storage } from '@ionic/storage'
 import { persist, StateStorage } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
@@ -37,7 +37,13 @@ export type PersistedState = GroupSlice &
   AlreadyVisitedSlice &
   GroupTemplateSlice & { _hasHydrated: boolean }
 
-export type PersistImmer = [['zustand/persist', unknown], ['zustand/immer', never]]
+// Needed for the Type of the Slices, where T is the particular SliceState
+export type PersistImmer<T> = StateCreator<
+  PersistedState,
+  [['zustand/persist', unknown], ['zustand/immer', never]],
+  [],
+  T
+>
 
 export const usePersistedStore = create<PersistedState>()(
   persist(

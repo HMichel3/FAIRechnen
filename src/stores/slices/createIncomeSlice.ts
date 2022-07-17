@@ -1,6 +1,5 @@
 import produce from 'immer'
-import { StateCreator } from 'zustand'
-import { PersistImmer, PersistedState } from '../usePersistedStore'
+import { PersistImmer } from '../usePersistedStore'
 import { calculateNewIncome } from '../utils'
 import { v4 as uuid } from 'uuid'
 import { NewIncome } from '../../App/types'
@@ -13,7 +12,7 @@ export interface IncomeSlice {
   deleteIncome: (groupId: string, incomeId: string) => void
 }
 
-export const createIncomeSlice: StateCreator<PersistedState, PersistImmer, [], IncomeSlice> = set => ({
+export const createIncomeSlice: PersistImmer<IncomeSlice> = set => ({
   addIncome: (groupId, newIncome) =>
     set(store => {
       const groupIndex = findItemIndex(groupId, store.groups)

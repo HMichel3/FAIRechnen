@@ -1,7 +1,6 @@
-import { StateCreator } from 'zustand'
 import { findItemIndex } from '../../App/utils'
 import { GroupTemplate } from '../types'
-import { PersistImmer, PersistedState } from '../usePersistedStore'
+import { PersistImmer } from '../usePersistedStore'
 import { v4 as uuid } from 'uuid'
 
 export interface GroupTemplateSlice {
@@ -10,7 +9,7 @@ export interface GroupTemplateSlice {
   deleteGroupTemplate: (groupTemplateId: string) => void
 }
 
-export const createGroupTemplateSlice: StateCreator<PersistedState, PersistImmer, [], GroupTemplateSlice> = set => ({
+export const createGroupTemplateSlice: PersistImmer<GroupTemplateSlice> = set => ({
   groupTemplates: [],
   addGroupTemplate: (groupName, memberNames) => {
     const id = uuid()
