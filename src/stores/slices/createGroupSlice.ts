@@ -12,6 +12,7 @@ export interface GroupSlice {
   deleteGroup: (groupId: string) => void
   archiveGroup: (groupId: string) => void
   restoreGroup: (groupId: string) => void
+  deleteArchivedGroup: (groupId: string) => void
   setGroups: (groups: Group[]) => void // needed for reordering
   getGroup: (groupId: string) => Group
 }
@@ -58,6 +59,12 @@ export const createGroupSlice: PersistImmer<GroupSlice> = (set, get) => ({
       const groupArchiveIndex = findItemIndex(groupId, store.groupArchive)
       if (groupArchiveIndex === -1) return
       store.groups.unshift(store.groupArchive[groupArchiveIndex])
+      store.groupArchive.splice(groupArchiveIndex, 1)
+    }),
+  deleteArchivedGroup: groupId =>
+    set(store => {
+      const groupArchiveIndex = findItemIndex(groupId, store.groupArchive)
+      if (groupArchiveIndex === -1) return
       store.groupArchive.splice(groupArchiveIndex, 1)
     }),
   setGroups: groups => set({ groups }),

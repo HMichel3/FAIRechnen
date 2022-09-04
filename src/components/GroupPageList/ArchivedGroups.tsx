@@ -14,6 +14,7 @@ interface ArchivedGroupsProps {
 export const ArchivedGroups = ({ showGroupArchive, setShowGroupArchive }: ArchivedGroupsProps) => {
   const groupArchive = usePersistedStore(s => s.groupArchive)
   const restoreGroup = usePersistedStore(s => s.restoreGroup)
+  const deleteArchivedGroup = usePersistedStore(s => s.deleteArchivedGroup)
 
   return (
     <>
@@ -28,6 +29,7 @@ export const ArchivedGroups = ({ showGroupArchive, setShowGroupArchive }: Archiv
               <SlidingListItem
                 key={group.id}
                 label={group.name}
+                onDelete={() => deleteArchivedGroup(group.id)}
                 icon={archiveSharp}
                 transparentLine={isLast(group, groupArchive)}
                 detail={false}
