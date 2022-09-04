@@ -23,7 +23,7 @@ export const useAddGroupModal = (onDismiss: AddGroupModalProps['onDismiss']) => 
   const addGroup = usePersistedStore(s => s.addGroup)
   const setShowAnimation = useStore(s => s.setShowAnimation)
   const methods = useForm({ resolver: zodResolver(validationSchema), defaultValues })
-  const { fields, append, remove, replace } = useFieldArray({ control: methods.control, name: 'memberNames' })
+  const { fields, append, remove } = useFieldArray({ control: methods.control, name: 'memberNames' })
   const memberNamesFields = useWatch({ control: methods.control, name: 'memberNames' })
   const pageContentRef = useRef<HTMLIonContentElement>(null)
 
@@ -44,5 +44,5 @@ export const useAddGroupModal = (onDismiss: AddGroupModalProps['onDismiss']) => 
     onDismiss()
   })
 
-  return { pageContentRef, fields, remove, onSubmit, replace, methods }
+  return { pageContentRef, fields, remove, onSubmit, methods }
 }

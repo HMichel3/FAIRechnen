@@ -6,7 +6,6 @@ import { FormInput } from '../formComponents/FormInput'
 import { ModalHeader } from '../modalComponents/ModalHeader'
 import { ModalFooter } from '../modalComponents/ModalFooter'
 import { FormProvider } from 'react-hook-form'
-import { GroupTemplate } from './GroupTemplate'
 import clsx from 'clsx'
 
 export interface AddGroupModalProps {
@@ -14,17 +13,13 @@ export interface AddGroupModalProps {
 }
 
 export const AddGroupModal = ({ onDismiss }: AddGroupModalProps): JSX.Element => {
-  const { pageContentRef, fields, remove, onSubmit, replace, methods } = useAddGroupModal(onDismiss)
+  const { pageContentRef, fields, remove, onSubmit, methods } = useAddGroupModal(onDismiss)
 
   return (
     <FormProvider {...methods}>
       <form className='flex-column-full-height' onSubmit={onSubmit}>
         <ModalHeader title='Neue Gruppe' onDismiss={onDismiss} />
         <IonContent ref={pageContentRef}>
-          <IonItemDivider color='medium'>
-            <IonLabel>Gruppenvorlage</IonLabel>
-          </IonItemDivider>
-          <GroupTemplate replace={replace} />
           <IonItemDivider color='medium'>
             <IonLabel>Gruppe</IonLabel>
           </IonItemDivider>
