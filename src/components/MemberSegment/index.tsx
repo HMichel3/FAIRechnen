@@ -12,6 +12,8 @@ import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
 import { Member } from '../../stores/types'
 import { isMemberInvolved } from './utils'
+import { Show } from '../SolidComponents/Show'
+import { isEmpty } from 'ramda'
 
 export const MemberSegment = (): JSX.Element => {
   const { id: groupId, members, purchases, incomes, compensations } = useStore(s => s.selectedGroup)
@@ -33,29 +35,38 @@ export const MemberSegment = (): JSX.Element => {
   }
 
   return (
-    <motion.div variants={fadeOutRightVariants} {...variantProps}>
-      {membersWithAmounts.map(member => (
-        <SlidingListItem
-          key={member.id}
-          label={member.name}
-          endText={
-            <div
-              className={clsx({
-                'color-success': isPositive(member.current),
-                'color-danger': isNegative(member.current),
-              })}
-            >
-              {displayCurrencyValue(member.current)}
-            </div>
-          }
-          onDelete={() => onDeleteMember(member.id)}
-          onSelect={() => onSelectMember(member)}
-          icon={personSharp}
-          labelComponent={<SmallLabelComponent>{displayCurrencyValue(member.total)}</SmallLabelComponent>}
-          transparentLine={isLast(member, membersWithAmounts)}
-          style={{ marginBottom: isLast(member, membersWithAmounts) ? 80 : 0 }}
-        />
-      ))}
+    <>
+      <motion.div variants={fadeOutRightVariants} {...variantProps}>
+        <Show
+          when={!isEmpty(membersWithAmounts)}
+          fallback={<p className='no-items-info'>Füge neue Mitglieder hinzu!</p>}
+        >
+          <>
+            {membersWithAmounts.map(member => (
+              <SlidingListItem
+                key={member.id}
+                label={member.name}
+                endText={
+                  <div
+                    className={clsx({
+                      'color-success': isPositive(member.current),
+                      'color-danger': isNegative(member.current),
+                    })}
+                  >
+                    {displayCurrencyValue(member.current)}
+                  </div>
+                }
+                onDelete={() => onDeleteMember(member.id)}
+                onSelect={() => onSelectMember(member)}
+                icon={personSharp}
+                labelComponent={<SmallLabelComponent>{displayCurrencyValue(member.total)}</SmallLabelComponent>}
+                transparentLine={isLast(member, membersWithAmounts)}
+                style={{ marginBottom: isLast(member, membersWithAmounts) ? 80 : 0 }}
+              />
+            ))}
+          </>
+        </Show>
+      </motion.div>
       <IonAlert
         isOpen={showCantDeleteMemberAlert}
         onDidDismiss={() => setShowCantDeleteMemberAlert(false)}
@@ -70,6 +81,6 @@ export const MemberSegment = (): JSX.Element => {
         onSave={newValue => editMemberName(groupId, selectedMember!.id, newValue)}
         value={selectedMember?.name}
       />
-    </motion.div>
+    </>
   )
 }

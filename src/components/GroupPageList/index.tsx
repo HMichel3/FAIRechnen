@@ -39,28 +39,35 @@ export const GroupPageList = ({ reorder }: GroupPageListProps) => {
 
   return (
     <>
-      <IonReorderGroup disabled={!reorder} onIonItemReorder={({ detail }) => setGroups(detail.complete(copiedGroups))}>
-        {copiedGroups.map(group => (
-          <SlidingListItem
-            key={group.id}
-            label={group.name}
-            routerLink={`/groups/${group.id}`}
-            onDelete={() => onDeleteGroup(group.id)}
-            icon={peopleSharp}
-            labelComponent={<GroupInfo groupId={group.id} />}
-            reorder={reorder}
-            lines={isLast(group, copiedGroups) && !isEmpty(groupArchive) ? 'full' : 'inset'}
-            transparentLine={isLast(group, copiedGroups) && isEmpty(groupArchive)}
-            className={clsx({ 'item-thick-full-line': isLast(group, copiedGroups) && !isEmpty(groupArchive) })}
-            iconClassName={clsx({ 'item-smaller-icon-margin': isLast(group, copiedGroups) && !isEmpty(groupArchive) })}
-            rightSlideOption={
-              <IonItemOption className='sliding-archive' color='warning' onClick={() => archiveGroup(group.id)}>
-                Archivieren
-              </IonItemOption>
-            }
-          />
-        ))}
-      </IonReorderGroup>
+      <Show when={!isEmpty(copiedGroups)} fallback={<p className='no-items-info'>Füge neue Gruppen hinzu!</p>}>
+        <IonReorderGroup
+          disabled={!reorder}
+          onIonItemReorder={({ detail }) => setGroups(detail.complete(copiedGroups))}
+        >
+          {copiedGroups.map(group => (
+            <SlidingListItem
+              key={group.id}
+              label={group.name}
+              routerLink={`/groups/${group.id}`}
+              onDelete={() => onDeleteGroup(group.id)}
+              icon={peopleSharp}
+              labelComponent={<GroupInfo groupId={group.id} />}
+              reorder={reorder}
+              lines={isLast(group, copiedGroups) && !isEmpty(groupArchive) ? 'full' : 'inset'}
+              transparentLine={isLast(group, copiedGroups) && isEmpty(groupArchive)}
+              className={clsx({ 'item-thick-full-line': isLast(group, copiedGroups) && !isEmpty(groupArchive) })}
+              iconClassName={clsx({
+                'item-smaller-icon-margin': isLast(group, copiedGroups) && !isEmpty(groupArchive),
+              })}
+              rightSlideOption={
+                <IonItemOption className='sliding-archive' color='warning' onClick={() => archiveGroup(group.id)}>
+                  Archivieren
+                </IonItemOption>
+              }
+            />
+          ))}
+        </IonReorderGroup>
+      </Show>
       <Show when={!isEmpty(groupArchive)}>
         <ArchivedGroups showGroupArchive={showGroupArchive} setShowGroupArchive={setShowGroupArchive} />
       </Show>

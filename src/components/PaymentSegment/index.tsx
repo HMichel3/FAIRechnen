@@ -15,6 +15,8 @@ import { useStore } from '../../stores/useStore'
 import { Income, Purchase } from '../../stores/types'
 import { PurchaseModal } from '../PurchaseModal'
 import { IncomeModal } from '../IncomeModal'
+import { Show } from '../SolidComponents/Show'
+import { isEmpty } from 'ramda'
 import './index.scss'
 
 export const PaymentSegment = (): JSX.Element => {
@@ -59,60 +61,73 @@ export const PaymentSegment = (): JSX.Element => {
   }
 
   return (
-    <motion.div variants={fadeOutLeftVariants} {...variantProps}>
-      <div className='filter-payments'>
-        <FilterCheckbox label='Einkäufe' checked={showPurchases} setChecked={setShowPurchases} />
-        <FilterCheckbox label='Einkommen' checked={showIncomes} setChecked={setShowIncomes} />
-        <FilterCheckbox label='Zahlungen' checked={showCompensations} setChecked={setShowCompensations} />
-      </div>
-      {filteredGroupPayments.map(groupPayment => {
-        if (isPurchase(groupPayment)) {
-          return (
-            <SlidingListItem
-              key={groupPayment.id}
-              onDelete={() => deletePurchase(groupId, groupPayment.id)}
-              onSelect={() => onSelectPurchase(groupPayment)}
-              labelComponent={<PurchaseInfo purchase={groupPayment} />}
-              icon={cartSharp}
-              detail={false}
-              transparentLine={isLast(groupPayment, filteredGroupPayments)}
-              style={{ marginBottom: isLast(groupPayment, filteredGroupPayments) ? 91 : 0 }}
-            />
-          )
-        }
-        if (isIncome(groupPayment)) {
-          return (
-            <SlidingListItem
-              key={groupPayment.id}
-              onDelete={() => deleteIncome(groupId, groupPayment.id)}
-              onSelect={() => onSelectIncome(groupPayment)}
-              labelComponent={<IncomeInfo income={groupPayment} />}
-              icon={serverSharp}
-              detail={false}
-              transparentLine={isLast(groupPayment, filteredGroupPayments)}
-              style={{ marginBottom: isLast(groupPayment, filteredGroupPayments) ? 91 : 0 }}
-            />
-          )
-        }
-        return (
-          <SlidingListItem
-            key={groupPayment.id}
-            onDelete={() => deleteCompensation(groupId, groupPayment.id)}
-            onSelect={() => setShowCantEditCompensation(true)}
-            labelComponent={<CompensationInfo compensation={groupPayment} />}
-            icon={walletSharp}
-            detail={false}
-            transparentLine={isLast(groupPayment, filteredGroupPayments)}
-            style={{ marginBottom: isLast(groupPayment, filteredGroupPayments) ? 80 : 0 }}
-          />
-        )
-      })}
+    <>
+      <motion.div variants={fadeOutLeftVariants} {...variantProps}>
+        <div className='filter-payments'>
+          <FilterCheckbox label='Einkäufe' checked={showPurchases} setChecked={setShowPurchases} />
+          <FilterCheckbox label='Einkommen' checked={showIncomes} setChecked={setShowIncomes} />
+          <FilterCheckbox label='Zahlungen' checked={showCompensations} setChecked={setShowCompensations} />
+        </div>
+        <Show
+          when={!isEmpty(filteredGroupPayments)}
+          fallback={
+            <p className='no-items-info'>
+              Füge neue Einkäufe, Einkommen <br /> oder Zahlungen hinzu!
+            </p>
+          }
+        >
+          <>
+            {filteredGroupPayments.map(groupPayment => {
+              if (isPurchase(groupPayment)) {
+                return (
+                  <SlidingListItem
+                    key={groupPayment.id}
+                    onDelete={() => deletePurchase(groupId, groupPayment.id)}
+                    onSelect={() => onSelectPurchase(groupPayment)}
+                    labelComponent={<PurchaseInfo purchase={groupPayment} />}
+                    icon={cartSharp}
+                    detail={false}
+                    transparentLine={isLast(groupPayment, filteredGroupPayments)}
+                    style={{ marginBottom: isLast(groupPayment, filteredGroupPayments) ? 91 : 0 }}
+                  />
+                )
+              }
+              if (isIncome(groupPayment)) {
+                return (
+                  <SlidingListItem
+                    key={groupPayment.id}
+                    onDelete={() => deleteIncome(groupId, groupPayment.id)}
+                    onSelect={() => onSelectIncome(groupPayment)}
+                    labelComponent={<IncomeInfo income={groupPayment} />}
+                    icon={serverSharp}
+                    detail={false}
+                    transparentLine={isLast(groupPayment, filteredGroupPayments)}
+                    style={{ marginBottom: isLast(groupPayment, filteredGroupPayments) ? 91 : 0 }}
+                  />
+                )
+              }
+              return (
+                <SlidingListItem
+                  key={groupPayment.id}
+                  onDelete={() => deleteCompensation(groupId, groupPayment.id)}
+                  onSelect={() => setShowCantEditCompensation(true)}
+                  labelComponent={<CompensationInfo compensation={groupPayment} />}
+                  icon={walletSharp}
+                  detail={false}
+                  transparentLine={isLast(groupPayment, filteredGroupPayments)}
+                  style={{ marginBottom: isLast(groupPayment, filteredGroupPayments) ? 80 : 0 }}
+                />
+              )
+            })}
+          </>
+        </Show>
+      </motion.div>
       <IonAlert
         isOpen={showCantEditCompensation}
         onDidDismiss={() => setShowCantEditCompensation(false)}
         header='Zahlungen können nicht bearbeitet werden!'
         buttons={[{ role: 'cancel', text: 'Okay' }]}
       />
-    </motion.div>
+    </>
   )
 }
