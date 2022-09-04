@@ -12,7 +12,7 @@ const validationSchema = z.object({
   memberNames: z.object({ name: z.string() }).array(),
 })
 
-export interface GroupFormValues {
+interface GroupFormValues {
   groupName: string
   memberNames: { name: string }[]
 }
