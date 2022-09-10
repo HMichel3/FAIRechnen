@@ -67,7 +67,7 @@ export const AdditionCard = ({ index, setAdditionIndex, control }: AdditionCardP
           </IonButton>
         </IonItem>
       </IonCardTitle>
-      <AnimatePresence exitBeforeEnter>
+      <AnimatePresence mode='wait'>
         {showCardContent && (
           <motion.div variants={fadeInOutTopVariants} {...variantProps}>
             <IonCardContent style={{ paddingTop: 0 }}>

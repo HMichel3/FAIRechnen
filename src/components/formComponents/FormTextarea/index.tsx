@@ -2,7 +2,7 @@ import { IonTextarea } from '@ionic/react'
 import { Control, FieldValues, Path, useController } from 'react-hook-form'
 import './index.scss'
 
-interface FormTextareaProps<Type> {
+interface FormTextareaProps<Type extends FieldValues> {
   name: Path<Type>
   control: Control<Type>
 }

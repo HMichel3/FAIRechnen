@@ -2,7 +2,7 @@ import { IonInput } from '@ionic/react'
 import { trim } from 'ramda'
 import { Control, FieldValues, Path, useController } from 'react-hook-form'
 
-interface FormInputProps<Type> {
+interface FormInputProps<Type extends FieldValues> {
   name: Path<Type>
   control: Control<Type>
 }

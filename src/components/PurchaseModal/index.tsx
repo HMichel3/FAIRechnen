@@ -99,7 +99,7 @@ export const PurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalProp
         </IonToolbar>
       </ModalHeader>
       <IonContent ref={pageContentRef}>
-        <AnimatePresence exitBeforeEnter>
+        <AnimatePresence mode='wait'>
           {/* Key prop is needed for AnimatePresence to work correctly on 2 different Components */}
           {showSegment === 'purchase' && <PurchaseSegment key='purchase' control={control} />}
           {showSegment === 'additions' && (

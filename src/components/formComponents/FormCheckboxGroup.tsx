@@ -7,7 +7,7 @@ import { isDark } from '../../pages/GroupPage/utils'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import './FormChipsComponent/index.scss'
 
-interface FormCheckboxGroupProps<Type> {
+interface FormCheckboxGroupProps<Type extends FieldValues> {
   name: Path<Type>
   control: Control<Type>
   selectOptions: { id: string; name: string }[]

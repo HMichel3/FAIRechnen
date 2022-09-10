@@ -60,7 +60,7 @@ export const AddCompensationModal = ({ onDismiss }: AddCompensationModalProps): 
             <IonLabel>Manuelle Zahlung</IonLabel>
           </IonItem>
         </IonRadioGroup>
-        <AnimatePresence exitBeforeEnter>
+        <AnimatePresence mode='wait'>
           {checkedRadio === 'manual' && <AddManualCompensation setManualCompensation={setManualCompensation} />}
         </AnimatePresence>
       </IonContent>

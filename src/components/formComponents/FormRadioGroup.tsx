@@ -5,7 +5,7 @@ import { isDark } from '../../pages/GroupPage/utils'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import './FormChipsComponent/index.scss'
 
-interface FormRadioGroupProps<Type> {
+interface FormRadioGroupProps<Type extends FieldValues> {
   name: Path<Type>
   control: Control<Type>
   selectOptions: { id: string; name: string }[]

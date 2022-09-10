@@ -138,7 +138,7 @@ export const GroupInfoPage = ({
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <AnimatePresence exitBeforeEnter>
+        <AnimatePresence mode='wait'>
           {/* Key prop is needed for AnimatePresence to work correctly on 2 different Components */}
           {showSegment === 'members' && <MemberSegment key='members' />}
           {showSegment === 'payments' && <PaymentSegment key='payments' />}

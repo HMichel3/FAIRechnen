@@ -1,7 +1,7 @@
 import { IonSelect, IonSelectOption } from '@ionic/react'
 import { Control, FieldValues, Path, useController } from 'react-hook-form'
 
-interface FormSelectProps<Type> {
+interface FormSelectProps<Type extends FieldValues> {
   name: Path<Type>
   control: Control<Type>
   selectOptions: { id: string; name: string }[]

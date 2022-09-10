@@ -22,7 +22,7 @@ export const ArchivedGroups = ({ showGroupArchive, setShowGroupArchive }: Archiv
         <IonLabel>Archivierte Gruppen ({groupArchive.length})</IonLabel>
         <IonIcon color='light' slot='end' icon={showGroupArchive ? chevronUpSharp : chevronDownSharp} />
       </IonItem>
-      <AnimatePresence exitBeforeEnter>
+      <AnimatePresence mode='wait'>
         {showGroupArchive && (
           <motion.div variants={fadeInOutTopVariants} {...variantProps}>
             {groupArchive.map(group => (

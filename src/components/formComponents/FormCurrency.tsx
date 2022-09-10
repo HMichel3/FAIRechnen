@@ -4,7 +4,7 @@ import { useCallback } from 'react'
 import { Control, FieldValues, Path, useController } from 'react-hook-form'
 import { displayCurrencyValue } from '../../App/utils'
 
-interface FormCurrencyProps<Type> {
+interface FormCurrencyProps<Type extends FieldValues> {
   name: Path<Type>
   control: Control<Type>
 }
