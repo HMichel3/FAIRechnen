@@ -54,6 +54,7 @@ const defaultValues = (members: Member[], selectedPurchase?: Purchase): NewPurch
 export const PurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalProps): JSX.Element => {
   const addPurchase = usePersistedStore(s => s.addPurchase)
   const editPurchase = usePersistedStore(s => s.editPurchase)
+  const theme = usePersistedStore(s => s.theme)
   const { id: groupId, members } = useStore(s => s.selectedGroup)
   const setShowAnimation = useStore(s => s.setShowAnimation)
   const { handleSubmit, watch, formState, control } = useForm({
@@ -63,6 +64,12 @@ export const PurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalProp
   const [showSegment, setShowSegment] = useState('purchase')
   const [showAdditionError, setShowAdditionError] = useState(false)
   const pageContentRef = useRef<HTMLIonContentElement>(null)
+
+  useEffect(() => {
+    if (formState.errors.name || formState.errors.amount || formState.errors.beneficiaryIds)
+      return setShowSegment('purchase')
+    if (formState.errors.additions) setShowSegment('additions')
+  }, [formState.errors])
 
   const onSubmit = handleSubmit(newPurchase => {
     setShowAdditionError(false)
@@ -77,12 +84,6 @@ export const PurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalProp
     setShowAnimation()
     onDismiss()
   })
-
-  useEffect(() => {
-    if (formState.errors.name || formState.errors.amount || formState.errors.beneficiaryIds)
-      return setShowSegment('purchase')
-    if (formState.errors.additions) setShowSegment('additions')
-  }, [formState.errors])
 
   return (
     <form className='flex-column-full-height' onSubmit={onSubmit}>
@@ -103,7 +104,14 @@ export const PurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalProp
           {/* Key prop is needed for AnimatePresence to work correctly on 2 different Components */}
           {showSegment === 'purchase' && <PurchaseSegment key='purchase' control={control} />}
           {showSegment === 'additions' && (
-            <AdditionSegment key='additions' pageContentRef={pageContentRef} control={control} />
+            <AdditionSegment
+              key='additions'
+              pageContentRef={pageContentRef}
+              watch={watch}
+              control={control}
+              members={members}
+              theme={theme}
+            />
           )}
         </AnimatePresence>
         <IonAlert

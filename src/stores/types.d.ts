@@ -53,3 +53,5 @@ export type SelectedGroup = Group & {
   membersWithAmounts: MemberWithAmounts[]
   sortedPayments: Payment[]
 }
+
+export type Theme = 'dark' | 'white'

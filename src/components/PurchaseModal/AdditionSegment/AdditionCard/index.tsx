@@ -9,28 +9,40 @@ import { FormInput } from '../../../formComponents/FormInput'
 import { FormComponent } from '../../../formComponents/FormComponent'
 import { FormCurrency } from '../../../formComponents/FormCurrency'
 import { FormSelect } from '../../../formComponents/FormSelect'
-import { useStore } from '../../../../stores/useStore'
-import { Control, useFormState, useWatch } from 'react-hook-form'
-import { usePersistedStore } from '../../../../stores/usePersistedStore'
+import { Control, FieldError } from 'react-hook-form'
 import { isDark } from '../../../../pages/GroupPage/utils'
 import clsx from 'clsx'
-import { NewPurchase } from '../../../../App/types'
+import { NewAddition, NewPurchase } from '../../../../App/types'
+import { SelectedGroup, Theme } from '../../../../stores/types'
 import './index.scss'
 
 interface AdditionCardProps {
   index: number
   setAdditionIndex: Dispatch<SetStateAction<number | null>>
   control: Control<NewPurchase>
+  members: SelectedGroup['members']
+  theme: Theme
+  addition: NewAddition
+  additionErrors:
+    | {
+        name?: FieldError | undefined
+        amount?: FieldError | undefined
+        payerIds?: FieldError[] | undefined
+      }[]
+    | undefined
 }
 
-export const AdditionCard = ({ index, setAdditionIndex, control }: AdditionCardProps): JSX.Element => {
-  const theme = usePersistedStore(s => s.theme)
-  const { members } = useStore(s => s.selectedGroup)
-  const { errors } = useFormState({ control })
-  const additionName = useWatch({ control, name: `additions.${index}.name` })
-  const additionAmount = useWatch({ control, name: `additions.${index}.amount` })
+export const AdditionCard = ({
+  index,
+  setAdditionIndex,
+  addition,
+  control,
+  members,
+  theme,
+  additionErrors,
+}: AdditionCardProps): JSX.Element => {
   const [showCardContent, setShowCardContent] = useState(
-    isEmpty(additionName) || !isNil(path(['additions', index], errors))
+    isEmpty(addition.name) || !isNil(path([index], additionErrors))
   )
 
   const onToggleShowCardContent = () => {
@@ -48,14 +60,16 @@ export const AdditionCard = ({ index, setAdditionIndex, control }: AdditionCardP
             style={{ marginInlineEnd: 12 }}
             onClick={onToggleShowCardContent}
           />
-          <IonLabel onClick={onToggleShowCardContent}>{isEmpty(trim(additionName)) ? 'Zusatz' : additionName}</IonLabel>
+          <IonLabel onClick={onToggleShowCardContent}>
+            {isEmpty(trim(addition.name)) ? 'Zusatz' : addition.name}
+          </IonLabel>
           <IonLabel
             slot='end'
             color={clsx({ light: isDark(theme) })}
             style={{ marginInlineStart: 16 }}
             onClick={onToggleShowCardContent}
           >
-            {displayCurrencyValue(additionAmount)}
+            {displayCurrencyValue(addition.amount)}
           </IonLabel>
           <IonButton
             slot='end'
@@ -74,21 +88,21 @@ export const AdditionCard = ({ index, setAdditionIndex, control }: AdditionCardP
               <FormComponent
                 className='addition-card-input form-input-no-margin'
                 label='Zusatzname'
-                error={path(['additions', index, 'name'], errors)}
+                error={path([index, 'name'], additionErrors)}
               >
                 <FormInput name={`additions.${index}.name`} control={control} />
               </FormComponent>
               <FormComponent
                 className='addition-card-input form-input-no-margin'
                 label='Betrag'
-                error={path(['additions', index, 'amount'], errors)}
+                error={path([index, 'amount'], additionErrors)}
               >
                 <FormCurrency name={`additions.${index}.amount`} control={control} />
               </FormComponent>
               <FormComponent
                 className='addition-card-select form-input-no-margin'
                 label='Beteiligte'
-                error={path(['additions', index, 'payerIds'], errors)}
+                error={path([index, 'payerIds'], additionErrors)}
               >
                 <FormSelect name={`additions.${index}.payerIds`} selectOptions={members} control={control} multiple />
               </FormComponent>

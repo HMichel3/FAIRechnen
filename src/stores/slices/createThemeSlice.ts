@@ -1,8 +1,9 @@
+import { Theme } from '../types'
 import { PersistImmer } from '../usePersistedStore'
 
 export interface ThemeSlice {
-  theme: 'dark' | 'white'
-  setTheme: (theme: ThemeSlice['theme']) => void
+  theme: Theme
+  setTheme: (theme: Theme) => void
 }
 
 export const createThemeSlice: PersistImmer<ThemeSlice> = set => ({
