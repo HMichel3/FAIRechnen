@@ -105,11 +105,10 @@ ion-select::part(text) {
   margin-bottom: 10px;
 }
 .no-items-info {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  inset: 0;
+  display: grid;
+  place-items: center;
+  height: 100%;
+  margin: 0 16px;
   color: var(--ion-color-light-shade);
   font-size: large;
   text-align: center;

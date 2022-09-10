@@ -9,23 +9,22 @@ import { saveSharp } from 'ionicons/icons'
 import { pick } from 'ramda'
 import { useState, useRef } from 'react'
 import { NewCompensation } from '../../App/types'
-import { calculateMembersWithAmounts, findItem } from '../../App/utils'
+import { findItem } from '../../App/utils'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
 import { generatePossibleCompensations } from './utils'
 
-export interface AddCompensationModalProps {
+interface AddCompensationModalProps {
   onDismiss: () => void
 }
 
 export const AddCompensationModal = ({ onDismiss }: AddCompensationModalProps): JSX.Element => {
   const theme = usePersistedStore(s => s.theme)
   const addCompensation = usePersistedStore(s => s.addCompensation)
-  const { id: groupId, members, purchases, incomes, compensations } = useStore(s => s.selectedGroup)
+  const { id: groupId, membersWithAmounts } = useStore(s => s.selectedGroup)
   const setShowAnimation = useStore(s => s.setShowAnimation)
   const [manualCompensation, setManualCompensation] = useState<NewCompensation | null>(null)
   const pageContentRef = useRef<HTMLIonContentElement>(null)
-  const membersWithAmounts = calculateMembersWithAmounts(members, purchases, incomes, compensations)
   const { current: possibleCompensations } = useRef(generatePossibleCompensations(membersWithAmounts))
   const [checkedRadio, setCheckedRadio] = useState<string>(possibleCompensations.at(0)?.id ?? 'manual')
 

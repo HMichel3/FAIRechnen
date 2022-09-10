@@ -39,7 +39,10 @@ export const GroupPageList = ({ reorder }: GroupPageListProps) => {
 
   return (
     <>
-      <Show when={!isEmpty(copiedGroups)} fallback={<p className='no-items-info'>Füge neue Gruppen hinzu!</p>}>
+      <Show
+        when={!isEmpty(copiedGroups)}
+        fallback={isGroupArchiveEmpty ? <p className='no-items-info'>Füge neue Gruppen hinzu!</p> : null}
+      >
         <IonReorderGroup
           disabled={!reorder}
           onIonItemReorder={({ detail }) => setGroups(detail.complete(copiedGroups))}

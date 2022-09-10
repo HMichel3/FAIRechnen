@@ -22,19 +22,8 @@ export const displayBeneficiaryNames = (beneficiaries: Member[], members: Member
 export const displayAdditionQuantity = (additionQuantity: number) =>
   additionQuantity === 1 ? '1 Zusatz' : `${additionQuantity} Zusätze`
 
-export const mergeAndSortPayments = (
-  purchases: Purchase[],
-  incomes: Income[],
-  compensations: Compensation[],
-  showPurchases: boolean,
-  showIncomes: boolean,
-  showCompensations: boolean
-) => {
-  const payments = produce<Payment[]>([], draft => {
-    if (showPurchases) draft.push(...purchases)
-    if (showIncomes) draft.push(...incomes)
-    if (showCompensations) draft.push(...compensations)
-  })
+export const mergeAndSortPayments = (purchases: Purchase[], incomes: Income[], compensations: Compensation[]) => {
+  const payments = [...purchases, ...incomes, ...compensations]
   return sort(descend(prop('timestamp')), payments)
 }
 

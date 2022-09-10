@@ -9,7 +9,7 @@ import { motion } from 'framer-motion'
 import { fadeOutLeftVariants, variantProps } from '../../../App/animations'
 import './index.scss'
 
-export interface AdditionSegmentProps {
+interface AdditionSegmentProps {
   pageContentRef: RefObject<HTMLIonContentElement>
   control: Control<NewPurchase>
 }

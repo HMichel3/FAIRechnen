@@ -26,7 +26,7 @@ import clsx from 'clsx'
 import { AddFabButton } from '../../components/AddFabButton'
 import { useAddFabButton } from '../../components/AddFabButton/useAddFabButton'
 import { SimpleSaveAlert } from '../../components/SimpleSaveAlert'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { PurchaseModal } from '../../components/PurchaseModal'
 import { IncomeModal } from '../../components/IncomeModal'
 import { AddCompensationModal } from '../../components/AddCompensationModal'
@@ -36,6 +36,8 @@ import { generateBill } from './utils'
 import { Share } from '@capacitor/share'
 import { Show } from '../../components/SolidComponents/Show'
 import { SuccessAnimation } from '../../lotties/SuccessAnimation'
+import { calculateMembersWithAmounts } from '../../App/utils'
+import { mergeAndSortPayments } from '../../components/PaymentSegment/utils'
 import './index.scss'
 
 interface GroupInfoPageProps
@@ -68,12 +70,23 @@ export const GroupInfoPage = ({
   const [showAddCompensationModal, dismissAddCompensationModal] = useIonModal(AddCompensationModal, {
     onDismiss: () => dismissAddCompensationModal(),
   })
+
   const { showFab, showBackdrop, onClickFabButton, onClickFabButtonInList, onClickBackdrop } = useAddFabButton()
 
+  const membersWithAmounts = useMemo(
+    () => calculateMembersWithAmounts(group.members, group.purchases, group.incomes, group.compensations),
+    [group.members, group.purchases, group.incomes, group.compensations]
+  )
+
+  const sortedPayments = useMemo(
+    () => mergeAndSortPayments(group.purchases, group.incomes, group.compensations),
+    [group.purchases, group.incomes, group.compensations]
+  )
+
+  // saves the selectedGroup onMount to make it accessible through the application
   useEffect(() => {
-    // saves the selected Group in the store, to make it accessible
-    setSelectedGroup(group)
-  }, [group, setSelectedGroup])
+    setSelectedGroup({ ...group, membersWithAmounts, sortedPayments })
+  }, [group, setSelectedGroup, membersWithAmounts, sortedPayments])
 
   // onUnmount
   useEffect(() => () => clearSelectedGroup(), [clearSelectedGroup])

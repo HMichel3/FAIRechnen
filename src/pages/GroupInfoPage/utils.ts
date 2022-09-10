@@ -9,7 +9,7 @@ import {
   findItemIndex,
 } from '../../App/utils'
 import { generatePossibleCompensations } from '../../components/AddCompensationModal/utils'
-import { Compensation, Group, Income, Member, Purchase } from '../../stores/types'
+import { Compensation, Income, Member, Purchase, SelectedGroup } from '../../stores/types'
 
 const generateOnePossibleCompensationChain = (membersWithAmounts: MemberWithAmounts[]) => {
   const addedCompensations: CompensationsWithoutTimestamp[] = []
@@ -29,7 +29,7 @@ const generateOnePossibleCompensationChain = (membersWithAmounts: MemberWithAmou
 }
 
 export const generateBill = (
-  groupName: Group['name'],
+  groupName: SelectedGroup['name'],
   members: Member[],
   purchases: Purchase[],
   incomes: Income[],

@@ -10,7 +10,7 @@ import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useState } from 'react'
 import { IncomeInfo } from './IncomeInfo'
 import { FilterCheckbox } from './FilterCheckbox'
-import { isIncome, isPurchase, mergeAndSortPayments } from './utils'
+import { isIncome, isPurchase } from './utils'
 import { useStore } from '../../stores/useStore'
 import { Income, Purchase } from '../../stores/types'
 import { PurchaseModal } from '../PurchaseModal'
@@ -23,7 +23,7 @@ export const PaymentSegment = (): JSX.Element => {
   const deletePurchase = usePersistedStore(s => s.deletePurchase)
   const deleteIncome = usePersistedStore(s => s.deleteIncome)
   const deleteCompensation = usePersistedStore(s => s.deleteCompensation)
-  const { id: groupId, purchases, incomes, compensations } = useStore(s => s.selectedGroup)
+  const { id: groupId, sortedPayments } = useStore(s => s.selectedGroup)
 
   const [selectedPurchase, setSelectedPurchase] = useState<Purchase>()
   const [selectedIncome, setSelectedIncome] = useState<Income>()
@@ -41,14 +41,15 @@ export const PaymentSegment = (): JSX.Element => {
     selectedIncome: selectedIncome,
   })
 
-  const filteredGroupPayments = mergeAndSortPayments(
-    purchases,
-    incomes,
-    compensations,
-    showPurchases,
-    showIncomes,
-    showCompensations
-  )
+  const filteredGroupPayments = sortedPayments.filter(payment => {
+    if (isPurchase(payment)) {
+      return showPurchases
+    }
+    if (isIncome(payment)) {
+      return showIncomes
+    }
+    return showCompensations
+  })
 
   const onSelectPurchase = (purchase: Purchase) => {
     setSelectedPurchase(purchase)
@@ -62,14 +63,15 @@ export const PaymentSegment = (): JSX.Element => {
 
   return (
     <>
-      <motion.div variants={fadeOutLeftVariants} {...variantProps}>
+      {/* height is needed for the no-items-info */}
+      <motion.div style={{ height: 'calc(100% - 50px)' }} variants={fadeOutLeftVariants} {...variantProps}>
         <div className='filter-payments'>
           <FilterCheckbox label='Einkäufe' checked={showPurchases} setChecked={setShowPurchases} />
           <FilterCheckbox label='Einkommen' checked={showIncomes} setChecked={setShowIncomes} />
           <FilterCheckbox label='Zahlungen' checked={showCompensations} setChecked={setShowCompensations} />
         </div>
         <Show
-          when={!isEmpty(filteredGroupPayments)}
+          when={!isEmpty(sortedPayments)}
           fallback={
             <p className='no-items-info'>
               Füge neue Einkäufe, Einkommen <br /> oder Zahlungen hinzu!

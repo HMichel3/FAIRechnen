@@ -17,7 +17,7 @@ import clsx from 'clsx'
 import { NewPurchase } from '../../../../App/types'
 import './index.scss'
 
-export interface AdditionCardProps {
+interface AdditionCardProps {
   index: number
   setAdditionIndex: Dispatch<SetStateAction<number | null>>
   control: Control<NewPurchase>

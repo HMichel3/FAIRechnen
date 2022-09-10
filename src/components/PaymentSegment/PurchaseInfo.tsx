@@ -5,7 +5,7 @@ import { IonLabel } from '@ionic/react'
 import { Purchase } from '../../stores/types'
 import { useStore } from '../../stores/useStore'
 
-export interface PurchaseInfoProps {
+interface PurchaseInfoProps {
   purchase: Purchase
 }
 

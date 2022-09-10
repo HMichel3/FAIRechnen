@@ -5,7 +5,7 @@ import { IonLabel } from '@ionic/react'
 import { Income } from '../../stores/types'
 import { useStore } from '../../stores/useStore'
 
-export interface IncomeInfoProps {
+interface IncomeInfoProps {
   income: Income
 }
 

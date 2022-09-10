@@ -1,5 +1,5 @@
 import { IonAlert } from '@ionic/react'
-import { calculateMembersWithAmounts, displayCurrencyValue, isLast, isNegative, isPositive } from '../../App/utils'
+import { displayCurrencyValue, isLast, isNegative, isPositive } from '../../App/utils'
 import { SlidingListItem } from '../SlidingListItem'
 import { motion } from 'framer-motion'
 import { variantProps, fadeOutRightVariants } from '../../App/animations'
@@ -16,13 +16,12 @@ import { Show } from '../SolidComponents/Show'
 import { isEmpty } from 'ramda'
 
 export const MemberSegment = (): JSX.Element => {
-  const { id: groupId, members, purchases, incomes, compensations } = useStore(s => s.selectedGroup)
+  const { id: groupId, purchases, incomes, compensations, membersWithAmounts } = useStore(s => s.selectedGroup)
   const editMemberName = usePersistedStore(s => s.editMemberName)
   const deleteMember = usePersistedStore(s => s.deleteMember)
   const [selectedMember, setSelectedMember] = useState<Member>()
   const [showEditMemberAlert, setShowEditMemberAlert] = useState(false)
   const [showCantDeleteMemberAlert, setShowCantDeleteMemberAlert] = useState(false)
-  const membersWithAmounts = calculateMembersWithAmounts(members, purchases, incomes, compensations)
 
   const onSelectMember = (member: Member) => {
     setSelectedMember(member)
@@ -36,7 +35,8 @@ export const MemberSegment = (): JSX.Element => {
 
   return (
     <>
-      <motion.div variants={fadeOutRightVariants} {...variantProps}>
+      {/* height is needed for the no-items-info */}
+      <motion.div style={{ height: '100%' }} variants={fadeOutRightVariants} {...variantProps}>
         <Show
           when={!isEmpty(membersWithAmounts)}
           fallback={<p className='no-items-info'>Füge neue Mitglieder hinzu!</p>}

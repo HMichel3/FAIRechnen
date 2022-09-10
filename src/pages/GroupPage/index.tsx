@@ -14,12 +14,12 @@ import {
   IonTitle,
   IonToolbar,
   useIonModal,
+  useIonRouter,
 } from '@ionic/react'
 import { closeSharp, helpCircleSharp, moonSharp, peopleSharp, repeatSharp, sunnySharp } from 'ionicons/icons'
 import { IconButton } from '../../components/IconButton'
 import { InfoSlides } from '../../components/InfoSlides'
-import { useGroupPage } from './useGroupPage'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { AddGroupModal } from '../../components/AddGroupModal'
 import { isDark } from './utils'
@@ -27,18 +27,51 @@ import { Show } from '../../components/SolidComponents/Show'
 import { GroupPageList } from '../../components/GroupPageList'
 import { SuccessAnimation } from '../../lotties/SuccessAnimation'
 import { useStore } from '../../stores/useStore'
+import { App } from '@capacitor/app'
 import './index.scss'
 
 export const GroupPage = (): JSX.Element => {
-  const { theme, showInfoSlides, setShowInfoSlides, showFirstInfoSlides, onHideFirstInfoSlides, pageRef } =
-    useGroupPage()
   const groups = usePersistedStore(s => s.groups)
   const setTheme = usePersistedStore(s => s.setTheme)
+  const theme = usePersistedStore(s => s.theme)
+  const alreadyVisited = usePersistedStore(s => s.alreadyVisited)
+  const setAlreadyVisited = usePersistedStore(s => s.setAlreadyVisited)
   const showAnimation = useStore(s => s.showAnimation)
   const [reorder, setReorder] = useState(false)
+  const [showInfoSlides, setShowInfoSlides] = useState(false)
+  const [showFirstInfoSlides, setShowFirstInfoSlides] = useState(!alreadyVisited)
+  const ionRouter = useIonRouter()
   const [showAddGroupModal, dismissAddGroupModal] = useIonModal(AddGroupModal, {
     onDismiss: () => dismissAddGroupModal(),
   })
+  // needed to remove the ion-page-invisible to show the page after the firstInfoSlide is closed
+  const pageRef = useRef(null)
+
+  useEffect(() => {
+    document.addEventListener('ionBackButton', event => {
+      // @ts-ignore
+      event.detail.register(-1, () => {
+        if (showInfoSlides) return setShowInfoSlides(false)
+        if (showFirstInfoSlides) return onHideFirstInfoSlides()
+        if (!ionRouter.canGoBack()) App.exitApp()
+      })
+    })
+  }, [ionRouter, showInfoSlides, showFirstInfoSlides])
+
+  useEffect(() => {
+    if (isDark(theme)) return document.body.classList.add('dark')
+    document.body.classList.remove('dark')
+  }, [theme])
+
+  useEffect(() => {
+    setAlreadyVisited()
+  }, [setAlreadyVisited])
+
+  const onHideFirstInfoSlides = () => {
+    setShowFirstInfoSlides(false)
+    // @ts-ignore typing on pageRef is not correct from ionic
+    pageRef.current?.classList.remove('ion-page-invisible')
+  }
 
   return (
     <div className='group-page'>
