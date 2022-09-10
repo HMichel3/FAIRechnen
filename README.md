@@ -2,19 +2,19 @@
 
 ## Info
 
-The FAIRechnen app helps you to list all purchases within a group to get an overview of who gets/pays what amount in the end. In addition, payments between members are proposed, which can be used to settle all debts in the best possible way.
+The FAIRechnen app helps you to list all purchases within a group to get an overview of who gets/pays what amount. In addition, payments between members are proposed, which can be used to settle all debts in the best possible way.
 
 All data is stored offline on the corresponding device.
 
 ## Technologies
 
-This App is created in TypeScript using the Ionic 5 Framework and it contains some interesting packages:
+This App is created in TypeScript using the Ionic 6 Framework and it contains some interesting packages:
 
 - react-hook-form (with zod)
 - zustand
 - ramda
 - framer-motion
-- lottie-react
+- react-lottie-hook
 
 ## Prerequisites
 
