@@ -1,6 +1,6 @@
 /* needed, because the form-inputs got different default stylings in the IonCard-Component */
 .addition-card-input {
-  & ion-label {
+  & > ion-label {
     margin-top: -5px !important;
   }
   & ion-input {
@@ -9,13 +9,12 @@
   }
 }
 
-.addition-card-select {
-  & ion-label {
-    margin-top: -4px !important;
+.addition-card-checkbox {
+  & > ion-label {
+    margin-top: -5px !important;
+    font-size: 1rem;
   }
-  & ion-select {
-    margin-top: -2px !important;
-    margin-bottom: -3px !important;
-    height: 40px;
+  & .form-chip-group {
+    margin-top: 7px;
   }
 }

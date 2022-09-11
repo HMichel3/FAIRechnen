@@ -59,6 +59,7 @@ ion-item-divider {
   opacity: var(--ion-backdrop-opacity);
   z-index: 11;
 }
+.form-input-no-margin,
 .form-input-no-margin::part(native) {
   border-radius: 0;
 }

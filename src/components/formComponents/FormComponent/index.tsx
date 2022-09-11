@@ -1,12 +1,13 @@
 import { IonButton, IonIcon, IonItem, IonLabel } from '@ionic/react'
 import clsx from 'clsx'
-import { alertCircleSharp, closeSharp } from 'ionicons/icons'
+import { closeSharp } from 'ionicons/icons'
 import { isNil } from 'ramda'
 import { ReactNode } from 'react'
 import { FieldError } from 'react-hook-form'
-import { isDark } from '../../pages/GroupPage/utils'
-import { usePersistedStore } from '../../stores/usePersistedStore'
-import { Show } from '../SolidComponents/Show'
+import { isDark } from '../../../pages/GroupPage/utils'
+import { usePersistedStore } from '../../../stores/usePersistedStore'
+import { Show } from '../../SolidComponents/Show'
+import './index.scss'
 
 interface FormComponentProps {
   label: string
@@ -26,14 +27,11 @@ export const FormComponent = ({
   const theme = usePersistedStore(s => s.theme)
 
   return (
-    <IonItem className={clsx('form-component', className)} fill='outline'>
+    <IonItem className={clsx('form-component', { 'error-border-native': error }, className)} fill='outline'>
       <IonLabel position='stacked' color={clsx({ light: isDark(theme) })}>
         {label}
       </IonLabel>
       {children}
-      <Show when={!isNil(error)}>
-        <IonIcon slot='end' icon={alertCircleSharp} color='danger' />
-      </Show>
       <Show when={!isNil(onDelete)}>
         <IonButton slot='end' color='danger' fill='clear' onClick={onDelete}>
           <IonIcon slot='icon-only' icon={closeSharp} />

@@ -10,13 +10,19 @@ interface FormChipsComponentProps {
   label: string
   children: ReactNode
   error?: FieldError
+  className?: string
 }
 
-export const FormChipsComponent = ({ label, children, error }: FormChipsComponentProps) => {
+export const FormChipsComponent = ({
+  label,
+  children,
+  error,
+  className = 'default-margin',
+}: FormChipsComponentProps) => {
   const theme = usePersistedStore(s => s.theme)
 
   return (
-    <div className={clsx('default-margin form-chips-component', { 'error-border': error })}>
+    <div className={clsx('form-chips-component', { 'error-border': error }, className)}>
       <IonLabel position='stacked' color={clsx({ light: isDark(theme) })} style={{ marginLeft: 16 }}>
         {label}
       </IonLabel>

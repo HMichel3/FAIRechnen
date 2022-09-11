@@ -8,12 +8,13 @@ import { displayCurrencyValue } from '../../../../App/utils'
 import { FormInput } from '../../../formComponents/FormInput'
 import { FormComponent } from '../../../formComponents/FormComponent'
 import { FormCurrency } from '../../../formComponents/FormCurrency'
-import { FormSelect } from '../../../formComponents/FormSelect'
 import { Control, FieldError } from 'react-hook-form'
 import { isDark } from '../../../../pages/GroupPage/utils'
 import clsx from 'clsx'
 import { NewAddition, NewPurchase } from '../../../../App/types'
 import { SelectedGroup, Theme } from '../../../../stores/types'
+import { FormChipsComponent } from '../../../formComponents/FormChipsComponent'
+import { FormCheckboxGroup } from '../../../formComponents/FormCheckboxGroup'
 import './index.scss'
 
 interface AdditionCardProps {
@@ -87,31 +88,30 @@ export const AdditionCard = ({
             <IonCardContent style={{ paddingTop: 0 }}>
               <FormComponent
                 className='addition-card-input form-input-no-margin'
-                label='Zusatzname'
+                label='Zusatzname*'
                 error={path([index, 'name'], additionErrors)}
               >
                 <FormInput name={`additions.${index}.name`} control={control} rules={{ required: true }} />
               </FormComponent>
               <FormComponent
                 className='addition-card-input form-input-no-margin'
-                label='Betrag'
+                label='Betrag*'
                 error={path([index, 'amount'], additionErrors)}
               >
                 <FormCurrency name={`additions.${index}.amount`} control={control} rules={{ min: 1 }} />
               </FormComponent>
-              <FormComponent
-                className='addition-card-select form-input-no-margin'
-                label='Beteiligte'
+              <FormChipsComponent
+                className='addition-card-checkbox form-input-no-margin'
+                label='Beteiligte*'
                 error={path([index, 'payerIds'], additionErrors)}
               >
-                <FormSelect
+                <FormCheckboxGroup
                   name={`additions.${index}.payerIds`}
                   selectOptions={members}
                   control={control}
-                  multiple
                   rules={{ required: true }}
                 />
-              </FormComponent>
+              </FormChipsComponent>
             </IonCardContent>
           </motion.div>
         )}
