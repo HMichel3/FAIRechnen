@@ -8,7 +8,7 @@ import { displayCurrencyValue } from '../../../../App/utils'
 import { FormInput } from '../../../formComponents/FormInput'
 import { FormComponent } from '../../../formComponents/FormComponent'
 import { FormCurrency } from '../../../formComponents/FormCurrency'
-import { Control, FieldError } from 'react-hook-form'
+import { Control, FieldError, FieldErrorsImpl, Merge } from 'react-hook-form'
 import { isDark } from '../../../../pages/GroupPage/utils'
 import clsx from 'clsx'
 import { NewAddition, NewPurchase } from '../../../../App/types'
@@ -24,13 +24,20 @@ interface AdditionCardProps {
   members: SelectedGroup['members']
   theme: Theme
   addition: NewAddition
-  additionErrors:
-    | {
-        name?: FieldError | undefined
-        amount?: FieldError | undefined
-        payerIds?: FieldError[] | undefined
-      }[]
-    | undefined
+  additionErrors?: Merge<
+    FieldError,
+    (
+      | Merge<
+          FieldError,
+          FieldErrorsImpl<{
+            name: string
+            amount: number
+            payerIds: string[]
+          }>
+        >
+      | undefined
+    )[]
+  >
 }
 
 export const AdditionCard = ({
