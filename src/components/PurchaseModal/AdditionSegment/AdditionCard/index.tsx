@@ -90,21 +90,27 @@ export const AdditionCard = ({
                 label='Zusatzname'
                 error={path([index, 'name'], additionErrors)}
               >
-                <FormInput name={`additions.${index}.name`} control={control} />
+                <FormInput name={`additions.${index}.name`} control={control} rules={{ required: true }} />
               </FormComponent>
               <FormComponent
                 className='addition-card-input form-input-no-margin'
                 label='Betrag'
                 error={path([index, 'amount'], additionErrors)}
               >
-                <FormCurrency name={`additions.${index}.amount`} control={control} />
+                <FormCurrency name={`additions.${index}.amount`} control={control} rules={{ min: 1 }} />
               </FormComponent>
               <FormComponent
                 className='addition-card-select form-input-no-margin'
                 label='Beteiligte'
                 error={path([index, 'payerIds'], additionErrors)}
               >
-                <FormSelect name={`additions.${index}.payerIds`} selectOptions={members} control={control} multiple />
+                <FormSelect
+                  name={`additions.${index}.payerIds`}
+                  selectOptions={members}
+                  control={control}
+                  multiple
+                  rules={{ required: true }}
+                />
               </FormComponent>
             </IonCardContent>
           </motion.div>

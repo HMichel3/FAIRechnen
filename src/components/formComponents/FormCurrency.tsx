@@ -1,12 +1,13 @@
 import { IonInput } from '@ionic/react'
 import { toString } from 'ramda'
 import { useCallback } from 'react'
-import { Control, FieldValues, Path, useController } from 'react-hook-form'
+import { Control, FieldValues, Path, RegisterOptions, useController } from 'react-hook-form'
 import { displayCurrencyValue } from '../../App/utils'
 
 interface FormCurrencyProps<Type extends FieldValues> {
   name: Path<Type>
   control: Control<Type>
+  rules?: Exclude<RegisterOptions, 'valueAsNumber' | 'valueAsDate' | 'setValueAs'>
 }
 
 const VALID_FIRST = /^[1-9]{1}$/
@@ -14,10 +15,14 @@ const VALID_NEXT = /^[0-9]{1}$/
 const DELETE_INPUT = 'deleteContentBackward'
 const MAX = Number.MAX_SAFE_INTEGER
 
-export const FormCurrency = <Type extends FieldValues>({ name, control }: FormCurrencyProps<Type>): JSX.Element => {
+export const FormCurrency = <Type extends FieldValues>({
+  name,
+  control,
+  rules,
+}: FormCurrencyProps<Type>): JSX.Element => {
   const {
     field: { value, onChange },
-  } = useController({ name, control })
+  } = useController({ name, control, rules })
 
   const valueAbsTrunc = Math.trunc(Math.abs(value))
 

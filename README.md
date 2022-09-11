@@ -10,7 +10,7 @@ All data is stored offline on the corresponding device.
 
 This App is created in TypeScript using the Ionic 6 Framework and it contains some interesting packages:
 
-- react-hook-form (with zod)
+- react-hook-form
 - zustand
 - ramda
 - framer-motion

@@ -10,7 +10,6 @@
     "@capacitor/keyboard": "^4.0.1",
     "@capacitor/share": "^4.0.1",
     "@capacitor/status-bar": "^4.0.1",
-    "@hookform/resolvers": "^2.9.7",
     "@ionic/react": "^6.2.6",
     "@ionic/react-router": "^6.2.6",
     "@ionic/storage": "^3.0.6",
@@ -40,7 +39,6 @@
     "workbox-routing": "^6.5.4",
     "workbox-strategies": "^6.5.4",
     "workbox-streams": "^6.5.4",
-    "zod": "^3.19.0",
     "zustand": "^4.1.1"
   },
   "scripts": {
