@@ -6,26 +6,26 @@ FAIRechnen hilft Dir dabei, alle Einkäufe innerhalb einer Gruppe aufzulisten un
 
 ### Einige Einsatzmöglichkeiten
 
-💠 Gemeinsamer Urlaub
-💠 Haushaltskasse
-💠 Städtetrip
-💠 Kneipentour
-💠 Restaurant/Kino/Bowling usw.
+- Gemeinsamer Urlaub
+- Haushaltskasse
+- Städtetrip
+- Kneipentour
+- Restaurant/Kino/Bowling usw.
 
 ### Details und Funktionen
 
-🔸 Nutzung komplett ohne Internet
-🔸 Geringe Speichergröße
-🔸 Datenspeicherung ausschließlich auf deinem Handy
-🔸 Light- und Darkmode
-🔸 Hinzufügen, Bearbeiten, Löschen und Archivieren von Gruppen
-🔸 Hinzufügen, Bearbeiten und Löschen von Mitgliedern
-🔸 Hinzufügen, Bearbeiten und Löschen von Einkäufen
-🔸 Hinzufügen, Bearbeiten und Löschen von Einkommen (z.B. Pfand)
-🔸 Hinzufügen und Löschen von Ausgleichszahlungen (generiert/manuell)
-🔸 Anzeige von Gesamtausgaben (Gruppen/Personen)
-🔸 Anzeige der ausstehenden Beträge
-🔸 Teilen von Gruppeninformationen und Zahlungsvorschlägen
+- Nutzung komplett ohne Internet
+- Geringe Speichergröße
+- Datenspeicherung ausschließlich auf deinem Handy
+- Light- und Darkmode
+- Hinzufügen, Bearbeiten, Löschen und Archivieren von Gruppen
+- Hinzufügen, Bearbeiten und Löschen von Mitgliedern
+- Hinzufügen, Bearbeiten und Löschen von Einkäufen
+- Hinzufügen, Bearbeiten und Löschen von Einkommen (z.B. Pfand)
+- Hinzufügen und Löschen von Ausgleichszahlungen (generiert/manuell)
+- Anzeige von Gesamtausgaben (Gruppen/Personen)
+- Anzeige der ausstehenden Beträge
+- Teilen von Gruppeninformationen und Zahlungsvorschlägen
 
 ## Wie wird es installiert?
 
