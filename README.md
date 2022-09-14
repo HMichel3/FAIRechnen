@@ -4,14 +4,16 @@
 
 FAIRechnen hilft Dir dabei, alle Einkäufe innerhalb einer Gruppe aufzulisten und den Überblick darüber zu behalten, welche Beträge am Ende noch gezahlt werden müssen. Zusätzlich werden Zahlungen vorgeschlagen, mit denen die Gruppenmitglieder bestmöglich ihre Kosten verrechnen können.
 
-Einige Einsatzmöglichkeiten
+### Einige Einsatzmöglichkeiten
+
 💠 Gemeinsamer Urlaub
 💠 Haushaltskasse
 💠 Städtetrip
 💠 Kneipentour
 💠 Restaurant/Kino/Bowling usw.
 
-Details und Funktionen
+### Details und Funktionen
+
 🔸 Nutzung komplett ohne Internet
 🔸 Geringe Speichergröße
 🔸 Datenspeicherung ausschließlich auf deinem Handy
