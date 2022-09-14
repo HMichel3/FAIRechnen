@@ -2,16 +2,29 @@
 
 ## Info
 
-Die FAIRechnen-App hilft Ihnen, alle Einkäufe innerhalb einer Gruppe aufzulisten, um einen Überblick zu erhalten, wer welchen Betrag bekommt/zahlt. Darüber hinaus werden Zahlungen zwischen den Mitgliedern vorgeschlagen, mit denen alle Schulden schnellstmöglich beglichen werden können.
+FAIRechnen hilft Dir dabei, alle Einkäufe innerhalb einer Gruppe aufzulisten und den Überblick darüber zu behalten, welche Beträge am Ende noch gezahlt werden müssen. Zusätzlich werden Zahlungen vorgeschlagen, mit denen die Gruppenmitglieder bestmöglich ihre Kosten verrechnen können.
 
-Alle Daten werden offline auf Ihrem Gerät gespeichert.
+Einige Einsatzmöglichkeiten
+💠 Gemeinsamer Urlaub
+💠 Haushaltskasse
+💠 Städtetrip
+💠 Kneipentour
+💠 Restaurant/Kino/Bowling usw.
 
-## Technologien
+Details und Funktionen
+🔸 Nutzung komplett ohne Internet
+🔸 Geringe Speichergröße
+🔸 Datenspeicherung ausschließlich auf deinem Handy
+🔸 Light- und Darkmode
+🔸 Hinzufügen, Bearbeiten, Löschen und Archivieren von Gruppen
+🔸 Hinzufügen, Bearbeiten und Löschen von Mitgliedern
+🔸 Hinzufügen, Bearbeiten und Löschen von Einkäufen
+🔸 Hinzufügen, Bearbeiten und Löschen von Einkommen (z.B. Pfand)
+🔸 Hinzufügen und Löschen von Ausgleichszahlungen (generiert/manuell)
+🔸 Anzeige von Gesamtausgaben (Gruppen/Personen)
+🔸 Anzeige der ausstehenden Beträge
+🔸 Teilen von Gruppeninformationen und Zahlungsvorschlägen
 
-Diese App wurde in TypeScript unter Verwendung des Ionic 6 Frameworks erstellt und enthält einige interessante Packages:
+## Wie wird es installiert?
 
-- react-hook-form
-- zustand
-- ramda
-- framer-motion
-- react-lottie-hook
+<a href='https://play.google.com/store/apps/details?id=holsten.fair.rechnen'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' width=200/></a>
