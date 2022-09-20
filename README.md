@@ -2,35 +2,31 @@
 
 ## Info
 
-The FAIRechnen app helps you to list all purchases within a group to get an overview of who gets/pays what amount. In addition, payments between members are proposed, which can be used to settle all debts in the best possible way.
+FAIRechnen hilft Dir dabei, alle Einkäufe innerhalb einer Gruppe aufzulisten und den Überblick darüber zu behalten, welche Beträge am Ende noch gezahlt werden müssen. Zusätzlich werden Zahlungen vorgeschlagen, mit denen die Gruppenmitglieder bestmöglich ihre Kosten verrechnen können.
 
-All data is stored offline on the corresponding device.
+### Einige Einsatzmöglichkeiten
 
-## Technologies
+- Gemeinsamer Urlaub
+- Haushaltskasse
+- Städtetrip
+- Kneipentour
+- Restaurant/Kino/Bowling usw.
 
-This App is created in TypeScript using the Ionic 6 Framework and it contains some interesting packages:
+### Details und Funktionen
 
-- react-hook-form
-- zustand
-- ramda
-- framer-motion
-- react-lottie-hook
+- Nutzung komplett ohne Internet
+- Geringe Speichergröße
+- Datenspeicherung ausschließlich auf deinem Handy
+- Light- und Darkmode
+- Hinzufügen, Bearbeiten, Löschen und Archivieren von Gruppen
+- Hinzufügen, Bearbeiten und Löschen von Mitgliedern
+- Hinzufügen, Bearbeiten und Löschen von Einkäufen
+- Hinzufügen, Bearbeiten und Löschen von Einkommen (z.B. Pfand)
+- Hinzufügen und Löschen von Ausgleichszahlungen (generiert/manuell)
+- Anzeige von Gesamtausgaben (Gruppen/Personen)
+- Anzeige der ausstehenden Beträge
+- Teilen von Gruppeninformationen und Zahlungsvorschlägen
 
-## Prerequisites
+## Wie wird es installiert?
 
-- [Node JS](https://nodejs.org/en/) (Version 16.4.2 LTS is used here)
-- [Android Studio](https://developer.android.com/studio) (if building for android is desired)
-- `npm install -g @ionic/cli`
-- `npm install -g cordova-res`
-
-## Initialization
-
-- `npm install` (to install all node_modules)
-
-## NPM Scripts
-
-- `dev-browser` (to start the development server in the browser)
-- `build-android` (to build the android project and open android studio)
-- `rebuild-android` (needed for the first time or after deleting the android folder)
-- `start` (needed for ionic)
-- `build` (needed for ionic)
+<a href='https://play.google.com/store/apps/details?id=holsten.fair.rechnen'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' width=200/></a>
