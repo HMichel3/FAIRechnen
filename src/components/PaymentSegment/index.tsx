@@ -90,7 +90,6 @@ export const PaymentSegment = (): JSX.Element => {
                     icon={cartSharp}
                     detail={false}
                     transparentLine={isLast(groupPayment, filteredGroupPayments)}
-                    style={{ marginBottom: isLast(groupPayment, filteredGroupPayments) ? 91 : 0 }}
                   />
                 )
               }
@@ -104,7 +103,6 @@ export const PaymentSegment = (): JSX.Element => {
                     icon={serverSharp}
                     detail={false}
                     transparentLine={isLast(groupPayment, filteredGroupPayments)}
-                    style={{ marginBottom: isLast(groupPayment, filteredGroupPayments) ? 91 : 0 }}
                   />
                 )
               }
@@ -117,10 +115,11 @@ export const PaymentSegment = (): JSX.Element => {
                   icon={walletSharp}
                   detail={false}
                   transparentLine={isLast(groupPayment, filteredGroupPayments)}
-                  style={{ marginBottom: isLast(groupPayment, filteredGroupPayments) ? 80 : 0 }}
                 />
               )
             })}
+            {/* needed so that the list entries are not hidden under the FAB */}
+            <div style={{ height: 90 }} onClick={() => {}} />
           </>
         </Show>
       </motion.div>

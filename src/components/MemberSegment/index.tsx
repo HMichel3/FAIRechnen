@@ -61,9 +61,10 @@ export const MemberSegment = (): JSX.Element => {
                 icon={personSharp}
                 labelComponent={<SmallLabelComponent>{displayCurrencyValue(member.total)}</SmallLabelComponent>}
                 transparentLine={isLast(member, membersWithAmounts)}
-                style={{ marginBottom: isLast(member, membersWithAmounts) ? 80 : 0 }}
               />
             ))}
+            {/* needed so that the list entries are not hidden under the FAB */}
+            <div style={{ height: 90 }} onClick={() => {}} />
           </>
         </Show>
       </motion.div>
