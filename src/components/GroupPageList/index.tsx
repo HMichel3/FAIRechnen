@@ -2,7 +2,7 @@ import { IonReorderGroup, IonItemOption, IonAlert } from '@ionic/react'
 import clsx from 'clsx'
 import { peopleSharp } from 'ionicons/icons'
 import { isEmpty } from 'ramda'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { isLast } from '../../App/utils'
 import { GroupInfo } from '../../pages/GroupPage/GroupInfo'
 import { usePersistedStore } from '../../stores/usePersistedStore'
@@ -21,8 +21,8 @@ export const GroupPageList = ({ reorder }: GroupPageListProps) => {
   const deleteGroup = usePersistedStore(s => s.deleteGroup)
   const archiveGroup = usePersistedStore(s => s.archiveGroup)
   const [showDeleteGroupAlert, setShowDeleteGroupAlert] = useState(false)
-  const [selectedGroupId, setSelectedGroupId] = useState('')
   const [showGroupArchive, setShowGroupArchive] = useState(false)
+  const selectedGroupIdRef = useRef('')
 
   // needed to prevent an error while reordering restored groups
   const copiedGroups = [...groups]
@@ -33,7 +33,7 @@ export const GroupPageList = ({ reorder }: GroupPageListProps) => {
   }, [isGroupArchiveEmpty])
 
   const onDeleteGroup = (groupId: string) => {
-    setSelectedGroupId(groupId)
+    selectedGroupIdRef.current = groupId
     setShowDeleteGroupAlert(true)
   }
 
@@ -82,7 +82,7 @@ export const GroupPageList = ({ reorder }: GroupPageListProps) => {
         message='Mit dem Löschen der Gruppe gehen sämtliche Informationen bezüglich der Mitglieder, der Einkäufe sowie möglicher offener Rechnungen verloren!'
         buttons={[
           { role: 'cancel', text: 'Abbrechen' },
-          { text: 'Löschen', handler: () => deleteGroup(selectedGroupId) },
+          { text: 'Löschen', handler: () => deleteGroup(selectedGroupIdRef.current) },
         ]}
       />
     </>

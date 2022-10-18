@@ -7,7 +7,7 @@ import { personSharp } from 'ionicons/icons'
 import { SmallLabelComponent } from '../SlidingListItem/SmallLabelComponent'
 import clsx from 'clsx'
 import { SimpleSaveAlert } from '../SimpleSaveAlert'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
 import { Member } from '../../stores/types'
@@ -19,12 +19,12 @@ export const MemberSegment = (): JSX.Element => {
   const { id: groupId, purchases, incomes, compensations, membersWithAmounts } = useStore(s => s.selectedGroup)
   const editMemberName = usePersistedStore(s => s.editMemberName)
   const deleteMember = usePersistedStore(s => s.deleteMember)
-  const [selectedMember, setSelectedMember] = useState<Member>()
   const [showEditMemberAlert, setShowEditMemberAlert] = useState(false)
   const [showCantDeleteMemberAlert, setShowCantDeleteMemberAlert] = useState(false)
+  const selectedMemberRef = useRef<Member>()
 
   const onSelectMember = (member: Member) => {
-    setSelectedMember(member)
+    selectedMemberRef.current = member
     setShowEditMemberAlert(true)
   }
 
@@ -79,8 +79,8 @@ export const MemberSegment = (): JSX.Element => {
         isOpen={showEditMemberAlert}
         header='Mitglied umbenennen'
         setIsOpen={setShowEditMemberAlert}
-        onSave={newValue => editMemberName(groupId, selectedMember!.id, newValue)}
-        value={selectedMember?.name}
+        onSave={newValue => editMemberName(groupId, selectedMemberRef.current!.id, newValue)}
+        value={selectedMemberRef.current?.name}
       />
     </>
   )

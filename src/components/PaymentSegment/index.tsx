@@ -7,7 +7,7 @@ import { cartSharp, serverSharp, walletSharp } from 'ionicons/icons'
 import { IonAlert, useIonModal } from '@ionic/react'
 import { isLast } from '../../App/utils'
 import { usePersistedStore } from '../../stores/usePersistedStore'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { IncomeInfo } from './IncomeInfo'
 import { FilterCheckbox } from './FilterCheckbox'
 import { isIncome, isPurchase } from './utils'
@@ -25,20 +25,26 @@ export const PaymentSegment = (): JSX.Element => {
   const deleteCompensation = usePersistedStore(s => s.deleteCompensation)
   const { id: groupId, sortedPayments } = useStore(s => s.selectedGroup)
 
-  const [selectedPurchase, setSelectedPurchase] = useState<Purchase>()
-  const [selectedIncome, setSelectedIncome] = useState<Income>()
   const [showPurchases, setShowPurchases] = useState(true)
   const [showIncomes, setShowIncomes] = useState(true)
   const [showCompensations, setShowCompensations] = useState(true)
   const [showCantEditCompensation, setShowCantEditCompensation] = useState(false)
+  const selectedPurchaseRef = useRef<Purchase | null>()
+  const selectedIncomeRef = useRef<Income | null>()
 
   const [showPurchaseModal, dismissPurchaseModal] = useIonModal(PurchaseModal, {
-    onDismiss: () => dismissPurchaseModal(),
-    selectedPurchase: selectedPurchase,
+    onDismiss: () => {
+      selectedPurchaseRef.current = null
+      dismissPurchaseModal()
+    },
+    selectedPurchase: selectedPurchaseRef.current,
   })
   const [showIncomeModal, dismissIncomeModal] = useIonModal(IncomeModal, {
-    onDismiss: () => dismissIncomeModal(),
-    selectedIncome: selectedIncome,
+    onDismiss: () => {
+      selectedIncomeRef.current = null
+      dismissIncomeModal()
+    },
+    selectedIncome: selectedIncomeRef.current,
   })
 
   const filteredGroupPayments = sortedPayments.filter(payment => {
@@ -52,12 +58,12 @@ export const PaymentSegment = (): JSX.Element => {
   })
 
   const onSelectPurchase = (purchase: Purchase) => {
-    setSelectedPurchase(purchase)
+    selectedPurchaseRef.current = purchase
     showPurchaseModal()
   }
 
   const onSelectIncome = (income: Income) => {
-    setSelectedIncome(income)
+    selectedIncomeRef.current = income
     showIncomeModal()
   }
 
