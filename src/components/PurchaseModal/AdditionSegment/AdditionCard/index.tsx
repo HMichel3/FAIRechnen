@@ -98,26 +98,21 @@ export const AdditionCard = ({
                 label='Zusatzname*'
                 error={path([index, 'name'], additionErrors)}
               >
-                <FormInput name={`additions.${index}.name`} control={control} rules={{ required: true }} />
+                <FormInput name={`additions.${index}.name`} control={control} />
               </FormComponent>
               <FormComponent
                 className='addition-card-input form-input-no-margin'
                 label='Betrag*'
                 error={path([index, 'amount'], additionErrors)}
               >
-                <FormCurrency name={`additions.${index}.amount`} control={control} rules={{ min: 1 }} />
+                <FormCurrency name={`additions.${index}.amount`} control={control} />
               </FormComponent>
               <FormChipsComponent
                 className='addition-card-checkbox form-input-no-margin'
                 label='Beteiligte*'
                 error={path([index, 'payerIds'], additionErrors)}
               >
-                <FormCheckboxGroup
-                  name={`additions.${index}.payerIds`}
-                  selectOptions={members}
-                  control={control}
-                  rules={{ required: true }}
-                />
+                <FormCheckboxGroup name={`additions.${index}.payerIds`} selectOptions={members} control={control} />
               </FormChipsComponent>
             </IonCardContent>
           </motion.div>

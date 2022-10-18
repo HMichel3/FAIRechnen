@@ -10,10 +10,17 @@ import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
 import { useEffect, useRef } from 'react'
 import { isEmpty } from 'ramda'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 
 interface AddGroupModalProps {
   onDismiss: () => void
 }
+
+const validationSchema = z.object({
+  groupName: z.string().trim().min(1),
+  memberNames: z.object({ name: z.string() }).array(),
+})
 
 interface GroupFormValues {
   groupName: string
@@ -25,7 +32,7 @@ const defaultValues: GroupFormValues = { groupName: '', memberNames: [{ name: ''
 export const AddGroupModal = ({ onDismiss }: AddGroupModalProps): JSX.Element => {
   const addGroup = usePersistedStore(s => s.addGroup)
   const setShowAnimation = useStore(s => s.setShowAnimation)
-  const methods = useForm({ defaultValues })
+  const methods = useForm({ resolver: zodResolver(validationSchema), defaultValues })
   const { fields, append, remove } = useFieldArray({ control: methods.control, name: 'memberNames' })
   const memberNamesFields = useWatch({ control: methods.control, name: 'memberNames' })
   const pageContentRef = useRef<HTMLIonContentElement>(null)
@@ -56,7 +63,7 @@ export const AddGroupModal = ({ onDismiss }: AddGroupModalProps): JSX.Element =>
             <IonLabel>Gruppe</IonLabel>
           </IonItemDivider>
           <FormComponent label='Gruppenname' error={methods.formState.errors.groupName}>
-            <FormInput name='groupName' control={methods.control} rules={{ required: true }} />
+            <FormInput name='groupName' control={methods.control} />
           </FormComponent>
           {fields.map((field, index) => {
             const isNotLastField = !isLast(field, fields)

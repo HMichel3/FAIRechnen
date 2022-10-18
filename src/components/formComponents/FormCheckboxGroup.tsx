@@ -2,7 +2,7 @@ import { IonLabel, IonChip, IonCheckbox } from '@ionic/react'
 import clsx from 'clsx'
 import produce from 'immer'
 import { includes, indexOf } from 'ramda'
-import { Control, FieldValues, Path, RegisterOptions, useController } from 'react-hook-form'
+import { Control, FieldValues, Path, useController } from 'react-hook-form'
 import { isDark } from '../../pages/GroupPage/utils'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import './FormChipsComponent/index.scss'
@@ -11,18 +11,16 @@ interface FormCheckboxGroupProps<Type extends FieldValues> {
   name: Path<Type>
   control: Control<Type>
   selectOptions: { id: string; name: string }[]
-  rules?: Exclude<RegisterOptions, 'valueAsNumber' | 'valueAsDate' | 'setValueAs'>
 }
 
 export const FormCheckboxGroup = <Type extends FieldValues>({
   name,
   control,
   selectOptions,
-  rules,
 }: FormCheckboxGroupProps<Type>) => {
   const {
     field: { value, onChange },
-  } = useController({ name, control, rules })
+  } = useController({ name, control })
   const theme = usePersistedStore(s => s.theme)
 
   const onCheckboxChange = (memberId: string, value: string[], onChange: (...event: any[]) => void) => {

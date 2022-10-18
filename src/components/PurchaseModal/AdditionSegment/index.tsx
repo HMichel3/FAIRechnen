@@ -3,7 +3,7 @@ import { addSharp } from 'ionicons/icons'
 import { RefObject, useState } from 'react'
 import { AdditionCard } from './AdditionCard'
 import { isNil, pick } from 'ramda'
-import { Control, useFieldArray, useFormState, UseFormWatch } from 'react-hook-form'
+import { Control, useFieldArray, useFormState } from 'react-hook-form'
 import { NewAddition, NewPurchase } from '../../../App/types'
 import { motion } from 'framer-motion'
 import { fadeOutLeftVariants, variantProps } from '../../../App/animations'
@@ -12,27 +12,13 @@ import './index.scss'
 
 interface AdditionSegmentProps {
   pageContentRef: RefObject<HTMLIonContentElement>
-  watch: UseFormWatch<NewPurchase>
   control: Control<NewPurchase>
   members: SelectedGroup['members']
   theme: Theme
 }
 
-export const AdditionSegment = ({
-  pageContentRef,
-  watch,
-  control,
-  members,
-  theme,
-}: AdditionSegmentProps): JSX.Element => {
+export const AdditionSegment = ({ pageContentRef, control, members, theme }: AdditionSegmentProps): JSX.Element => {
   const { fields, append, remove } = useFieldArray({ control, name: 'additions' })
-  const watchFieldArray = watch('additions')
-  const controlledFields = fields.map((field, index) => {
-    return {
-      ...field,
-      ...watchFieldArray[index],
-    }
-  })
   const { errors } = useFormState({ control })
   const [additionIndex, setAdditionIndex] = useState<number | null>(null)
 
@@ -60,7 +46,7 @@ export const AdditionSegment = ({
           </IonButtons>
         </IonItemDivider>
         <div className='addition-cards'>
-          {controlledFields.map((field, index) => {
+          {fields.map((field, index) => {
             const addition: NewAddition = pick(['name', 'amount', 'payerIds'], field)
             return (
               <AdditionCard

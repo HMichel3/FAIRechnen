@@ -23,16 +23,16 @@ export const PurchaseSegment = ({ control }: PurchaseSegmentProps): JSX.Element 
   return (
     <motion.div variants={fadeOutRightVariants} {...variantProps}>
       <FormComponent label='Einkaufname*' error={errors.name}>
-        <FormInput name='name' control={control} rules={{ required: true }} />
+        <FormInput name='name' control={control} />
       </FormComponent>
       <FormComponent label='Betrag*' error={errors.amount}>
-        <FormCurrency name='amount' control={control} rules={{ min: 1 }} />
+        <FormCurrency name='amount' control={control} />
       </FormComponent>
       <FormChipsComponent label='Einkäufer*'>
-        <FormRadioGroup name='purchaserId' control={control} selectOptions={members} rules={{ required: true }} />
+        <FormRadioGroup name='purchaserId' control={control} selectOptions={members} />
       </FormChipsComponent>
       <FormChipsComponent label='Begünstigte*' error={path(['beneficiaryIds'], errors)}>
-        <FormCheckboxGroup name='beneficiaryIds' control={control} selectOptions={members} rules={{ required: true }} />
+        <FormCheckboxGroup name='beneficiaryIds' control={control} selectOptions={members} />
       </FormChipsComponent>
       <FormComponent label='Beschreibung'>
         <FormTextarea name='description' control={control} />
