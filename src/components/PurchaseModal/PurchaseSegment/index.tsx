@@ -1,7 +1,6 @@
 import { FormComponent } from '../../formComponents/FormComponent'
 import { FormInput } from '../../formComponents/FormInput'
 import { FormCurrency } from '../../formComponents/FormCurrency'
-import { path } from 'ramda'
 import { useStore } from '../../../stores/useStore'
 import { FormTextarea } from '../../formComponents/FormTextarea'
 import { FormRadioGroup } from '../../formComponents/FormRadioGroup'
@@ -31,7 +30,7 @@ export const PurchaseSegment = ({ control }: PurchaseSegmentProps): JSX.Element 
       <FormChipsComponent label='Einkäufer*'>
         <FormRadioGroup name='purchaserId' control={control} selectOptions={members} />
       </FormChipsComponent>
-      <FormChipsComponent label='Begünstigte*' error={path(['beneficiaryIds'], errors)}>
+      <FormChipsComponent label='Begünstigte*' error={errors.beneficiaryIds}>
         <FormCheckboxGroup name='beneficiaryIds' control={control} selectOptions={members} />
       </FormChipsComponent>
       <FormComponent label='Beschreibung'>

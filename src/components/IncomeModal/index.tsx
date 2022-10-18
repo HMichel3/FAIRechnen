@@ -1,5 +1,5 @@
 import { IonContent } from '@ionic/react'
-import { map, path, pick, prop } from 'ramda'
+import { map, pick, prop } from 'ramda'
 import { useForm } from 'react-hook-form'
 import { NewIncome } from '../../App/types'
 import { Income, Member } from '../../stores/types'
@@ -78,7 +78,7 @@ export const IncomeModal = ({ onDismiss, selectedIncome }: IncomeModalProps): JS
         <FormChipsComponent label='Verdiener*'>
           <FormRadioGroup name='earnerId' control={control} selectOptions={members} />
         </FormChipsComponent>
-        <FormChipsComponent label='Beteiligte*' error={path(['beneficiaryIds'], formState.errors)}>
+        <FormChipsComponent label='Beteiligte*' error={formState.errors.beneficiaryIds}>
           <FormCheckboxGroup name='beneficiaryIds' control={control} selectOptions={members} />
         </FormChipsComponent>
         <FormComponent label='Beschreibung'>

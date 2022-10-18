@@ -1,7 +1,7 @@
 import { IonLabel } from '@ionic/react'
 import clsx from 'clsx'
 import { ReactNode } from 'react'
-import { FieldError } from 'react-hook-form'
+import { FieldError, Merge } from 'react-hook-form'
 import { isDark } from '../../../pages/GroupPage/utils'
 import { usePersistedStore } from '../../../stores/usePersistedStore'
 import './index.scss'
@@ -9,7 +9,7 @@ import './index.scss'
 interface FormChipsComponentProps {
   label: string
   children: ReactNode
-  error?: FieldError
+  error?: Merge<FieldError, (FieldError | undefined)[]> | undefined
   className?: string
 }
 
