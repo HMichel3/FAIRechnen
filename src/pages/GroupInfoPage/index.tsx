@@ -164,6 +164,12 @@ export const GroupInfoPage = ({
         >
           {[
             {
+              label: 'Mitglied hinzufügen',
+              description: 'Neue Person, die sich beteiligt',
+              icon: personSharp,
+              onClick: () => setShowAddMemberAlert(true),
+            },
+            {
               label: 'Zahlung hinzufügen',
               description: 'Neue Zahlung zwischen den Personen',
               icon: walletSharp,
@@ -183,12 +189,6 @@ export const GroupInfoPage = ({
               icon: cartSharp,
               onClick: () => showPurchaseModal(),
               disabled: group.members.length < 1,
-            },
-            {
-              label: 'Mitglied hinzufügen',
-              description: 'Neue Person, die sich beteiligt',
-              icon: personSharp,
-              onClick: () => setShowAddMemberAlert(true),
             },
           ]}
         </AddFabButton>

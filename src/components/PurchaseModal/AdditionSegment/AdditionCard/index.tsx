@@ -8,10 +8,10 @@ import { displayCurrencyValue } from '../../../../App/utils'
 import { FormInput } from '../../../formComponents/FormInput'
 import { FormComponent } from '../../../formComponents/FormComponent'
 import { FormCurrency } from '../../../formComponents/FormCurrency'
-import { Control, FieldError, FieldErrorsImpl, Merge } from 'react-hook-form'
+import { Control, FieldError, FieldErrorsImpl, Merge, useWatch } from 'react-hook-form'
 import { isDark } from '../../../../pages/GroupPage/utils'
 import clsx from 'clsx'
-import { NewAddition, NewPurchase } from '../../../../App/types'
+import { NewPurchase } from '../../../../App/types'
 import { SelectedGroup, Theme } from '../../../../stores/types'
 import { FormChipsComponent } from '../../../formComponents/FormChipsComponent'
 import { FormCheckboxGroup } from '../../../formComponents/FormCheckboxGroup'
@@ -23,7 +23,6 @@ interface AdditionCardProps {
   control: Control<NewPurchase>
   members: SelectedGroup['members']
   theme: Theme
-  addition: NewAddition
   additionErrors?: Merge<
     FieldError,
     (
@@ -43,15 +42,14 @@ interface AdditionCardProps {
 export const AdditionCard = ({
   index,
   setAdditionIndex,
-  addition,
   control,
   members,
   theme,
   additionErrors,
 }: AdditionCardProps): JSX.Element => {
-  const [showCardContent, setShowCardContent] = useState(
-    isEmpty(addition.name) || !isNil(path([index], additionErrors))
-  )
+  const { name, amount } = useWatch({ control, name: `additions.${index}` })
+  const isNameEmptyOrHasAdditionError = isEmpty(name) || !isNil(path([index], additionErrors))
+  const [showCardContent, setShowCardContent] = useState(isNameEmptyOrHasAdditionError)
 
   const onToggleShowCardContent = () => {
     setShowCardContent(prevState => !prevState)
@@ -68,16 +66,14 @@ export const AdditionCard = ({
             style={{ marginInlineEnd: 12 }}
             onClick={onToggleShowCardContent}
           />
-          <IonLabel onClick={onToggleShowCardContent}>
-            {isEmpty(trim(addition.name)) ? 'Zusatz' : addition.name}
-          </IonLabel>
+          <IonLabel onClick={onToggleShowCardContent}>{isEmpty(trim(name)) ? 'Zusatz' : name}</IonLabel>
           <IonLabel
             slot='end'
             color={clsx({ light: isDark(theme) })}
             style={{ marginInlineStart: 16 }}
             onClick={onToggleShowCardContent}
           >
-            {displayCurrencyValue(addition.amount)}
+            {displayCurrencyValue(amount)}
           </IonLabel>
           <IonButton
             slot='end'

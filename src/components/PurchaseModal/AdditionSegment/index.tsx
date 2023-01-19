@@ -2,9 +2,9 @@ import { IonAlert, IonButton, IonButtons, IonIcon, IonItemDivider, IonLabel } fr
 import { addSharp } from 'ionicons/icons'
 import { RefObject, useState } from 'react'
 import { AdditionCard } from './AdditionCard'
-import { isNil, pick } from 'ramda'
+import { isNil } from 'ramda'
 import { Control, useFieldArray, useFormState } from 'react-hook-form'
-import { NewAddition, NewPurchase } from '../../../App/types'
+import { NewPurchase } from '../../../App/types'
 import { motion } from 'framer-motion'
 import { fadeOutLeftVariants, variantProps } from '../../../App/animations'
 import { SelectedGroup, Theme } from '../../../stores/types'
@@ -47,12 +47,10 @@ export const AdditionSegment = ({ pageContentRef, control, members, theme }: Add
         </IonItemDivider>
         <div className='addition-cards'>
           {fields.map((field, index) => {
-            const addition: NewAddition = pick(['name', 'amount', 'payerIds'], field)
             return (
               <AdditionCard
                 key={field.id}
                 index={index}
-                addition={addition}
                 setAdditionIndex={setAdditionIndex}
                 control={control}
                 members={members}
