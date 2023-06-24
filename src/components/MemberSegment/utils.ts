@@ -1,20 +1,18 @@
-// @ts-ignore: needed because whereAny not in ramda types yet
-import { curry, where, includes, equals, whereAny } from 'ramda'
+import { where, includes, equals, whereAny } from 'ramda'
 
-const isMemberInAdditions = curry((memberId: string, additions: Addition[]) =>
+const isMemberInAdditions = (memberId: string, additions: Addition[]) =>
   additions.some(
     where({
       payerIds: includes(memberId),
     })
   )
-)
 
 const isMemberInPurchases = (memberId: string, purchases: Purchase[]) =>
   purchases.some(
     whereAny({
       purchaserId: equals(memberId),
       beneficiaryIds: includes(memberId),
-      additions: isMemberInAdditions(memberId),
+      additions: (additions: Addition[]) => isMemberInAdditions(memberId, additions),
     })
   )
 
