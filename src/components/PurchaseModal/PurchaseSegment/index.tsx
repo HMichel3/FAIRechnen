@@ -7,7 +7,6 @@ import { FormRadioGroup } from '../../formComponents/FormRadioGroup'
 import { FormChipsComponent } from '../../formComponents/FormChipsComponent'
 import { FormCheckboxGroup } from '../../formComponents/FormCheckboxGroup'
 import { Control, useFormState } from 'react-hook-form'
-import { NewPurchase } from '../../../App/types'
 import { motion } from 'framer-motion'
 import { fadeOutRightVariants, variantProps } from '../../../App/animations'
 

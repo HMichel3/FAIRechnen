@@ -2,7 +2,6 @@ import { format } from 'date-fns'
 import { displayCurrencyValue, findItem, findItems } from '../../App/utils'
 import { displayAdditionQuantity, displayBeneficiaryNames, getAdditionPayerIdsNotInBeneficiaries } from './utils'
 import { IonLabel } from '@ionic/react'
-import { Purchase } from '../../stores/types'
 import { useStore } from '../../stores/useStore'
 
 interface PurchaseInfoProps {

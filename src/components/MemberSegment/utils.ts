@@ -1,6 +1,5 @@
 // @ts-ignore: needed because whereAny not in ramda types yet
 import { curry, where, includes, equals, whereAny } from 'ramda'
-import { Addition, Purchase, Income, Compensation } from '../../stores/types'
 
 const isMemberInAdditions = curry((memberId: string, additions: Addition[]) =>
   additions.some(

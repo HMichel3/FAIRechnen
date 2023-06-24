@@ -1,8 +1,6 @@
 import { IonContent } from '@ionic/react'
 import { map, pick, prop } from 'ramda'
 import { useForm } from 'react-hook-form'
-import { NewIncome } from '../../App/types'
-import { Income, Member } from '../../stores/types'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
 import { FormCheckboxGroup } from '../formComponents/FormCheckboxGroup'

@@ -1,7 +1,6 @@
 import { PersistImmer } from '../usePersistedStore'
 import { v4 as uuid } from 'uuid'
 import { isEmpty } from 'ramda'
-import { Group } from '../types'
 import { findItem, findItemIndex } from '../../App/utils'
 
 export interface GroupSlice {

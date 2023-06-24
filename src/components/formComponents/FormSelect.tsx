@@ -11,13 +11,14 @@ export const FormSelect = <Type extends FieldValues>({ name, control, selectOpti
   const {
     field: { value, onChange },
   } = useController({ name, control })
+  const onChangeTyped: ReactHookFormOnChange = onChange
 
   return (
     <IonSelect
       interface='popover'
       interfaceOptions={{ cssClass: 'basic-select-popover' }}
       value={value}
-      onIonChange={onChange}
+      onIonChange={onChangeTyped}
     >
       {selectOptions.map(option => (
         <IonSelectOption key={option.id} value={option.id}>

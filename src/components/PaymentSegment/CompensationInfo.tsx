@@ -2,7 +2,6 @@ import { IonCol, IonGrid, IonIcon, IonLabel, IonRow } from '@ionic/react'
 import { displayCurrencyValue, findItem } from '../../App/utils'
 import { arrowForwardSharp } from 'ionicons/icons'
 import { useStore } from '../../stores/useStore'
-import { CompensationsWithoutTimestamp } from '../../App/types'
 
 interface CompensationInfoProps {
   compensation: CompensationsWithoutTimestamp

@@ -1,4 +1,3 @@
-import { Member } from '../types'
 import { PersistImmer } from '../usePersistedStore'
 import { v4 as uuid } from 'uuid'
 import { findItemIndex } from '../../App/utils'

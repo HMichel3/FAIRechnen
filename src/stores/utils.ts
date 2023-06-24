@@ -1,6 +1,4 @@
 import produce from 'immer'
-import { NewAddition, NewIncome, NewPurchase } from '../App/types'
-import { Addition, Income, Purchase } from './types'
 
 const calculateNewAmount = (amount: number, beneficiaryIds: string[]) => {
   const memberCount = beneficiaryIds.length

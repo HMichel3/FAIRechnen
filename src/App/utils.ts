@@ -15,8 +15,6 @@ import {
   gt,
   includes,
 } from 'ramda'
-import { Purchase, Income, Compensation, Member } from '../stores/types'
-import { MemberWithAmounts } from './types'
 
 // From ramda-adjunct
 const isNumber = curryN(1, pipe(type, identical('Number')))

@@ -1,6 +1,5 @@
 import { IonItem, IonRadio, IonLabel } from '@ionic/react'
 import clsx from 'clsx'
-import { CompensationsWithoutTimestamp } from '../../../App/types'
 import { usePersistedStore } from '../../../stores/usePersistedStore'
 import { CompensationInfo } from '../../PaymentSegment/CompensationInfo'
 

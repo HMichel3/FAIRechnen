@@ -2,9 +2,7 @@ import { PersistImmer } from '../usePersistedStore'
 import { calculateNewPurchase } from '../utils'
 import { v4 as uuid } from 'uuid'
 import produce from 'immer'
-import { NewPurchase } from '../../App/types'
 import { findItemIndex } from '../../App/utils'
-import { Purchase } from '../types'
 
 export interface PurchaseSlice {
   addPurchase: (groupId: string, newPurchase: NewPurchase) => void

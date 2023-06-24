@@ -1,11 +1,9 @@
-import { MemberWithAmounts, Payment } from '../App/types'
-
 type GeneralInformation = {
   id: string
   timestamp: number
 }
 
-export type Group = GeneralInformation & {
+type Group = GeneralInformation & {
   name: string
   members: Member[]
   purchases: Purchase[]
@@ -13,11 +11,11 @@ export type Group = GeneralInformation & {
   compensations: Compensation[]
 }
 
-export type Member = GeneralInformation & {
+type Member = GeneralInformation & {
   name: string
 }
 
-export type Purchase = GeneralInformation & {
+type Purchase = GeneralInformation & {
   name: string
   amount: number
   purchaserId: Member['id']
@@ -27,14 +25,14 @@ export type Purchase = GeneralInformation & {
   memberAmount: number
 }
 
-export type Addition = {
+type Addition = {
   name: string
   amount: number
   payerIds: Member['id'][]
   memberAmount: number
 }
 
-export type Income = GeneralInformation & {
+type Income = GeneralInformation & {
   name: string
   amount: number
   earnerId: Member['id']
@@ -43,15 +41,15 @@ export type Income = GeneralInformation & {
   memberAmount: number
 }
 
-export type Compensation = GeneralInformation & {
+type Compensation = GeneralInformation & {
   amount: number
   payerId: Member['id']
   receiverId: Member['id']
 }
 
-export type SelectedGroup = Group & {
+type SelectedGroup = Group & {
   membersWithAmounts: MemberWithAmounts[]
   sortedPayments: Payment[]
 }
 
-export type Theme = 'dark' | 'white'
+type Theme = 'dark' | 'white'

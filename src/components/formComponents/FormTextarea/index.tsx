@@ -11,6 +11,7 @@ export const FormTextarea = <Type extends FieldValues>({ name, control }: FormTe
   const {
     field: { value, onChange },
   } = useController({ name, control })
+  const onChangeTyped: ReactHookFormOnChange = onChange
 
-  return <IonTextarea value={value} onIonChange={onChange} autocapitalize='sentences' autoGrow />
+  return <IonTextarea value={value} onIonChange={onChangeTyped} autocapitalize='sentences' autoGrow />
 }

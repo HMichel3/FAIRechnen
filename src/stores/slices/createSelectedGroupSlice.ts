@@ -1,5 +1,4 @@
 import { StateCreator } from 'zustand'
-import { SelectedGroup } from '../types'
 import { StoreState } from '../useStore'
 
 export interface SelectedGroupSlice {

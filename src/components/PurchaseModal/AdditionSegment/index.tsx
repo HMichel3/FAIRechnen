@@ -4,10 +4,8 @@ import { RefObject, useState } from 'react'
 import { AdditionCard } from './AdditionCard'
 import { isNil } from 'ramda'
 import { Control, useFieldArray, useFormState } from 'react-hook-form'
-import { NewPurchase } from '../../../App/types'
 import { motion } from 'framer-motion'
 import { fadeOutLeftVariants, variantProps } from '../../../App/animations'
-import { SelectedGroup, Theme } from '../../../stores/types'
 import './index.scss'
 
 interface AdditionSegmentProps {

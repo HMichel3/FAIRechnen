@@ -2,9 +2,7 @@ import produce from 'immer'
 import { PersistImmer } from '../usePersistedStore'
 import { calculateNewIncome } from '../utils'
 import { v4 as uuid } from 'uuid'
-import { NewIncome } from '../../App/types'
 import { findItemIndex } from '../../App/utils'
-import { Income } from '../types'
 
 export interface IncomeSlice {
   addIncome: (groupId: string, newIncome: NewIncome) => void

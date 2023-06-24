@@ -11,8 +11,14 @@ export const FormInput = <Type extends FieldValues>({ name, control }: FormInput
   const {
     field: { value, onChange },
   } = useController({ name, control })
+  const onChangeTyped: ReactHookFormOnChange = onChange
 
   return (
-    <IonInput value={value} onIonChange={onChange} onIonBlur={() => onChange(trim(value))} autocapitalize='sentences' />
+    <IonInput
+      value={value}
+      onIonChange={onChangeTyped}
+      onIonBlur={() => onChangeTyped(trim(value))}
+      autocapitalize='sentences'
+    />
   )
 }

@@ -1,9 +1,7 @@
 import { PersistImmer } from '../usePersistedStore'
 import { v4 as uuid } from 'uuid'
 import produce from 'immer'
-import { NewCompensation } from '../../App/types'
 import { findItemIndex } from '../../App/utils'
-import { Compensation } from '../types'
 
 export interface CompensationSlice {
   addCompensation: (groupId: string, newCompensation: NewCompensation) => void

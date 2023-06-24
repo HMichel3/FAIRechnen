@@ -1,7 +1,5 @@
 import produce from 'immer'
 import { descend, difference, includes, isEmpty, isNil, join, map, prop, sort } from 'ramda'
-import { Payment } from '../../App/types'
-import { Purchase, Income, Addition, Member, Compensation } from '../../stores/types'
 
 export const isPurchase = (payment: Payment): payment is Purchase => !isNil((payment as Purchase).purchaserId)
 

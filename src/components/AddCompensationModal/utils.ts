@@ -1,5 +1,4 @@
 import { join, sort, descend, prop } from 'ramda'
-import { CompensationsWithoutTimestamp, MemberWithAmounts } from '../../App/types'
 import { deleteItem, isPositive } from '../../App/utils'
 
 const removeDuplicateCompensations = (compensations: CompensationsWithoutTimestamp[]) => {
