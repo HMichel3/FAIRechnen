@@ -23,7 +23,7 @@ export const FormCheckboxGroup = <Type extends FieldValues>({
   } = useController({ name, control })
   const theme = usePersistedStore(s => s.theme)
 
-  const onCheckboxChange = (memberId: string, value: string[], onChange: (...event: any[]) => void) => {
+  const onCheckboxChange = (memberId: string, value: string[], onChange: ReactHookFormOnChange) => {
     if (includes(memberId, value)) {
       const valueWithoutId = produce(value, draft => {
         const memberIdIndex = indexOf(memberId, value)

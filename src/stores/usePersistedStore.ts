@@ -1,6 +1,6 @@
-import create, { StateCreator } from 'zustand'
+import { create, StateCreator } from 'zustand'
 import { Drivers, Storage } from '@ionic/storage'
-import { persist, StateStorage } from 'zustand/middleware'
+import { createJSONStorage, persist, StateStorage } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 import { createCompensationSlice, CompensationSlice } from './slices/createCompensationSlice'
 import { createGroupSlice, GroupSlice } from './slices/createGroupSlice'
@@ -57,13 +57,13 @@ export const usePersistedStore = create<PersistedState>()(
     })),
     {
       name: 'store-storage',
-      getStorage: () => {
+      storage: createJSONStorage(() => {
         const createStore = async () => {
           await ionicStorage.create()
         }
         createStore()
         return storage
-      },
+      }),
       onRehydrateStorage: () => () => {
         usePersistedStore.setState({ _hasHydrated: true })
       },

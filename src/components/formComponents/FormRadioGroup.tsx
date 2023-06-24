@@ -20,7 +20,7 @@ export const FormRadioGroup = <Type extends FieldValues>({
     field: { value, onChange },
   } = useController({ name, control })
   const theme = usePersistedStore(s => s.theme)
-  const onChangeTyped: ReactHookFormOnChange = onChange
+  const typedOnChange: ReactHookFormOnChange = onChange
 
   return (
     <IonRadioGroup className='form-chip-group' value={value}>
@@ -30,7 +30,7 @@ export const FormRadioGroup = <Type extends FieldValues>({
           className='form-chip'
           color={clsx({ light: isDark(theme) })}
           outline
-          onClick={() => onChangeTyped(option.id)}
+          onClick={() => typedOnChange(option.id)}
         >
           <IonRadio style={{ marginRight: 8 }} color={clsx({ light: isDark(theme) })} value={option.id} />
           <IonLabel className='form-chip-label'>{option.name}</IonLabel>

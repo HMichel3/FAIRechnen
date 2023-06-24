@@ -17,4 +17,4 @@ type NewCompensation = Pick<Compensation, 'amount' | 'payerId' | 'receiverId'>
 
 type CompensationsWithoutTimestamp = Pick<Compensation, 'id' | 'amount' | 'payerId' | 'receiverId'>
 
-type ReactHookFormOnChange = (event: any) => void
+type ReactHookFormOnChange = (...event: any[]) => void

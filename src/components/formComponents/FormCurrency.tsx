@@ -18,7 +18,7 @@ export const FormCurrency = <Type extends FieldValues>({ name, control }: FormCu
   const {
     field: { value, onChange },
   } = useController({ name, control })
-  const onChangeTyped: ReactHookFormOnChange = onChange
+  const typedOnChange: ReactHookFormOnChange = onChange
 
   const valueAbsTrunc = Math.trunc(Math.abs(value))
 
@@ -48,9 +48,9 @@ export const FormCurrency = <Type extends FieldValues>({ name, control }: FormCu
 
       if (nextValue > MAX) return
 
-      onChangeTyped(nextValue)
+      typedOnChange(nextValue)
     },
-    [onChangeTyped, value]
+    [typedOnChange, value]
   )
 
   return <IonInput value={displayCurrencyValue(value)} onIonInput={onKeyDown} inputMode='numeric' />

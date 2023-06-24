@@ -1,4 +1,4 @@
-import create from 'zustand'
+import { create } from 'zustand'
 import { createSelectedGroupSlice, SelectedGroupSlice } from './slices/createSelectedGroupSlice'
 import { createAnimationSlice, AnimationSlice } from './slices/createAnimationSlice'
 
