@@ -5,19 +5,21 @@ import { NumberInput } from '../../../noFormComponents/NumberInput'
 import { displayCurrencyValue } from '../../../../App/utils'
 import { FormComponent } from '../../../formComponents/FormComponent'
 import { UseFormSetValue } from 'react-hook-form'
+import { FormPropertyName } from '../..'
 import './index.scss'
 
 interface ConvertModalProps {
+  name: FormPropertyName
   setValue: UseFormSetValue<NewPurchase>
   onDismiss: () => void
 }
 
-export const ConvertModal = ({ setValue, onDismiss }: ConvertModalProps) => {
+export const ConvertModal = ({ name, setValue, onDismiss }: ConvertModalProps) => {
   const [amount, setAmount] = useState(0)
   const [factor, setFactor] = useState(1)
 
   function onSave() {
-    setValue('amount', Math.round(Math.abs(amount * factor)))
+    setValue(name, Math.round(Math.abs(amount * factor)))
     onDismiss()
   }
 

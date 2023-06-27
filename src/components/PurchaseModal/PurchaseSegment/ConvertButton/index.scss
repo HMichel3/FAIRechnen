@@ -6,4 +6,8 @@
   --border-width: 1px;
   --border-color: gray;
   --ripple-color: var(--ion-color-light);
+
+  &.small-left {
+    margin-left: 8px;
+  }
 }

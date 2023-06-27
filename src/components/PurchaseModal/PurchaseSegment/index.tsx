@@ -11,11 +11,12 @@ import { motion } from 'framer-motion'
 import { fadeOutRightVariants, variantProps } from '../../../App/animations'
 import { ConvertButton } from './ConvertButton'
 import { Dispatch, SetStateAction } from 'react'
+import { FormPropertyName } from '..'
 import './index.scss'
 
 interface PurchaseSegmentProps {
   control: Control<NewPurchase>
-  setShowConvertModal: Dispatch<SetStateAction<boolean>>
+  setShowConvertModal: Dispatch<SetStateAction<FormPropertyName | ''>>
 }
 
 export const PurchaseSegment = ({ control, setShowConvertModal }: PurchaseSegmentProps): JSX.Element => {
@@ -31,7 +32,7 @@ export const PurchaseSegment = ({ control, setShowConvertModal }: PurchaseSegmen
         <FormComponent className='flex-1' label='Betrag*' error={errors.amount}>
           <FormCurrency name='amount' control={control} />
         </FormComponent>
-        <ConvertButton onClick={() => setShowConvertModal(true)} />
+        <ConvertButton onClick={() => setShowConvertModal('amount')} />
       </div>
       <FormChipsComponent label='Einkäufer*'>
         <FormRadioGroup name='purchaserId' control={control} selectOptions={members} />

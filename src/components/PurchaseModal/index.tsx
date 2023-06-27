@@ -6,7 +6,7 @@ import { ModalFooter } from '../modalComponents/ModalFooter'
 import { AnimatePresence } from 'framer-motion'
 import { displayCurrencyValue, getTotalAmountFromArray } from '../../App/utils'
 import { ModalHeader } from '../modalComponents/ModalHeader'
-import { map, pick, prop } from 'ramda'
+import { isEmpty, map, pick, prop } from 'ramda'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
 import { useForm } from 'react-hook-form'
@@ -14,6 +14,20 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Show } from '../SolidComponents/Show'
 import { ConvertModal } from './PurchaseSegment/ConvertModal'
+
+export type FormPropertyName =
+  | 'name'
+  | 'amount'
+  | 'purchaserId'
+  | 'beneficiaryIds'
+  | 'description'
+  | 'additions'
+  | `beneficiaryIds.${number}`
+  | `additions.${number}`
+  | `additions.${number}.name`
+  | `additions.${number}.amount`
+  | `additions.${number}.payerIds`
+  | `additions.${number}.payerIds.${number}`
 
 interface PurchaseModalProps {
   onDismiss: () => void
@@ -63,7 +77,7 @@ export const PurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalProp
   })
   const [showSegment, setShowSegment] = useState('purchase')
   const [showAdditionError, setShowAdditionError] = useState(false)
-  const [showConvertModal, setShowConvertModal] = useState(false)
+  const [showConvertModal, setShowConvertModal] = useState<FormPropertyName | ''>('')
   const pageContentRef = useRef<HTMLIonContentElement>(null)
 
   useEffect(() => {
@@ -113,6 +127,7 @@ export const PurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalProp
               control={control}
               members={members}
               theme={theme}
+              setShowConvertModal={setShowConvertModal}
             />
           )}
         </AnimatePresence>
@@ -125,8 +140,12 @@ export const PurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalProp
         />
       </IonContent>
       <ModalFooter>Einkauf speichern</ModalFooter>
-      <Show when={showConvertModal}>
-        <ConvertModal setValue={setValue} onDismiss={() => setShowConvertModal(false)} />
+      <Show when={!isEmpty(showConvertModal)}>
+        <ConvertModal
+          name={showConvertModal as FormPropertyName}
+          setValue={setValue}
+          onDismiss={() => setShowConvertModal('')}
+        />
       </Show>
     </form>
   )
