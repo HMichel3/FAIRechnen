@@ -45,6 +45,8 @@ export const displayCurrencyValue = (value: number) =>
     currency: 'EUR',
   })
 
+export const displayCurrencyValueNoSign = (value: number) => displayCurrencyValue(value).slice(0, -2)
+
 export const calculateGroupTotalAmount = (purchases: Purchase[], incomes: Income[]) =>
   getTotalAmountFromArray(purchases) - getTotalAmountFromArray(incomes)
 

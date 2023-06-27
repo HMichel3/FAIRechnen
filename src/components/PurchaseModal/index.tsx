@@ -12,6 +12,8 @@ import { useStore } from '../../stores/useStore'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { Show } from '../SolidComponents/Show'
+import { ConvertModal } from './PurchaseSegment/ConvertModal'
 
 interface PurchaseModalProps {
   onDismiss: () => void
@@ -55,12 +57,13 @@ export const PurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalProp
   const theme = usePersistedStore(s => s.theme)
   const { id: groupId, members } = useStore(s => s.selectedGroup)
   const setShowAnimation = useStore(s => s.setShowAnimation)
-  const { handleSubmit, watch, formState, control } = useForm({
+  const { handleSubmit, watch, setValue, formState, control } = useForm({
     resolver: zodResolver(validationSchema),
     defaultValues: defaultValues(members, selectedPurchase),
   })
   const [showSegment, setShowSegment] = useState('purchase')
   const [showAdditionError, setShowAdditionError] = useState(false)
+  const [showConvertModal, setShowConvertModal] = useState(false)
   const pageContentRef = useRef<HTMLIonContentElement>(null)
 
   useEffect(() => {
@@ -100,7 +103,9 @@ export const PurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalProp
       <IonContent ref={pageContentRef}>
         <AnimatePresence mode='wait'>
           {/* Key prop is needed for AnimatePresence to work correctly on 2 different Components */}
-          {showSegment === 'purchase' && <PurchaseSegment key='purchase' control={control} />}
+          {showSegment === 'purchase' && (
+            <PurchaseSegment key='purchase' control={control} setShowConvertModal={setShowConvertModal} />
+          )}
           {showSegment === 'additions' && (
             <AdditionSegment
               key='additions'
@@ -120,6 +125,9 @@ export const PurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalProp
         />
       </IonContent>
       <ModalFooter>Einkauf speichern</ModalFooter>
+      <Show when={showConvertModal}>
+        <ConvertModal setValue={setValue} onDismiss={() => setShowConvertModal(false)} />
+      </Show>
     </form>
   )
 }
