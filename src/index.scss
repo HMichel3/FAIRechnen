@@ -46,6 +46,9 @@ ion-item-divider {
   height: 100%;
   flex-direction: column;
 }
+.flex-1 {
+  flex: 1;
+}
 .color-danger {
   color: var(--ion-color-danger-shade);
 }
@@ -58,6 +61,11 @@ ion-item-divider {
 .custom-backdrop {
   opacity: var(--ion-backdrop-opacity);
   z-index: 11;
+  &.full-view {
+    position: absolute;
+    inset: 0;
+    background: var(--ion-backdrop-color, #000);
+  }
 }
 .form-input-no-margin,
 .form-input-no-margin::part(native) {

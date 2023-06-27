@@ -1,11 +1,12 @@
 import { IonAlert, IonButton, IonButtons, IonIcon, IonItemDivider, IonLabel } from '@ionic/react'
 import { addSharp } from 'ionicons/icons'
-import { RefObject, useState } from 'react'
+import { Dispatch, RefObject, SetStateAction, useState } from 'react'
 import { AdditionCard } from './AdditionCard'
 import { isNil } from 'ramda'
 import { Control, useFieldArray, useFormState } from 'react-hook-form'
 import { motion } from 'framer-motion'
 import { fadeOutLeftVariants, variantProps } from '../../../App/animations'
+import { FormPropertyName } from '..'
 import './index.scss'
 
 interface AdditionSegmentProps {
@@ -13,9 +14,16 @@ interface AdditionSegmentProps {
   control: Control<NewPurchase>
   members: SelectedGroup['members']
   theme: Theme
+  setShowConvertModal: Dispatch<SetStateAction<FormPropertyName | ''>>
 }
 
-export const AdditionSegment = ({ pageContentRef, control, members, theme }: AdditionSegmentProps): JSX.Element => {
+export const AdditionSegment = ({
+  pageContentRef,
+  control,
+  members,
+  theme,
+  setShowConvertModal,
+}: AdditionSegmentProps): JSX.Element => {
   const { fields, append, remove } = useFieldArray({ control, name: 'additions' })
   const { errors } = useFormState({ control })
   const [additionIndex, setAdditionIndex] = useState<number | null>(null)
@@ -54,6 +62,7 @@ export const AdditionSegment = ({ pageContentRef, control, members, theme }: Add
                 members={members}
                 theme={theme}
                 additionErrors={errors.additions}
+                setShowConvertModal={setShowConvertModal}
               />
             )
           })}

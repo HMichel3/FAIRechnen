@@ -9,12 +9,17 @@ import { FormCheckboxGroup } from '../../formComponents/FormCheckboxGroup'
 import { Control, useFormState } from 'react-hook-form'
 import { motion } from 'framer-motion'
 import { fadeOutRightVariants, variantProps } from '../../../App/animations'
+import { ConvertButton } from './ConvertButton'
+import { Dispatch, SetStateAction } from 'react'
+import { FormPropertyName } from '..'
+import './index.scss'
 
 interface PurchaseSegmentProps {
   control: Control<NewPurchase>
+  setShowConvertModal: Dispatch<SetStateAction<FormPropertyName | ''>>
 }
 
-export const PurchaseSegment = ({ control }: PurchaseSegmentProps): JSX.Element => {
+export const PurchaseSegment = ({ control, setShowConvertModal }: PurchaseSegmentProps): JSX.Element => {
   const { members } = useStore(s => s.selectedGroup)
   const { errors } = useFormState({ control })
 
@@ -23,9 +28,12 @@ export const PurchaseSegment = ({ control }: PurchaseSegmentProps): JSX.Element 
       <FormComponent label='Einkaufname*' error={errors.name}>
         <FormInput name='name' control={control} />
       </FormComponent>
-      <FormComponent label='Betrag*' error={errors.amount}>
-        <FormCurrency name='amount' control={control} />
-      </FormComponent>
+      <div className='amount-convert-wrapper'>
+        <FormComponent className='flex-1' label='Betrag*' error={errors.amount}>
+          <FormCurrency name='amount' control={control} />
+        </FormComponent>
+        <ConvertButton onClick={() => setShowConvertModal('amount')} />
+      </div>
       <FormChipsComponent label='Einkäufer*'>
         <FormRadioGroup name='purchaserId' control={control} selectOptions={members} />
       </FormChipsComponent>

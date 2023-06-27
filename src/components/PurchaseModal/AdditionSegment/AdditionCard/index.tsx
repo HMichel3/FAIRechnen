@@ -13,6 +13,8 @@ import { isDark } from '../../../../pages/GroupPage/utils'
 import clsx from 'clsx'
 import { FormChipsComponent } from '../../../formComponents/FormChipsComponent'
 import { FormCheckboxGroup } from '../../../formComponents/FormCheckboxGroup'
+import { ConvertButton } from '../../PurchaseSegment/ConvertButton'
+import { FormPropertyName } from '../..'
 import './index.scss'
 
 interface AdditionCardProps {
@@ -21,6 +23,7 @@ interface AdditionCardProps {
   control: Control<NewPurchase>
   members: SelectedGroup['members']
   theme: Theme
+  setShowConvertModal: Dispatch<SetStateAction<FormPropertyName | ''>>
   additionErrors?: Merge<
     FieldError,
     (
@@ -44,6 +47,7 @@ export const AdditionCard = ({
   members,
   theme,
   additionErrors,
+  setShowConvertModal,
 }: AdditionCardProps): JSX.Element => {
   const { name, amount } = useWatch({ control, name: `additions.${index}` })
   const isNameEmptyOrHasAdditionError = isEmpty(name) || !isNil(path([index], additionErrors))
@@ -86,23 +90,26 @@ export const AdditionCard = ({
       <AnimatePresence mode='wait'>
         {showCardContent && (
           <motion.div variants={fadeInOutTopVariants} {...variantProps}>
-            <IonCardContent style={{ paddingTop: 0 }}>
+            <IonCardContent className='addition-card-content'>
               <FormComponent
-                className='addition-card-input form-input-no-margin'
+                className='addition-card-input'
                 label='Zusatzname*'
                 error={path([index, 'name'], additionErrors)}
               >
                 <FormInput name={`additions.${index}.name`} control={control} />
               </FormComponent>
-              <FormComponent
-                className='addition-card-input form-input-no-margin'
-                label='Betrag*'
-                error={path([index, 'amount'], additionErrors)}
-              >
-                <FormCurrency name={`additions.${index}.amount`} control={control} />
-              </FormComponent>
+              <div className='addition-amount-convert-wrapper'>
+                <FormComponent
+                  className='addition-card-input flex-1'
+                  label='Betrag*'
+                  error={path([index, 'amount'], additionErrors)}
+                >
+                  <FormCurrency name={`additions.${index}.amount`} control={control} />
+                </FormComponent>
+                <ConvertButton onClick={() => setShowConvertModal(`additions.${index}.amount`)} smallLeft />
+              </div>
               <FormChipsComponent
-                className='addition-card-checkbox form-input-no-margin'
+                className='addition-card-checkbox'
                 label='Beteiligte*'
                 error={path([index, 'payerIds'], additionErrors)}
               >
