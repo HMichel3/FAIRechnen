@@ -1,7 +1,7 @@
 import { IonButton, IonContent, IonicSlides } from '@ionic/react'
 import { informationCircleSharp, helpCircleSharp, bulbSharp } from 'ionicons/icons'
 import { InfoSlideWithIcon } from './InfoSlideWithIcon'
-import { Pagination } from 'swiper'
+import { Pagination } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { InfoSlideWithPicture } from './InfoSlideWithPicture'
 import 'swiper/css'
@@ -14,7 +14,7 @@ interface InfoSlidesProps {
 
 export const InfoSlides = ({ onToggleShowInfoSlides }: InfoSlidesProps): JSX.Element => (
   <IonContent color='light' className='z-[1001]'>
-    <Swiper className='h-full' modules={[Pagination, IonicSlides]} pagination={true} loop={true}>
+    <Swiper className='h-full p-2' modules={[Pagination, IonicSlides]} pagination={{ type: 'progressbar' }} loop={true}>
       <SwiperSlide className='h-full'>
         <InfoSlideWithIcon
           icon={informationCircleSharp}
