@@ -1,8 +1,7 @@
-import { IonReorderGroup, IonItemOption, IonAlert } from '@ionic/react'
-import clsx from 'clsx'
+import { IonReorderGroup, IonItemOption, useIonAlert, IonText } from '@ionic/react'
 import { peopleSharp } from 'ionicons/icons'
-import { isEmpty } from 'ramda'
-import { useEffect, useRef, useState } from 'react'
+import { clone, isEmpty } from 'ramda'
+import { useEffect, useState } from 'react'
 import { isLast } from '../../App/utils'
 import { GroupInfo } from '../../pages/GroupPage/GroupInfo'
 import { usePersistedStore } from '../../stores/usePersistedStore'
@@ -20,12 +19,11 @@ export const GroupPageList = ({ reorder }: GroupPageListProps) => {
   const setGroups = usePersistedStore(s => s.setGroups)
   const deleteGroup = usePersistedStore(s => s.deleteGroup)
   const archiveGroup = usePersistedStore(s => s.archiveGroup)
-  const [showDeleteGroupAlert, setShowDeleteGroupAlert] = useState(false)
+  const [presentDeleteGroup] = useIonAlert()
   const [showGroupArchive, setShowGroupArchive] = useState(false)
-  const selectedGroupIdRef = useRef('')
 
   // needed to prevent an error while reordering restored groups
-  const copiedGroups = [...groups]
+  const copiedGroups = clone(groups)
   const isGroupArchiveEmpty = isEmpty(groupArchive)
 
   useEffect(() => {
@@ -33,15 +31,28 @@ export const GroupPageList = ({ reorder }: GroupPageListProps) => {
   }, [isGroupArchiveEmpty])
 
   const onDeleteGroup = (groupId: string) => {
-    selectedGroupIdRef.current = groupId
-    setShowDeleteGroupAlert(true)
+    presentDeleteGroup({
+      header: 'Wollen Sie die Gruppe wirklich löschen?',
+      message:
+        'Mit dem Löschen der Gruppe gehen sämtliche Informationen bezüglich der Mitglieder, der Einkäufe sowie möglicher offener Rechnungen verloren!',
+      buttons: [
+        { role: 'cancel', text: 'Abbrechen', cssClass: 'alert-button-cancel' },
+        { role: 'confirm', text: 'Löschen', handler: () => deleteGroup(groupId) },
+      ],
+    })
   }
 
   return (
     <>
       <Show
         when={!isEmpty(copiedGroups)}
-        fallback={isGroupArchiveEmpty ? <p className='no-items-info'>Füge neue Gruppen hinzu!</p> : null}
+        fallback={
+          isGroupArchiveEmpty ? (
+            <IonText className='grid h-full place-items-center text-lg text-neutral-400'>
+              Füge neue Gruppen hinzu!
+            </IonText>
+          ) : null
+        }
       >
         <IonReorderGroup
           disabled={!reorder}
@@ -54,19 +65,10 @@ export const GroupPageList = ({ reorder }: GroupPageListProps) => {
               routerLink={`/groups/${group.id}`}
               onDelete={() => onDeleteGroup(group.id)}
               icon={peopleSharp}
-              labelComponent={<GroupInfo groupId={group.id} />}
+              labelComponent={<GroupInfo group={group} />}
               reorder={reorder}
               lines={isLast(group, copiedGroups) && !isEmpty(groupArchive) ? 'full' : 'inset'}
-              transparentLine={isLast(group, copiedGroups) && isEmpty(groupArchive)}
-              className={clsx({ 'item-thick-full-line': isLast(group, copiedGroups) && !isEmpty(groupArchive) })}
-              iconClassName={clsx({
-                'item-smaller-icon-margin': isLast(group, copiedGroups) && !isEmpty(groupArchive),
-              })}
-              rightSlideOption={
-                <IonItemOption className='sliding-archive' color='warning' onClick={() => archiveGroup(group.id)}>
-                  Archivieren
-                </IonItemOption>
-              }
+              rightSlideOption={<IonItemOption onClick={() => archiveGroup(group.id)}>Archivieren</IonItemOption>}
             />
           ))}
         </IonReorderGroup>
@@ -74,17 +76,6 @@ export const GroupPageList = ({ reorder }: GroupPageListProps) => {
       <Show when={!isEmpty(groupArchive)}>
         <ArchivedGroups showGroupArchive={showGroupArchive} setShowGroupArchive={setShowGroupArchive} />
       </Show>
-      <IonAlert
-        cssClass='delete-alert'
-        isOpen={showDeleteGroupAlert}
-        onDidDismiss={() => setShowDeleteGroupAlert(false)}
-        header='Wollen Sie die Gruppe wirklich löschen?'
-        message='Mit dem Löschen der Gruppe gehen sämtliche Informationen bezüglich der Mitglieder, der Einkäufe sowie möglicher offener Rechnungen verloren!'
-        buttons={[
-          { role: 'cancel', text: 'Abbrechen' },
-          { text: 'Löschen', handler: () => deleteGroup(selectedGroupIdRef.current) },
-        ]}
-      />
     </>
   )
 }

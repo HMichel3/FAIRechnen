@@ -1,21 +1,16 @@
-import { IonItem, IonRadio, IonLabel } from '@ionic/react'
-import clsx from 'clsx'
-import { usePersistedStore } from '../../../stores/usePersistedStore'
+import { IonItem, IonLabel, IonRadio } from '@ionic/react'
 import { CompensationInfo } from '../../PaymentSegment/CompensationInfo'
+import { CompensationsWithoutTimestamp } from '../../../App/types'
 
 interface CompensationItemProps {
   compensation: CompensationsWithoutTimestamp
 }
 
-export const CompensationItem = ({ compensation }: CompensationItemProps): JSX.Element => {
-  const theme = usePersistedStore(s => s.theme)
-
-  return (
-    <IonItem className='item-border-color'>
-      <IonRadio color={clsx({ light: theme === 'dark' })} slot='start' value={compensation.id} />
-      <IonLabel>
-        <CompensationInfo compensation={compensation} />
-      </IonLabel>
-    </IonItem>
-  )
-}
+export const CompensationItem = ({ compensation }: CompensationItemProps): JSX.Element => (
+  <IonItem className='item-border-color'>
+    <IonRadio value={compensation.id} legacy />
+    <IonLabel className='ml-4'>
+      <CompensationInfo compensation={compensation} />
+    </IonLabel>
+  </IonItem>
+)

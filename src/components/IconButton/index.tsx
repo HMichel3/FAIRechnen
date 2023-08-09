@@ -1,6 +1,6 @@
 import { IonButton, IonIcon } from '@ionic/react'
 import { MouseEventHandler } from 'react'
-import './index.scss'
+import { cn } from '../../App/utils'
 
 interface IconButtonProps {
   children: string
@@ -19,15 +19,15 @@ export const IconButton = ({
   icon,
   type = 'button',
   disabled = false,
-  color = 'medium',
+  color,
   fill = 'default',
   size = 'default',
-  className = 'icon-button',
+  className,
   onClick,
 }: IconButtonProps): JSX.Element => (
   <IonButton
+    className={cn(className)}
     expand='block'
-    className={className}
     color={color}
     type={type}
     disabled={disabled}

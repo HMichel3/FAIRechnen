@@ -1,17 +1,16 @@
-import { IonContent, IonItemDivider, IonLabel } from '@ionic/react'
-import { isLast } from '../../App/utils'
-import { FormComponent } from '../formComponents/FormComponent'
+import { IonButton, IonContent, IonIcon } from '@ionic/react'
 import { FormInput } from '../formComponents/FormInput'
 import { ModalHeader } from '../modalComponents/ModalHeader'
 import { ModalFooter } from '../modalComponents/ModalFooter'
 import { FormProvider, useFieldArray, useForm, useWatch } from 'react-hook-form'
-import clsx from 'clsx'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
-import { useEffect, useRef } from 'react'
-import { isEmpty } from 'ramda'
+import { useEffect } from 'react'
+import { isEmpty, last } from 'ramda'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { isLast } from '../../App/utils'
+import { closeSharp } from 'ionicons/icons'
 
 interface AddGroupModalProps {
   onDismiss: () => void
@@ -35,16 +34,13 @@ export const AddGroupModal = ({ onDismiss }: AddGroupModalProps): JSX.Element =>
   const methods = useForm({ resolver: zodResolver(validationSchema), defaultValues })
   const { fields, append, remove } = useFieldArray({ control: methods.control, name: 'memberNames' })
   const memberNamesFields = useWatch({ control: methods.control, name: 'memberNames' })
-  const pageContentRef = useRef<HTMLIonContentElement>(null)
 
   useEffect(() => {
-    if (!isEmpty(memberNamesFields.at(-1)?.name)) {
-      append({ name: '' })
-      setTimeout(() => pageContentRef.current?.scrollToBottom(), 300)
-      return
+    if (!isEmpty(last(memberNamesFields)?.name)) {
+      return append({ name: '' })
     }
     if (isEmpty(memberNamesFields.at(-2)?.name)) {
-      remove(memberNamesFields.length - 1)
+      remove(memberNamesFields.length - 2)
     }
   }, [memberNamesFields, append, remove])
 
@@ -56,28 +52,26 @@ export const AddGroupModal = ({ onDismiss }: AddGroupModalProps): JSX.Element =>
 
   return (
     <FormProvider {...methods}>
-      <form className='flex-column-full-height' onSubmit={onSubmit}>
+      <form onSubmit={onSubmit} className='flex flex-col flex-1'>
         <ModalHeader title='Neue Gruppe' onDismiss={onDismiss} />
-        <IonContent ref={pageContentRef}>
-          <IonItemDivider color='medium'>
-            <IonLabel>Gruppe</IonLabel>
-          </IonItemDivider>
-          <FormComponent label='Gruppenname' error={methods.formState.errors.groupName}>
-            <FormInput name='groupName' control={methods.control} />
-          </FormComponent>
-          {fields.map((field, index) => {
-            const isNotLastField = !isLast(field, fields)
-            return (
-              <FormComponent
-                key={field.id}
-                label='Mitglied'
-                className={clsx(isNotLastField ? 'default-margin-small ' : 'default-margin-small-top')}
-                {...(isNotLastField && { onDelete: () => remove(index) })}
-              >
-                <FormInput name={`memberNames.${index}.name`} control={methods.control} />
-              </FormComponent>
-            )
-          })}
+        <IonContent>
+          <FormInput label='Gruppenname*' name='groupName' control={methods.control} />
+          {fields.map((field, index) => (
+            <div key={field.id} className='flex'>
+              <FormInput label='Mitglied' name={`memberNames.${index}.name`} control={methods.control} />
+              {!isLast(field, fields) && (
+                <IonButton
+                  className='m-0 h-14 w-14 bg-[#1e1e1e] border-b border-[#898989]'
+                  color='danger'
+                  slot='end'
+                  fill='clear'
+                  onClick={() => remove(index)}
+                >
+                  <IonIcon slot='icon-only' icon={closeSharp} />
+                </IonButton>
+              )}
+            </div>
+          ))}
         </IonContent>
         <ModalFooter>Gruppe speichern</ModalFooter>
       </form>

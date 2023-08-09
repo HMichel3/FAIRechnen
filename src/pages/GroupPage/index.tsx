@@ -16,7 +16,7 @@ import {
   useIonModal,
   useIonRouter,
 } from '@ionic/react'
-import { closeSharp, helpCircleSharp, moonSharp, peopleSharp, repeatSharp, sunnySharp } from 'ionicons/icons'
+import { closeSharp, helpCircleSharp, peopleSharp, repeatSharp } from 'ionicons/icons'
 import { IconButton } from '../../components/IconButton'
 import { InfoSlides } from '../../components/InfoSlides'
 import { useEffect, useRef, useState } from 'react'
@@ -28,11 +28,9 @@ import { GroupPageList } from '../../components/GroupPageList'
 import { SuccessAnimation } from '../../lotties/SuccessAnimation'
 import { useStore } from '../../stores/useStore'
 import { App } from '@capacitor/app'
-import './index.scss'
 
 export const GroupPage = (): JSX.Element => {
   const groups = usePersistedStore(s => s.groups)
-  const setTheme = usePersistedStore(s => s.setTheme)
   const theme = usePersistedStore(s => s.theme)
   const alreadyVisited = usePersistedStore(s => s.alreadyVisited)
   const setAlreadyVisited = usePersistedStore(s => s.setAlreadyVisited)
@@ -74,29 +72,25 @@ export const GroupPage = (): JSX.Element => {
   }
 
   return (
-    <div className='group-page'>
+    <>
       <IonMenu side='start' contentId='main-content' swipeGesture={!showInfoSlides}>
         <IonHeader>
-          <IonToolbar color='dark'>
+          <IonToolbar>
             <IonTitle>Optionen</IonTitle>
           </IonToolbar>
         </IonHeader>
         <IonContent>
           <IonList>
             <IonItem onClick={() => setShowInfoSlides(true)} lines='none'>
-              <IonIcon className='list-item-icon-color' icon={helpCircleSharp} slot='start' />
+              <IonIcon icon={helpCircleSharp} slot='start' />
               <IonLabel>Hilfe</IonLabel>
-            </IonItem>
-            <IonItem onClick={isDark(theme) ? () => setTheme('white') : () => setTheme('dark')} lines='none'>
-              <IonIcon className='list-item-icon-color' slot='start' icon={isDark(theme) ? sunnySharp : moonSharp} />
-              <IonLabel>{isDark(theme) ? 'Lightmode' : 'Darkmode'}</IonLabel>
             </IonItem>
           </IonList>
         </IonContent>
       </IonMenu>
       <IonPage id='main-content' ref={pageRef}>
         <IonHeader>
-          <IonToolbar color='dark'>
+          <IonToolbar>
             <IonButtons slot='start'>
               <IonMenuButton />
             </IonButtons>
@@ -112,7 +106,7 @@ export const GroupPage = (): JSX.Element => {
           <GroupPageList reorder={reorder} />
         </IonContent>
         <IonFooter>
-          <IonToolbar color='dark'>
+          <IonToolbar>
             <IconButton icon={peopleSharp} onClick={() => showAddGroupModal()}>
               Gruppe hinzufügen
             </IconButton>
@@ -123,19 +117,11 @@ export const GroupPage = (): JSX.Element => {
         </Show>
       </IonPage>
       <Show when={showInfoSlides}>
-        <IonPage className='info-slides-container'>
-          <IonContent>
-            <InfoSlides onToggleShowInfoSlides={() => setShowInfoSlides(false)} />
-          </IonContent>
-        </IonPage>
+        <InfoSlides onToggleShowInfoSlides={() => setShowInfoSlides(false)} />
       </Show>
       <Show when={showFirstInfoSlides}>
-        <IonPage className='info-slides-container'>
-          <IonContent>
-            <InfoSlides onToggleShowInfoSlides={onHideFirstInfoSlides} />
-          </IonContent>
-        </IonPage>
+        <InfoSlides onToggleShowInfoSlides={onHideFirstInfoSlides} />
       </Show>
-    </div>
+    </>
   )
 }

@@ -8,7 +8,7 @@ interface ModalFooterProps {
 
 export const ModalFooter = ({ children }: ModalFooterProps) => (
   <IonFooter>
-    <IonToolbar color='dark'>
+    <IonToolbar>
       <IconButton type='submit' icon={saveSharp}>
         {children}
       </IconButton>

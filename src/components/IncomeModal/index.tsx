@@ -1,11 +1,9 @@
-import { IonContent } from '@ionic/react'
+import { IonContent, IonLabel } from '@ionic/react'
 import { map, pick, prop } from 'ramda'
 import { useForm } from 'react-hook-form'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
 import { FormCheckboxGroup } from '../formComponents/FormCheckboxGroup'
-import { FormChipsComponent } from '../formComponents/FormChipsComponent'
-import { FormComponent } from '../formComponents/FormComponent'
 import { FormCurrency } from '../formComponents/FormCurrency'
 import { FormInput } from '../formComponents/FormInput'
 import { FormRadioGroup } from '../formComponents/FormRadioGroup'
@@ -14,6 +12,9 @@ import { ModalFooter } from '../modalComponents/ModalFooter'
 import { ModalHeader } from '../modalComponents/ModalHeader'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { NewIncome } from '../../App/types'
+import { Income, Member } from '../../stores/types'
+import { cn } from '../../App/utils'
 
 interface IncomeModalProps {
   onDismiss: () => void
@@ -64,24 +65,26 @@ export const IncomeModal = ({ onDismiss, selectedIncome }: IncomeModalProps): JS
   })
 
   return (
-    <form className='flex-column-full-height' onSubmit={onSubmit}>
+    <form className='flex flex-1 flex-col' onSubmit={onSubmit}>
       <ModalHeader title={selectedIncome ? 'Einkommen bearbeiten' : 'Neues Einkommen'} onDismiss={onDismiss} />
       <IonContent>
-        <FormComponent label='Einkommenname*' error={formState.errors.name}>
-          <FormInput name='name' control={control} />
-        </FormComponent>
-        <FormComponent label='Betrag*' error={formState.errors.amount}>
-          <FormCurrency name='amount' control={control} />
-        </FormComponent>
-        <FormChipsComponent label='Verdiener*'>
-          <FormRadioGroup name='earnerId' control={control} selectOptions={members} />
-        </FormChipsComponent>
-        <FormChipsComponent label='Beteiligte*' error={formState.errors.beneficiaryIds}>
-          <FormCheckboxGroup name='beneficiaryIds' control={control} selectOptions={members} />
-        </FormChipsComponent>
-        <FormComponent label='Beschreibung'>
-          <FormTextarea name='description' control={control} />
-        </FormComponent>
+        <div className='my-2 flex flex-col gap-2'>
+          <FormInput label='Einkommenname*' name='name' control={control} />
+          <FormCurrency label='Betrag*' name='amount' control={control} />
+          <div className='flex flex-col border-b border-[#898989] bg-[#1e1e1e] px-4 py-2'>
+            <IonLabel>Verdiener*</IonLabel>
+            <FormRadioGroup name='earnerId' control={control} selectOptions={members} />
+          </div>
+          <div
+            className={cn('flex flex-col border-b border-[#898989] bg-[#1e1e1e] px-4 py-2', {
+              'border-[#eb445a]': formState.errors.beneficiaryIds,
+            })}
+          >
+            <IonLabel color={cn({ danger: formState.errors.beneficiaryIds })}>Beteiligte*</IonLabel>
+            <FormCheckboxGroup name='beneficiaryIds' control={control} selectOptions={members} />
+          </div>
+          <FormTextarea label='Beschreibung' name='description' control={control} />
+        </div>
       </IonContent>
       <ModalFooter>Einkommen speichern</ModalFooter>
     </form>

@@ -9,13 +9,13 @@ interface InfoSlideWithPictureProps {
 }
 
 export const InfoSlideWithPicture = ({ title, imgSrc, imgAlt, onToggleShowInfoSlides }: InfoSlideWithPictureProps) => (
-  <>
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-      <h1 className='default-margin'>{title}</h1>
-      <IonButton fill='clear' color='light' onClick={onToggleShowInfoSlides}>
+  <div className='h-full'>
+    <div className='flex w-full justify-between'>
+      <h1 className='m-4 text-3xl font-bold'>{title}</h1>
+      <IonButton color='danger' className='my-4' fill='clear' onClick={onToggleShowInfoSlides}>
         <IonIcon size='large' slot='icon-only' icon={closeSharp} />
       </IonButton>
     </div>
-    <IonImg className='default-margin picture-border' src={imgSrc} alt={imgAlt} />
-  </>
+    <IonImg className='m-4 border border-[#3880ff]' src={imgSrc} alt={imgAlt} />
+  </div>
 )

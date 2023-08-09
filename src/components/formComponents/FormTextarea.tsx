@@ -1,23 +1,21 @@
-import { IonSelect, IonSelectOption } from '@ionic/react'
+import { IonTextarea } from '@ionic/react'
 import { Control, FieldValues, Path, useController } from 'react-hook-form'
-import { cn } from '../../App/utils'
 import { ReactHookFormOnChange } from '../../App/types'
+import { cn } from '../../App/utils'
 
-interface FormSelectProps<Type extends FieldValues> {
+interface FormTextareaProps<Type extends FieldValues> {
   label: string
   name: Path<Type>
   control: Control<Type>
-  selectOptions: { id: string; name: string }[]
   className?: string
 }
 
-export const FormSelect = <Type extends FieldValues>({
+export const FormTextarea = <Type extends FieldValues>({
   label,
   name,
   control,
-  selectOptions,
   className,
-}: FormSelectProps<Type>) => {
+}: FormTextareaProps<Type>) => {
   const {
     field: { value, onChange },
     fieldState: { invalid },
@@ -25,20 +23,15 @@ export const FormSelect = <Type extends FieldValues>({
   const typedOnChange: ReactHookFormOnChange = onChange
 
   return (
-    <IonSelect
+    <IonTextarea
       className={cn({ 'ion-invalid ion-touched': invalid }, className)}
       fill='solid'
       labelPlacement='floating'
       label={label}
-      interface='popover'
       value={value}
       onIonChange={typedOnChange}
-    >
-      {selectOptions.map(option => (
-        <IonSelectOption key={option.id} value={option.id}>
-          {option.name}
-        </IonSelectOption>
-      ))}
-    </IonSelect>
+      autocapitalize='sentences'
+      autoGrow
+    />
   )
 }

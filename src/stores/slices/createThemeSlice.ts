@@ -1,3 +1,4 @@
+import { Theme } from '../types'
 import { PersistImmer } from '../usePersistedStore'
 
 export interface ThemeSlice {

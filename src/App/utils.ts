@@ -1,4 +1,4 @@
-import produce from 'immer'
+import { produce } from 'immer'
 import {
   find,
   findIndex,
@@ -15,17 +15,21 @@ import {
   gt,
   includes,
 } from 'ramda'
+import { Compensation, Income, Member, Purchase } from '../stores/types'
+import { MemberWithAmounts } from './types'
+import { twMerge } from 'tailwind-merge'
+import { clsx, ClassValue } from 'clsx'
 
 // From ramda-adjunct
 const isNumber = curryN(1, pipe(type, identical('Number')))
 export const isPositive = both(isNumber, lt(0))
 export const isNegative = curryN(1, both(isNumber, gt(0)))
 
-export const findItem = <T extends { id: string }>(id: string, array: T[]): T => find(propEq('id', id), array)!
+export const findItem = <T extends { id: string }>(id: string, array: T[]): T => find(propEq(id, 'id'), array)!
 
 export const findItems = <T extends { id: string }>(ids: string[], array: T[]) => map(id => findItem(id, array), ids)
 
-export const findItemIndex = <T extends { id: string }>(id: string, array: T[]) => findIndex(propEq('id', id), array)
+export const findItemIndex = <T extends { id: string }>(id: string, array: T[]) => findIndex(propEq(id, 'id'), array)
 
 export const deleteItem = <T extends { id: string }>(id: string, array: T[]) =>
   produce(array, draft => {
@@ -115,3 +119,5 @@ export const calculateMembersWithAmounts = (
       draft['total'] = total
     })
   })
+
+export const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs))

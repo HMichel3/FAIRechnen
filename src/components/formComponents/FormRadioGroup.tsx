@@ -1,9 +1,6 @@
-import { IonLabel, IonRadioGroup, IonChip, IonRadio } from '@ionic/react'
-import clsx from 'clsx'
+import { IonRadioGroup, IonChip, IonRadio } from '@ionic/react'
 import { Control, FieldValues, Path, useController } from 'react-hook-form'
-import { isDark } from '../../pages/GroupPage/utils'
-import { usePersistedStore } from '../../stores/usePersistedStore'
-import './FormChipsComponent/index.scss'
+import { ReactHookFormOnChange } from '../../App/types'
 
 interface FormRadioGroupProps<Type extends FieldValues> {
   name: Path<Type>
@@ -19,21 +16,13 @@ export const FormRadioGroup = <Type extends FieldValues>({
   const {
     field: { value, onChange },
   } = useController({ name, control })
-  const theme = usePersistedStore(s => s.theme)
   const typedOnChange: ReactHookFormOnChange = onChange
 
   return (
-    <IonRadioGroup className='form-chip-group' value={value}>
+    <IonRadioGroup value={value} className='my-2 flex flex-wrap gap-2'>
       {selectOptions.map(option => (
-        <IonChip
-          key={option.id}
-          className='form-chip'
-          color={clsx({ light: isDark(theme) })}
-          outline
-          onClick={() => typedOnChange(option.id)}
-        >
-          <IonRadio style={{ marginRight: 8 }} color={clsx({ light: isDark(theme) })} value={option.id} />
-          <IonLabel className='form-chip-label'>{option.name}</IonLabel>
+        <IonChip className='m-0' key={option.id} onClick={() => typedOnChange(option.id)}>
+          <IonRadio value={option.id}>{option.name}</IonRadio>
         </IonChip>
       ))}
     </IonRadioGroup>
