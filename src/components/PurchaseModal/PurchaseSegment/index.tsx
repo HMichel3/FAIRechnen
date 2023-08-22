@@ -9,14 +9,14 @@ import { motion } from 'framer-motion'
 import { fadeOutRightVariants, variantProps } from '../../../App/animations'
 import { ConvertButton } from './ConvertButton'
 import { Dispatch, SetStateAction } from 'react'
-import { FormPropertyName } from '..'
+import { PurchaseFormPropertyName } from '..'
 import { IonLabel } from '@ionic/react'
 import { NewPurchase } from '../../../App/types'
 import { cn } from '../../../App/utils'
 
 interface PurchaseSegmentProps {
   control: Control<NewPurchase>
-  setShowConvertModal: Dispatch<SetStateAction<FormPropertyName | ''>>
+  setShowConvertModal: Dispatch<SetStateAction<PurchaseFormPropertyName | ''>>
 }
 
 export const PurchaseSegment = ({ control, setShowConvertModal }: PurchaseSegmentProps): JSX.Element => {
@@ -31,7 +31,7 @@ export const PurchaseSegment = ({ control, setShowConvertModal }: PurchaseSegmen
         <ConvertButton onClick={() => setShowConvertModal('amount')} />
       </div>
       <div className='flex flex-col border-b border-[#898989] bg-[#1e1e1e] px-4 py-2'>
-        <IonLabel>Einkäufer*</IonLabel>
+        <IonLabel className='text-xs'>Einkäufer*</IonLabel>
         <FormRadioGroup name='purchaserId' control={control} selectOptions={members} />
       </div>
       <div
@@ -39,7 +39,9 @@ export const PurchaseSegment = ({ control, setShowConvertModal }: PurchaseSegmen
           'border-[#eb445a]': errors.beneficiaryIds,
         })}
       >
-        <IonLabel color={cn({ danger: errors.beneficiaryIds })}>Begünstigte*</IonLabel>
+        <IonLabel className='text-xs' color={cn({ danger: errors.beneficiaryIds })}>
+          Begünstigte*
+        </IonLabel>
         <FormCheckboxGroup name='beneficiaryIds' control={control} selectOptions={members} />
       </div>
       <FormTextarea label='Beschreibung' name='description' control={control} />

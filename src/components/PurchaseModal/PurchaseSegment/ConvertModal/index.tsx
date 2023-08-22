@@ -3,29 +3,25 @@ import { useState } from 'react'
 import { CurrencyInput } from '../../../noFormComponents/CurrencyInput'
 import { NumberInput, parseCommaNumber } from '../../../noFormComponents/NumberInput'
 import { displayCurrencyValue } from '../../../../App/utils'
-import { UseFormSetValue } from 'react-hook-form'
-import { FormPropertyName } from '../..'
-import { NewPurchase } from '../../../../App/types'
 
-interface ConvertModalProps {
-  name: FormPropertyName
-  setValue: UseFormSetValue<NewPurchase>
+type ConvertModalProps = {
+  setFormAmount: (amount: number) => void
   onDismiss: () => void
 }
 
-export const ConvertModal = ({ name, setValue, onDismiss }: ConvertModalProps) => {
+export const ConvertModal = ({ setFormAmount, onDismiss }: ConvertModalProps) => {
   const [amount, setAmount] = useState(0)
   const [factor, setFactor] = useState('1')
 
   function onSave() {
-    setValue(name, Math.round(amount * parseCommaNumber(factor)))
+    setFormAmount(Math.round(amount * parseCommaNumber(factor)))
     onDismiss()
   }
 
   return (
     <>
       <div className='absolute inset-0 z-10 bg-black/60' onClick={onDismiss} />
-      <div className='absolute bottom-0 left-4 right-4 top-0 z-20 my-auto h-fit rounded bg-slate-700 p-4'>
+      <div className='absolute bottom-0 left-4 right-4 top-0 z-20 my-auto h-fit rounded bg-[rgb(18,18,18)] p-4'>
         <div className='flex flex-col justify-center'>
           <h3 className='mb-4 text-center text-xl'>Betrag umrechnen</h3>
           <div>

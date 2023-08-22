@@ -17,7 +17,7 @@ import { ConvertModal } from './PurchaseSegment/ConvertModal'
 import { NewPurchase } from '../../App/types'
 import { Member, Purchase } from '../../stores/types'
 
-export type FormPropertyName =
+export type PurchaseFormPropertyName =
   | 'name'
   | 'amount'
   | 'purchaserId'
@@ -78,7 +78,7 @@ export const PurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalProp
   })
   const [presentAdditionError] = useIonAlert()
   const [showSegment, setShowSegment] = useState('purchase')
-  const [showConvertModal, setShowConvertModal] = useState<FormPropertyName | ''>('')
+  const [showConvertModal, setShowConvertModal] = useState<PurchaseFormPropertyName | ''>('')
   const pageContentRef = useRef<HTMLIonContentElement>(null)
 
   useEffect(() => {
@@ -138,8 +138,7 @@ export const PurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalProp
       <ModalFooter>Einkauf speichern</ModalFooter>
       <Show when={!isEmpty(showConvertModal)}>
         <ConvertModal
-          name={showConvertModal as FormPropertyName}
-          setValue={setValue}
+          setFormAmount={amount => setValue(showConvertModal as PurchaseFormPropertyName, amount)}
           onDismiss={() => setShowConvertModal('')}
         />
       </Show>

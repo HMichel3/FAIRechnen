@@ -10,7 +10,7 @@ import { FormCurrency } from '../../../formComponents/FormCurrency'
 import { Control, FieldError, FieldErrorsImpl, Merge, UseFieldArrayRemove, useWatch } from 'react-hook-form'
 import { FormCheckboxGroup } from '../../../formComponents/FormCheckboxGroup'
 import { ConvertButton } from '../../PurchaseSegment/ConvertButton'
-import { FormPropertyName } from '../..'
+import { PurchaseFormPropertyName } from '../..'
 import { NewPurchase } from '../../../../App/types'
 import { SelectedGroup } from '../../../../stores/types'
 
@@ -18,7 +18,7 @@ interface AdditionCardProps {
   index: number
   control: Control<NewPurchase>
   members: SelectedGroup['members']
-  setShowConvertModal: Dispatch<SetStateAction<FormPropertyName | ''>>
+  setShowConvertModal: Dispatch<SetStateAction<PurchaseFormPropertyName | ''>>
   remove: UseFieldArrayRemove
   additionErrors?: Merge<
     FieldError,
@@ -80,14 +80,16 @@ export const AdditionCard = ({
       <AnimatePresence mode='wait'>
         {showCardContent && (
           <motion.div variants={fadeInOutTopVariants} {...variantProps}>
-            <IonCardContent className='flex flex-col gap-2 py-0'>
+            <IonCardContent className='flex flex-col gap-2 py-0 text-white'>
               <FormInput label='Zusatzname*' name={`additions.${index}.name`} control={control} />
               <div className='flex'>
                 <FormCurrency label='Betrag*' name={`additions.${index}.amount`} control={control} />
                 <ConvertButton onClick={() => setShowConvertModal(`additions.${index}.amount`)} />
               </div>
               <div className='flex flex-col px-4 py-2'>
-                <IonLabel color={cn({ danger: path([index, 'payerIds'], additionErrors) })}>Beteiligte*</IonLabel>
+                <IonLabel className='text-xs' color={cn({ danger: path([index, 'payerIds'], additionErrors) })}>
+                  Beteiligte*
+                </IonLabel>
                 <FormCheckboxGroup name={`additions.${index}.payerIds`} selectOptions={members} control={control} />
               </div>
             </IonCardContent>

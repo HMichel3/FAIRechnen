@@ -54,6 +54,7 @@ export const GroupInfoPage = ({
   const setSelectedGroup = useStore(s => s.setSelectedGroup)
   const clearSelectedGroup = useStore(s => s.clearSelectedGroup)
   const showAnimation = useStore(s => s.showAnimation)
+  const setShowAnimation = useStore(s => s.setShowAnimation)
   const [presentEditGroupName] = useIonAlert()
   const [presentAddMember] = useIonAlert()
   const [showSegment, setShowSegment] = useState('members')
@@ -94,7 +95,14 @@ export const GroupInfoPage = ({
       inputs: [{ name: 'groupName', value: group.name }],
       buttons: [
         { role: 'cancel', text: 'Abbrechen', cssClass: 'alert-button-cancel' },
-        { role: 'confirm', text: 'Speichern', handler: ({ groupName }) => editGroupName(group.id, trim(groupName)) },
+        {
+          role: 'confirm',
+          text: 'Speichern',
+          handler: ({ groupName }) => {
+            editGroupName(group.id, trim(groupName))
+            setShowAnimation()
+          },
+        },
       ],
     })
   }
@@ -102,10 +110,17 @@ export const GroupInfoPage = ({
   const onAddMember = () => {
     presentAddMember({
       header: 'Mitglied hinzufügen',
-      inputs: [{ cssClass: 'm-0', name: 'memberName' }],
+      inputs: [{ cssClass: 'm-0', name: 'memberName', placeholder: 'Name eingeben' }],
       buttons: [
         { role: 'cancel', text: 'Abbrechen', cssClass: 'alert-button-cancel' },
-        { role: 'confirm', text: 'Speichern', handler: ({ memberName }) => addMember(group.id, trim(memberName)) },
+        {
+          role: 'confirm',
+          text: 'Speichern',
+          handler: ({ memberName }) => {
+            addMember(group.id, trim(memberName))
+            setShowAnimation()
+          },
+        },
       ],
     })
   }

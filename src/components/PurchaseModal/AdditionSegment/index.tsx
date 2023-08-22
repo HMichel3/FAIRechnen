@@ -5,7 +5,7 @@ import { AdditionCard } from './AdditionCard'
 import { Control, useFieldArray, useFormState } from 'react-hook-form'
 import { motion } from 'framer-motion'
 import { fadeOutLeftVariants, variantProps } from '../../../App/animations'
-import { FormPropertyName } from '..'
+import { PurchaseFormPropertyName } from '..'
 import { NewPurchase } from '../../../App/types'
 import { SelectedGroup } from '../../../stores/types'
 
@@ -13,7 +13,7 @@ interface AdditionSegmentProps {
   pageContentRef: RefObject<HTMLIonContentElement>
   control: Control<NewPurchase>
   members: SelectedGroup['members']
-  setShowConvertModal: Dispatch<SetStateAction<FormPropertyName | ''>>
+  setShowConvertModal: Dispatch<SetStateAction<PurchaseFormPropertyName | ''>>
 }
 
 export const AdditionSegment = ({
