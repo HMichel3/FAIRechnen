@@ -19,7 +19,7 @@ import {
 import { closeSharp, helpCircleSharp, peopleSharp, repeatSharp } from 'ionicons/icons'
 import { IconButton } from '../../components/IconButton'
 import { InfoSlides } from '../../components/InfoSlides'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { AddGroupModal } from '../../components/AddGroupModal'
 import { Show } from '../../components/SolidComponents/Show'
@@ -40,15 +40,13 @@ export const GroupPage = (): JSX.Element => {
   const [showAddGroupModal, dismissAddGroupModal] = useIonModal(AddGroupModal, {
     onDismiss: () => dismissAddGroupModal(),
   })
-  // needed to remove the ion-page-invisible to show the page after the firstInfoSlide is closed
-  const pageRef = useRef(null)
 
   useEffect(() => {
     document.addEventListener('ionBackButton', event => {
       // @ts-ignore
       event.detail.register(-1, () => {
         if (showInfoSlides) return setShowInfoSlides(false)
-        if (showFirstInfoSlides) return onHideFirstInfoSlides()
+        if (showFirstInfoSlides) return setShowFirstInfoSlides(false)
         if (!ionRouter.canGoBack()) App.exitApp()
       })
     })
@@ -57,12 +55,6 @@ export const GroupPage = (): JSX.Element => {
   useEffect(() => {
     setAlreadyVisited()
   }, [setAlreadyVisited])
-
-  const onHideFirstInfoSlides = () => {
-    setShowFirstInfoSlides(false)
-    // @ts-ignore typing on pageRef is not correct from ionic
-    pageRef.current?.classList.remove('ion-page-invisible')
-  }
 
   return (
     <>
@@ -81,7 +73,7 @@ export const GroupPage = (): JSX.Element => {
           </IonList>
         </IonContent>
       </IonMenu>
-      <IonPage id='main-content' ref={pageRef}>
+      <IonPage id='main-content'>
         <IonHeader>
           <IonToolbar>
             <IonButtons slot='start'>
@@ -113,7 +105,7 @@ export const GroupPage = (): JSX.Element => {
         <InfoSlides onToggleShowInfoSlides={() => setShowInfoSlides(false)} />
       </Show>
       <Show when={showFirstInfoSlides}>
-        <InfoSlides onToggleShowInfoSlides={onHideFirstInfoSlides} />
+        <InfoSlides onToggleShowInfoSlides={() => setShowFirstInfoSlides(false)} />
       </Show>
     </>
   )
