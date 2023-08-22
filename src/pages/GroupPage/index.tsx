@@ -22,7 +22,6 @@ import { InfoSlides } from '../../components/InfoSlides'
 import { useEffect, useRef, useState } from 'react'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { AddGroupModal } from '../../components/AddGroupModal'
-import { isDark } from './utils'
 import { Show } from '../../components/SolidComponents/Show'
 import { GroupPageList } from '../../components/GroupPageList'
 import { SuccessAnimation } from '../../lotties/SuccessAnimation'
@@ -31,7 +30,6 @@ import { App } from '@capacitor/app'
 
 export const GroupPage = (): JSX.Element => {
   const groups = usePersistedStore(s => s.groups)
-  const theme = usePersistedStore(s => s.theme)
   const alreadyVisited = usePersistedStore(s => s.alreadyVisited)
   const setAlreadyVisited = usePersistedStore(s => s.setAlreadyVisited)
   const showAnimation = useStore(s => s.showAnimation)
@@ -57,9 +55,8 @@ export const GroupPage = (): JSX.Element => {
   }, [ionRouter, showInfoSlides, showFirstInfoSlides])
 
   useEffect(() => {
-    if (isDark(theme)) return document.body.classList.add('dark')
-    document.body.classList.remove('dark')
-  }, [theme])
+    document.body.classList.add('dark')
+  }, [])
 
   useEffect(() => {
     setAlreadyVisited()

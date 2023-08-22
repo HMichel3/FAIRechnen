@@ -6,7 +6,6 @@ import { createCompensationSlice, CompensationSlice } from './slices/createCompe
 import { createGroupSlice, GroupSlice } from './slices/createGroupSlice'
 import { createMemberSlice, MemberSlice } from './slices/createMemberSlice'
 import { createPurchaseSlice, PurchaseSlice } from './slices/createPurchaseSlice'
-import { createThemeSlice, ThemeSlice } from './slices/createThemeSlice'
 import { createIncomeSlice, IncomeSlice } from './slices/createIncomeSlice'
 import { AlreadyVisitedSlice, createAlreadyVisitedSlice } from './slices/createAlreadyVisitedSlice'
 
@@ -32,7 +31,6 @@ export type PersistedState = GroupSlice &
   PurchaseSlice &
   IncomeSlice &
   CompensationSlice &
-  ThemeSlice &
   AlreadyVisitedSlice & { _hasHydrated: boolean }
 
 // Needed for the Type of the Slices, where T is the particular SliceState
@@ -51,7 +49,6 @@ export const usePersistedStore = create<PersistedState>()(
       ...createPurchaseSlice(...a),
       ...createIncomeSlice(...a),
       ...createCompensationSlice(...a),
-      ...createThemeSlice(...a),
       ...createAlreadyVisitedSlice(...a),
       _hasHydrated: false,
     })),

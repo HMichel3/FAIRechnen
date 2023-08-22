@@ -15,6 +15,7 @@ export const MemberSegment = (): JSX.Element => {
   const { id: groupId, purchases, incomes, compensations, membersWithAmounts } = useStore(s => s.selectedGroup)
   const editMemberName = usePersistedStore(s => s.editMemberName)
   const deleteMember = usePersistedStore(s => s.deleteMember)
+  const setShowAnimation = useStore(s => s.setShowAnimation)
   const [presentCantDeleteMember] = useIonAlert()
   const [presentEditMember] = useIonAlert()
 
@@ -27,7 +28,10 @@ export const MemberSegment = (): JSX.Element => {
         {
           role: 'confirm',
           text: 'Speichern',
-          handler: ({ memberName }) => editMemberName(groupId, member.id, trim(memberName)),
+          handler: ({ memberName }) => {
+            editMemberName(groupId, member.id, trim(memberName))
+            setShowAnimation()
+          },
         },
       ],
     })
