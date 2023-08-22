@@ -77,7 +77,7 @@ http://ionicframework.com/docs/theming/ */
 }
 
 /* TODO: If i want to enable prefers-color-scheme i have to uncomment the following line and remove the .dark  */
-/* TODO: In addition, I can remove on adding the .dark class in the GroupPage > index.tsx */
+/* TODO: In addition, I can remove the "dark" class from the body in the index.html */
 /* @media (prefers-color-scheme: dark) { */
 /*
    * Dark Colors

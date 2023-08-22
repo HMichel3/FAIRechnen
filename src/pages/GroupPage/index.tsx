@@ -55,10 +55,6 @@ export const GroupPage = (): JSX.Element => {
   }, [ionRouter, showInfoSlides, showFirstInfoSlides])
 
   useEffect(() => {
-    document.body.classList.add('dark')
-  }, [])
-
-  useEffect(() => {
     setAlreadyVisited()
   }, [setAlreadyVisited])
 
