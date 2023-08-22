@@ -30,12 +30,10 @@ import { App } from '@capacitor/app'
 
 export const GroupPage = (): JSX.Element => {
   const groups = usePersistedStore(s => s.groups)
-  const alreadyVisited = usePersistedStore(s => s.alreadyVisited)
-  const setAlreadyVisited = usePersistedStore(s => s.setAlreadyVisited)
+  const showInfoSlides = usePersistedStore(s => s.showInfoSlides)
+  const setShowInfoSlides = usePersistedStore(s => s.setShowInfoSlides)
   const showAnimation = useStore(s => s.showAnimation)
   const [reorder, setReorder] = useState(false)
-  const [showInfoSlides, setShowInfoSlides] = useState(false)
-  const [showFirstInfoSlides, setShowFirstInfoSlides] = useState(!alreadyVisited)
   const ionRouter = useIonRouter()
   const [showAddGroupModal, dismissAddGroupModal] = useIonModal(AddGroupModal, {
     onDismiss: () => dismissAddGroupModal(),
@@ -46,15 +44,10 @@ export const GroupPage = (): JSX.Element => {
       // @ts-ignore
       event.detail.register(-1, () => {
         if (showInfoSlides) return setShowInfoSlides(false)
-        if (showFirstInfoSlides) return setShowFirstInfoSlides(false)
         if (!ionRouter.canGoBack()) App.exitApp()
       })
     })
-  }, [ionRouter, showInfoSlides, showFirstInfoSlides])
-
-  useEffect(() => {
-    setAlreadyVisited()
-  }, [setAlreadyVisited])
+  }, [ionRouter, showInfoSlides])
 
   return (
     <>
@@ -102,10 +95,7 @@ export const GroupPage = (): JSX.Element => {
         </Show>
       </IonPage>
       <Show when={showInfoSlides}>
-        <InfoSlides onToggleShowInfoSlides={() => setShowInfoSlides(false)} />
-      </Show>
-      <Show when={showFirstInfoSlides}>
-        <InfoSlides onToggleShowInfoSlides={() => setShowFirstInfoSlides(false)} />
+        <InfoSlides onHideShowInfoSlides={() => setShowInfoSlides(false)} />
       </Show>
     </>
   )

@@ -7,7 +7,7 @@ import { createGroupSlice, GroupSlice } from './slices/createGroupSlice'
 import { createMemberSlice, MemberSlice } from './slices/createMemberSlice'
 import { createPurchaseSlice, PurchaseSlice } from './slices/createPurchaseSlice'
 import { createIncomeSlice, IncomeSlice } from './slices/createIncomeSlice'
-import { AlreadyVisitedSlice, createAlreadyVisitedSlice } from './slices/createAlreadyVisitedSlice'
+import { InfoSlideSlice, createInfoSlideSlice } from './slices/createInfoSlideSlice'
 
 const ionicStorage = new Storage({
   name: '__db',
@@ -31,7 +31,7 @@ export type PersistedState = GroupSlice &
   PurchaseSlice &
   IncomeSlice &
   CompensationSlice &
-  AlreadyVisitedSlice & { _hasHydrated: boolean }
+  InfoSlideSlice & { _hasHydrated: boolean }
 
 // Needed for the Type of the Slices, where T is the particular SliceState
 export type PersistImmer<T> = StateCreator<
@@ -49,7 +49,7 @@ export const usePersistedStore = create<PersistedState>()(
       ...createPurchaseSlice(...a),
       ...createIncomeSlice(...a),
       ...createCompensationSlice(...a),
-      ...createAlreadyVisitedSlice(...a),
+      ...createInfoSlideSlice(...a),
       _hasHydrated: false,
     })),
     {

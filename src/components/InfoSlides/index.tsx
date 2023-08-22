@@ -9,17 +9,17 @@ import 'swiper/css/pagination'
 import '@ionic/react/css/ionic-swiper.css'
 
 interface InfoSlidesProps {
-  onToggleShowInfoSlides: () => void
+  onHideShowInfoSlides: () => void
 }
 
-export const InfoSlides = ({ onToggleShowInfoSlides }: InfoSlidesProps): JSX.Element => (
+export const InfoSlides = ({ onHideShowInfoSlides }: InfoSlidesProps): JSX.Element => (
   <IonContent color='light' className='z-[1001]'>
     <Swiper className='h-full p-2' modules={[Pagination, IonicSlides]} pagination={{ type: 'progressbar' }} loop={true}>
       <SwiperSlide className='h-full'>
         <InfoSlideWithIcon
           icon={informationCircleSharp}
           title='Willkommen'
-          onToggleShowInfoSlides={onToggleShowInfoSlides}
+          onHideShowInfoSlides={onHideShowInfoSlides}
           firstParagraph='FAIRechnen hilft Dir dabei, alle Einkäufe innerhalb einer Gruppe aufzulisten und den Überblick darüber zu behalten, welche Beträge am Ende noch gezahlt werden müssen.'
           secondParagraph='Zusätzlich werden Zahlungen vorgeschlagen, mit denen die Mitglieder bestmöglich ihre Schulden begleichen können.'
           thirdParagraph='Folgend sind einige Bedienungshinweise vorzufinden.'
@@ -30,7 +30,7 @@ export const InfoSlides = ({ onToggleShowInfoSlides }: InfoSlidesProps): JSX.Ele
           title='Gruppenübersicht'
           imgSrc={new URL('./images/Gruppenübersicht-bearbeitet.png', import.meta.url).href}
           imgAlt='Gruppenübersicht mit Bedienungshinweisen'
-          onToggleShowInfoSlides={onToggleShowInfoSlides}
+          onHideShowInfoSlides={onHideShowInfoSlides}
         />
       </SwiperSlide>
       <SwiperSlide>
@@ -38,14 +38,14 @@ export const InfoSlides = ({ onToggleShowInfoSlides }: InfoSlidesProps): JSX.Ele
           title='Gruppeninfo'
           imgSrc={new URL('./images/Gruppeninfo-bearbeitet.png', import.meta.url).href}
           imgAlt='Gruppeninfo mit Bedienungshinweisen'
-          onToggleShowInfoSlides={onToggleShowInfoSlides}
+          onHideShowInfoSlides={onHideShowInfoSlides}
         />
       </SwiperSlide>
       <SwiperSlide>
         <InfoSlideWithIcon
           icon={bulbSharp}
           title='Listeneinträge'
-          onToggleShowInfoSlides={onToggleShowInfoSlides}
+          onHideShowInfoSlides={onHideShowInfoSlides}
           firstParagraph='Durch das Anklicken einzelner Listeneinträge können diese entweder geöffnet oder bearbeitet werden.'
           secondParagraph='Durch das Wischen einzelner Listeneinträge nach rechts wird ein Knopf sichtbar, über welchen diese gelöscht werden können.'
           thirdParagraph='Durch das Wischen einzelner Gruppen nach links wird ein Knopf sichtbar, über welchen diese archiviert oder wiederhergestellt werden können.'
@@ -55,11 +55,11 @@ export const InfoSlides = ({ onToggleShowInfoSlides }: InfoSlidesProps): JSX.Ele
         <InfoSlideWithIcon
           icon={helpCircleSharp}
           title='Alles klar?'
-          onToggleShowInfoSlides={onToggleShowInfoSlides}
+          onHideShowInfoSlides={onHideShowInfoSlides}
           firstParagraph='Über die Hilfe in den Optionen ist es möglich, diese Informationen bei Bedarf erneut zu öffnen.'
           secondParagraph='PS: Alle Daten werden ausschließlich auf Deinem Handy gespeichert!'
         >
-          <IonButton onClick={onToggleShowInfoSlides}>Kann losgehen!</IonButton>
+          <IonButton onClick={onHideShowInfoSlides}>Kann losgehen!</IonButton>
         </InfoSlideWithIcon>
       </SwiperSlide>
     </Swiper>

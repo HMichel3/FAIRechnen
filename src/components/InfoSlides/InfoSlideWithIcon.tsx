@@ -8,7 +8,7 @@ interface InfoSlideWithIconProps {
   icon: string
   title: string
   firstParagraph: string
-  onToggleShowInfoSlides: () => void
+  onHideShowInfoSlides: () => void
   secondParagraph?: string
   thirdParagraph?: string
   children?: ReactNode
@@ -17,7 +17,7 @@ interface InfoSlideWithIconProps {
 export const InfoSlideWithIcon = ({
   icon,
   title,
-  onToggleShowInfoSlides,
+  onHideShowInfoSlides,
   firstParagraph,
   secondParagraph,
   thirdParagraph,
@@ -25,7 +25,7 @@ export const InfoSlideWithIcon = ({
 }: InfoSlideWithIconProps): JSX.Element => (
   <div className='h-full'>
     <div className='flex w-full flex-col items-center'>
-      <IonButton color='danger' className='my-4 self-end' fill='clear' onClick={onToggleShowInfoSlides}>
+      <IonButton color='danger' className='my-4 self-end' fill='clear' onClick={onHideShowInfoSlides}>
         <IonIcon size='large' slot='icon-only' icon={closeSharp} />
       </IonButton>
       <IonIcon color='primary' className='text-[208px]' icon={icon} />
