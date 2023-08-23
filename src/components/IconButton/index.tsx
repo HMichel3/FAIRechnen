@@ -8,9 +8,6 @@ interface IconButtonProps {
   type?: 'button' | 'submit' | 'reset'
   onClick?: MouseEventHandler<HTMLIonButtonElement>
   disabled?: boolean
-  color?: 'primary' | 'secondary' | 'tertiary' | 'success' | 'warning' | 'danger' | 'light' | 'medium' | 'dark'
-  fill?: 'solid' | 'clear' | 'outline' | 'default'
-  size?: 'small' | 'default' | 'large'
   className?: string
 }
 
@@ -19,20 +16,15 @@ export const IconButton = ({
   icon,
   type = 'button',
   disabled = false,
-  color,
-  fill = 'default',
-  size = 'default',
   className,
   onClick,
 }: IconButtonProps): JSX.Element => (
   <IonButton
     className={cn('m-0', className)}
     expand='block'
-    color={color}
     type={type}
     disabled={disabled}
-    fill={fill}
-    size={size}
+    fill='clear'
     {...(onClick && { onClick })}
   >
     {children}
