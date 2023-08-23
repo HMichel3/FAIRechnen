@@ -26,7 +26,7 @@ export const IconButton = ({
   onClick,
 }: IconButtonProps): JSX.Element => (
   <IonButton
-    className={cn(className)}
+    className={cn('m-0', className)}
     expand='block'
     color={color}
     type={type}

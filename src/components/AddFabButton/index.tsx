@@ -27,7 +27,7 @@ export const AddFabButton = ({
               <IonText className={cn({ 'text-neutral-400': disabled })}>{label}</IonText>
               <IonText className='whitespace-nowrap text-sm text-neutral-400'>{description}</IonText>
             </div>
-            <IonFabButton onClick={() => onClickFabButtonInList(onClick)} disabled={disabled}>
+            <IonFabButton color='primary' onClick={() => onClickFabButtonInList(onClick)} disabled={disabled}>
               <IonIcon icon={icon} />
             </IonFabButton>
           </div>
