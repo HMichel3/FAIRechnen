@@ -37,12 +37,9 @@ export const AddGroupModal = ({ onDismiss }: AddGroupModalProps): JSX.Element =>
 
   useEffect(() => {
     if (!isEmpty(last(memberNamesFields)?.name)) {
-      return append({ name: '' })
+      append({ name: '' })
     }
-    if (isEmpty(memberNamesFields.at(-2)?.name)) {
-      remove(memberNamesFields.length - 2)
-    }
-  }, [memberNamesFields, append, remove])
+  }, [memberNamesFields, append])
 
   const onSubmit = methods.handleSubmit(({ groupName, memberNames }) => {
     addGroup(groupName, memberNames)
@@ -61,7 +58,7 @@ export const AddGroupModal = ({ onDismiss }: AddGroupModalProps): JSX.Element =>
               <FormInput label='Mitglied' name={`memberNames.${index}.name`} control={methods.control} />
               {!isLast(field, fields) && (
                 <IonButton
-                  className='m-0 h-14 w-14 bg-[#1e1e1e] border-b border-[#898989]'
+                  className='m-0 h-14 w-14 bg-[#1e1e1e] border-b-[0.666667px] border-[#898989]'
                   color='danger'
                   slot='end'
                   fill='clear'
