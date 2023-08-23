@@ -37,8 +37,8 @@ export const MemberSegment = (): JSX.Element => {
     })
   }
 
-  const onDeleteMember = (memberId: string) => {
-    if (isMemberInvolved(memberId, purchases, incomes, compensations)) {
+  const onDeleteMember = (memberId: string, memberInvolved: boolean) => {
+    if (memberInvolved) {
       return presentCantDeleteMember({
         header: 'Mitglied kann nicht gelöscht werden!',
         message:
@@ -60,23 +60,27 @@ export const MemberSegment = (): JSX.Element => {
         }
       >
         <div className='pb-20'>
-          {membersWithAmounts.map(member => (
-            <SlidingListItem
-              key={member.id}
-              label={member.name}
-              endText={
-                <IonText color={cn({ success: isPositive(member.current), danger: isNegative(member.current) })}>
-                  {displayCurrencyValue(member.current)}
-                </IonText>
-              }
-              onDelete={() => onDeleteMember(member.id)}
-              onSelect={() => onSelectMember(member)}
-              icon={personSharp}
-              labelComponent={
-                <IonText className='text-sm text-neutral-400'>{displayCurrencyValue(member.total)}</IonText>
-              }
-            />
-          ))}
+          {membersWithAmounts.map(member => {
+            const memberInvolved = isMemberInvolved(member.id, purchases, incomes, compensations)
+            return (
+              <SlidingListItem
+                key={member.id}
+                label={member.name}
+                endText={
+                  <IonText color={cn({ success: isPositive(member.current), danger: isNegative(member.current) })}>
+                    {displayCurrencyValue(member.current)}
+                  </IonText>
+                }
+                onDelete={() => onDeleteMember(member.id, memberInvolved)}
+                onSelect={() => onSelectMember(member)}
+                icon={personSharp}
+                labelComponent={
+                  <IonText className='text-sm text-neutral-400'>{displayCurrencyValue(member.total)}</IonText>
+                }
+                activeIcon={memberInvolved}
+              />
+            )
+          })}
         </div>
       </Show>
     </motion.div>

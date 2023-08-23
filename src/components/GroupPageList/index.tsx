@@ -2,7 +2,7 @@ import { IonReorderGroup, IonItemOption, useIonAlert, IonText } from '@ionic/rea
 import { peopleSharp } from 'ionicons/icons'
 import { clone, isEmpty } from 'ramda'
 import { useEffect, useState } from 'react'
-import { isLast } from '../../App/utils'
+import { isGroupActive, isLast } from '../../App/utils'
 import { GroupInfo } from '../../pages/GroupPage/GroupInfo'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { SlidingListItem } from '../SlidingListItem'
@@ -69,6 +69,7 @@ export const GroupPageList = ({ reorder }: GroupPageListProps) => {
               reorder={reorder}
               lines={isLast(group, copiedGroups) && !isEmpty(groupArchive) ? 'full' : 'inset'}
               rightSlideOption={<IonItemOption onClick={() => archiveGroup(group.id)}>Archivieren</IonItemOption>}
+              activeIcon={isGroupActive(group)}
             />
           ))}
         </IonReorderGroup>

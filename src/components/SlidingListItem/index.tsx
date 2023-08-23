@@ -12,6 +12,7 @@ import { repeatSharp } from 'ionicons/icons'
 import { isNil, isNotNil } from 'ramda'
 import { MouseEventHandler } from 'react'
 import { Show } from '../SolidComponents/Show'
+import { cn } from '../../App/utils'
 
 interface SlidingListItemProps {
   label?: string
@@ -25,6 +26,7 @@ interface SlidingListItemProps {
   reorder?: boolean
   lines?: 'inset' | 'full' | 'none'
   rightSlideOption?: JSX.Element
+  activeIcon?: boolean
 }
 
 export const SlidingListItem = ({
@@ -39,6 +41,7 @@ export const SlidingListItem = ({
   reorder = false,
   lines = 'inset',
   rightSlideOption,
+  activeIcon = false,
 }: SlidingListItemProps): JSX.Element => (
   <IonItemSliding>
     <Show when={isNotNil(onDelete)}>
@@ -54,7 +57,7 @@ export const SlidingListItem = ({
           <IonIcon icon={repeatSharp} />
         </IonReorder>
       ) : (
-        icon && <IonIcon icon={icon} slot='start' />
+        icon && <IonIcon color={cn({ primary: activeIcon })} icon={icon} slot='start' />
       )}
       <IonLabel>
         <Show when={isNotNil(label)}>

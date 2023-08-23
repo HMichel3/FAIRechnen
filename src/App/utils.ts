@@ -15,7 +15,7 @@ import {
   gt,
   includes,
 } from 'ramda'
-import { Compensation, Income, Member, Purchase } from '../stores/types'
+import { Compensation, Group, Income, Member, Purchase } from '../stores/types'
 import { MemberWithAmounts } from './types'
 import { twMerge } from 'tailwind-merge'
 import { clsx, ClassValue } from 'clsx'
@@ -121,3 +121,12 @@ export const calculateMembersWithAmounts = (
   })
 
 export const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs))
+
+function checkPropertyNotZero<T>(array: T[], property: keyof T) {
+  return reduce((acc, object) => acc || object[property] !== 0, false, array)
+}
+
+export function isGroupActive({ members, purchases, incomes, compensations }: Group) {
+  const membersWithAmounts = calculateMembersWithAmounts(members, purchases, incomes, compensations)
+  return checkPropertyNotZero(membersWithAmounts, 'current')
+}
