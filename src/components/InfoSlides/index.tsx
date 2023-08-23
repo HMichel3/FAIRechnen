@@ -3,7 +3,6 @@ import { informationCircleSharp, helpCircleSharp, bulbSharp } from 'ionicons/ico
 import { InfoSlideWithIcon } from './InfoSlideWithIcon'
 import { Pagination } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
-import { InfoSlideWithPicture } from './InfoSlideWithPicture'
 import 'swiper/css'
 import 'swiper/css/pagination'
 import '@ionic/react/css/ionic-swiper.css'
@@ -23,22 +22,6 @@ export const InfoSlides = ({ onHideShowInfoSlides }: InfoSlidesProps): JSX.Eleme
           firstParagraph='FAIRechnen hilft Dir dabei, alle Einkäufe innerhalb einer Gruppe aufzulisten und den Überblick darüber zu behalten, welche Beträge am Ende noch gezahlt werden müssen.'
           secondParagraph='Zusätzlich werden Zahlungen vorgeschlagen, mit denen die Mitglieder bestmöglich ihre Schulden begleichen können.'
           thirdParagraph='Folgend sind einige Bedienungshinweise vorzufinden.'
-        />
-      </SwiperSlide>
-      <SwiperSlide>
-        <InfoSlideWithPicture
-          title='Gruppenübersicht'
-          imgSrc={new URL('./images/Gruppenübersicht-bearbeitet.png', import.meta.url).href}
-          imgAlt='Gruppenübersicht mit Bedienungshinweisen'
-          onHideShowInfoSlides={onHideShowInfoSlides}
-        />
-      </SwiperSlide>
-      <SwiperSlide>
-        <InfoSlideWithPicture
-          title='Gruppeninfo'
-          imgSrc={new URL('./images/Gruppeninfo-bearbeitet.png', import.meta.url).href}
-          imgAlt='Gruppeninfo mit Bedienungshinweisen'
-          onHideShowInfoSlides={onHideShowInfoSlides}
         />
       </SwiperSlide>
       <SwiperSlide>
