@@ -17,7 +17,6 @@ FAIRechnen hilft Dir dabei, alle Einkäufe innerhalb einer Gruppe aufzulisten un
 - Nutzung komplett ohne Internet
 - Geringe Speichergröße
 - Datenspeicherung ausschließlich auf deinem Handy
-- Light- und Darkmode
 - Hinzufügen, Bearbeiten, Löschen und Archivieren von Gruppen
 - Hinzufügen, Bearbeiten und Löschen von Mitgliedern
 - Hinzufügen, Bearbeiten und Löschen von Einkäufen
@@ -26,6 +25,7 @@ FAIRechnen hilft Dir dabei, alle Einkäufe innerhalb einer Gruppe aufzulisten un
 - Anzeige von Gesamtausgaben (Gruppen/Personen)
 - Anzeige der ausstehenden Beträge
 - Teilen von Gruppeninformationen und Zahlungsvorschlägen
+- Umrechnen von Beträgen anderer Währungen
 
 ## Wie wird es installiert?
 
