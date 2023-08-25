@@ -1,4 +1,4 @@
-import { IonAlert, IonContent, IonLabel, IonSegment, IonSegmentButton, IonToolbar } from '@ionic/react'
+import { IonContent, IonLabel, IonSegment, IonSegmentButton, IonToolbar, useIonAlert } from '@ionic/react'
 import { AdditionSegment } from './AdditionSegment'
 import { PurchaseSegment } from './PurchaseSegment'
 import { useEffect, useRef, useState } from 'react'
@@ -14,8 +14,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Show } from '../SolidComponents/Show'
 import { ConvertModal } from './PurchaseSegment/ConvertModal'
+import { NewPurchase } from '../../App/types'
+import { Member, Purchase } from '../../stores/types'
 
-export type FormPropertyName =
+export type PurchaseFormPropertyName =
   | 'name'
   | 'amount'
   | 'purchaserId'
@@ -68,16 +70,15 @@ const defaultValues = (members: Member[], selectedPurchase?: Purchase): NewPurch
 export const PurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalProps): JSX.Element => {
   const addPurchase = usePersistedStore(s => s.addPurchase)
   const editPurchase = usePersistedStore(s => s.editPurchase)
-  const theme = usePersistedStore(s => s.theme)
   const { id: groupId, members } = useStore(s => s.selectedGroup)
   const setShowAnimation = useStore(s => s.setShowAnimation)
   const { handleSubmit, watch, setValue, formState, control } = useForm({
     resolver: zodResolver(validationSchema),
     defaultValues: defaultValues(members, selectedPurchase),
   })
+  const [presentAdditionError] = useIonAlert()
   const [showSegment, setShowSegment] = useState('purchase')
-  const [showAdditionError, setShowAdditionError] = useState(false)
-  const [showConvertModal, setShowConvertModal] = useState<FormPropertyName | ''>('')
+  const [showConvertModal, setShowConvertModal] = useState<PurchaseFormPropertyName | ''>('')
   const pageContentRef = useRef<HTMLIonContentElement>(null)
 
   useEffect(() => {
@@ -87,9 +88,12 @@ export const PurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalProp
   }, [formState.errors])
 
   const onSubmit = handleSubmit(newPurchase => {
-    setShowAdditionError(false)
     if (getTotalAmountFromArray(newPurchase.additions) > newPurchase.amount) {
-      return setShowAdditionError(true)
+      return presentAdditionError({
+        header: 'Einkauf kann nicht gespeichert werden!',
+        message: 'Der Gesamtbetrag aller Zusätze darf den Einkaufswert nicht überschreiten.',
+        buttons: [{ role: 'confirm', text: 'Okay', cssClass: 'alert-button-ok' }],
+      })
     }
     if (selectedPurchase) {
       editPurchase(groupId, selectedPurchase.id, newPurchase)
@@ -101,14 +105,14 @@ export const PurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalProp
   })
 
   return (
-    <form className='flex-column-full-height' onSubmit={onSubmit}>
+    <form onSubmit={onSubmit} className='flex flex-1 flex-col'>
       <ModalHeader title={selectedPurchase ? 'Einkauf bearbeiten' : 'Neuer Einkauf'} onDismiss={onDismiss}>
-        <IonToolbar color='dark'>
-          <IonSegment value={showSegment} onIonChange={({ detail }) => setShowSegment(detail.value!)}>
-            <IonSegmentButton value='purchase'>
+        <IonToolbar>
+          <IonSegment value={showSegment}>
+            <IonSegmentButton value='purchase' onClick={() => setShowSegment('purchase')}>
               <IonLabel>Einkauf ({displayCurrencyValue(watch('amount'))})</IonLabel>
             </IonSegmentButton>
-            <IonSegmentButton value='additions'>
+            <IonSegmentButton value='additions' onClick={() => setShowSegment('additions')}>
               <IonLabel>Zusätze ({displayCurrencyValue(getTotalAmountFromArray(watch('additions')))})</IonLabel>
             </IonSegmentButton>
           </IonSegment>
@@ -126,24 +130,15 @@ export const PurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalProp
               pageContentRef={pageContentRef}
               control={control}
               members={members}
-              theme={theme}
               setShowConvertModal={setShowConvertModal}
             />
           )}
         </AnimatePresence>
-        <IonAlert
-          isOpen={showAdditionError}
-          onDidDismiss={() => setShowAdditionError(false)}
-          header='Einkauf kann nicht gespeichert werden!'
-          message='Der Gesamtbetrag aller Zusätze darf den Einkaufswert nicht überschreiten.'
-          buttons={[{ role: 'cancel', text: 'Okay' }]}
-        />
       </IonContent>
       <ModalFooter>Einkauf speichern</ModalFooter>
       <Show when={!isEmpty(showConvertModal)}>
         <ConvertModal
-          name={showConvertModal as FormPropertyName}
-          setValue={setValue}
+          setFormAmount={amount => setValue(showConvertModal as PurchaseFormPropertyName, amount)}
           onDismiss={() => setShowConvertModal('')}
         />
       </Show>

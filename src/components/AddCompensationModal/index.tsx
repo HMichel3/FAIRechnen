@@ -1,9 +1,8 @@
-import { IonContent, IonFooter, IonItem, IonLabel, IonRadio, IonRadioGroup, IonToolbar } from '@ionic/react'
+import { IonContent, IonFooter, IonItem, IonRadio, IonRadioGroup, IonToolbar } from '@ionic/react'
 import { AnimatePresence } from 'framer-motion'
 import { AddManualCompensation } from './AddManualCompensation'
 import { CompensationItem } from './CompensationItem'
 import { IconButton } from '../IconButton'
-import clsx from 'clsx'
 import { ModalHeader } from '../modalComponents/ModalHeader'
 import { saveSharp } from 'ionicons/icons'
 import { pick } from 'ramda'
@@ -12,13 +11,13 @@ import { findItem } from '../../App/utils'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
 import { generatePossibleCompensations } from './utils'
+import { NewCompensation } from '../../App/types'
 
 interface AddCompensationModalProps {
   onDismiss: () => void
 }
 
 export const AddCompensationModal = ({ onDismiss }: AddCompensationModalProps): JSX.Element => {
-  const theme = usePersistedStore(s => s.theme)
   const addCompensation = usePersistedStore(s => s.addCompensation)
   const { id: groupId, membersWithAmounts } = useStore(s => s.selectedGroup)
   const setShowAnimation = useStore(s => s.setShowAnimation)
@@ -47,16 +46,17 @@ export const AddCompensationModal = ({ onDismiss }: AddCompensationModalProps): 
   }
 
   return (
-    <div className='flex-column-full-height'>
+    <div className='flex flex-1 flex-col'>
       <ModalHeader title='Neue Zahlung' onDismiss={onDismiss} />
       <IonContent ref={pageContentRef}>
         <IonRadioGroup value={checkedRadio} onIonChange={({ detail }) => onCheckRadio(detail.value)}>
           {possibleCompensations.map(compensation => (
             <CompensationItem key={compensation.id} compensation={compensation} />
           ))}
-          <IonItem lines='none'>
-            <IonRadio color={clsx({ light: theme === 'dark' })} slot='start' value='manual' />
-            <IonLabel>Manuelle Zahlung</IonLabel>
+          <IonItem>
+            <IonRadio labelPlacement='end' justify='start' value='manual'>
+              Manuelle Zahlung
+            </IonRadio>
           </IonItem>
         </IonRadioGroup>
         <AnimatePresence mode='wait'>
@@ -64,7 +64,7 @@ export const AddCompensationModal = ({ onDismiss }: AddCompensationModalProps): 
         </AnimatePresence>
       </IonContent>
       <IonFooter>
-        <IonToolbar color='dark'>
+        <IonToolbar>
           <IconButton
             icon={saveSharp}
             disabled={checkedRadio === 'manual' && !manualCompensation}

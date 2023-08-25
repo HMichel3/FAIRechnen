@@ -1,8 +1,9 @@
 import { format } from 'date-fns'
 import { displayCurrencyValue, findItem, findItems } from '../../App/utils'
 import { displayBeneficiaryNames } from './utils'
-import { IonLabel } from '@ionic/react'
+import { IonLabel, IonText } from '@ionic/react'
 import { useStore } from '../../stores/useStore'
+import { Income } from '../../stores/types'
 
 interface IncomeInfoProps {
   income: Income
@@ -16,16 +17,16 @@ export const IncomeInfo = ({ income }: IncomeInfoProps): JSX.Element => {
 
   return (
     <>
-      <div style={{ display: 'flex' }}>
-        <IonLabel style={{ flex: 1, paddingRight: 16 }}>{name}</IonLabel>
-        <div>{displayCurrencyValue(amount)}</div>
+      <div className='mb-1 flex justify-between gap-4'>
+        <IonLabel>{name}</IonLabel>
+        <IonText>{displayCurrencyValue(amount)}</IonText>
       </div>
-      <div className='small-label-component' style={{ display: 'flex' }}>
-        <IonLabel style={{ flex: 1, paddingRight: 16 }}>Von {earner.name}</IonLabel>
-        <div>{format(timestamp, 'dd.MM.y, HH:mm')}</div>
+      <div className='flex justify-between gap-4 text-sm text-neutral-400'>
+        <IonLabel>Von {earner.name}</IonLabel>
+        <IonText>{format(timestamp, 'dd.MM.y, HH:mm')}</IonText>
       </div>
-      <div className='small-label-component' style={{ display: 'flex' }}>
-        <IonLabel style={{ flex: 1 }}>Für {displayBeneficiaryNames(beneficiaries, members)}</IonLabel>
+      <div className='text-sm text-neutral-400'>
+        <IonLabel>Für {displayBeneficiaryNames(beneficiaries, members)}</IonLabel>
       </div>
     </>
   )

@@ -6,14 +6,16 @@ import { createCompensationSlice, CompensationSlice } from './slices/createCompe
 import { createGroupSlice, GroupSlice } from './slices/createGroupSlice'
 import { createMemberSlice, MemberSlice } from './slices/createMemberSlice'
 import { createPurchaseSlice, PurchaseSlice } from './slices/createPurchaseSlice'
-import { createThemeSlice, ThemeSlice } from './slices/createThemeSlice'
 import { createIncomeSlice, IncomeSlice } from './slices/createIncomeSlice'
-import { AlreadyVisitedSlice, createAlreadyVisitedSlice } from './slices/createAlreadyVisitedSlice'
+import { InfoSlideSlice, createInfoSlideSlice } from './slices/createInfoSlideSlice'
+import CordovaSQLiteDriver from 'localforage-cordovasqlitedriver'
 
 const ionicStorage = new Storage({
   name: '__db',
-  driverOrder: [Drivers.IndexedDB, Drivers.LocalStorage],
+  driverOrder: [CordovaSQLiteDriver._driver, Drivers.IndexedDB, Drivers.LocalStorage],
 })
+await ionicStorage.defineDriver(CordovaSQLiteDriver)
+await ionicStorage.create()
 
 const storage: StateStorage = {
   getItem: async key => {
@@ -32,8 +34,7 @@ export type PersistedState = GroupSlice &
   PurchaseSlice &
   IncomeSlice &
   CompensationSlice &
-  ThemeSlice &
-  AlreadyVisitedSlice & { _hasHydrated: boolean }
+  InfoSlideSlice & { _hasHydrated: boolean }
 
 // Needed for the Type of the Slices, where T is the particular SliceState
 export type PersistImmer<T> = StateCreator<
@@ -51,19 +52,12 @@ export const usePersistedStore = create<PersistedState>()(
       ...createPurchaseSlice(...a),
       ...createIncomeSlice(...a),
       ...createCompensationSlice(...a),
-      ...createThemeSlice(...a),
-      ...createAlreadyVisitedSlice(...a),
+      ...createInfoSlideSlice(...a),
       _hasHydrated: false,
     })),
     {
       name: 'store-storage',
-      storage: createJSONStorage(() => {
-        const createStore = async () => {
-          await ionicStorage.create()
-        }
-        createStore()
-        return storage
-      }),
+      storage: createJSONStorage(() => storage),
       onRehydrateStorage: () => () => {
         usePersistedStore.setState({ _hasHydrated: true })
       },

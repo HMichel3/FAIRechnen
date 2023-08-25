@@ -1,12 +1,15 @@
 import { IonInput } from '@ionic/react'
-import { toString } from 'ramda'
-import { useCallback } from 'react'
+import { isNotNil, toString } from 'ramda'
 import { Control, FieldValues, Path, useController } from 'react-hook-form'
-import { displayCurrencyValue } from '../../App/utils'
+import { cn, displayCurrencyValue } from '../../App/utils'
+import { ReactHookFormOnChange } from '../../App/types'
+import { useRef } from 'react'
 
 interface FormCurrencyProps<Type extends FieldValues> {
+  label: string
   name: Path<Type>
   control: Control<Type>
+  className?: string
 }
 
 const VALID_FIRST = /^[1-9]{1}$/
@@ -14,10 +17,17 @@ const VALID_NEXT = /^[0-9]{1}$/
 const DELETE_INPUT = 'deleteContentBackward'
 const MAX = Number.MAX_SAFE_INTEGER
 
-export const FormCurrency = <Type extends FieldValues>({ name, control }: FormCurrencyProps<Type>): JSX.Element => {
+export const FormCurrency = <Type extends FieldValues>({
+  label,
+  name,
+  control,
+  className,
+}: FormCurrencyProps<Type>): JSX.Element => {
   const {
     field: { value, onChange },
+    fieldState: { invalid },
   } = useController({ name, control })
+  const ionInputRef = useRef<HTMLIonInputElement>(null)
   const typedOnChange: ReactHookFormOnChange = onChange
 
   const valueAbsTrunc = Math.trunc(Math.abs(value))
@@ -26,32 +36,48 @@ export const FormCurrency = <Type extends FieldValues>({ name, control }: FormCu
     throw new Error(`invalid value property`)
   }
 
-  const onKeyDown = useCallback(
-    (event: CustomEvent): void => {
-      const { data, inputType } = event.detail
-      if (
-        (value === 0 && !VALID_FIRST.test(data)) ||
-        (value !== 0 && !VALID_NEXT.test(data) && inputType !== DELETE_INPUT)
-      )
-        return
+  const onKeyDown = (event: CustomEvent): void => {
+    const { data, inputType } = event.detail.event
+    const inputComponent = ionInputRef.current
 
-      const valueString = toString(value)
-      let nextValue: number
+    if (
+      isNotNil(inputComponent) &&
+      ((value === 0 && !VALID_FIRST.test(data)) ||
+        (value !== 0 && !VALID_NEXT.test(data) && inputType !== DELETE_INPUT))
+    ) {
+      inputComponent.value = displayCurrencyValue(value)
+      return
+    }
 
-      if (inputType !== DELETE_INPUT) {
-        const nextValueString: string = value === 0 ? data : `${valueString}${data}`
-        nextValue = Number.parseInt(nextValueString, 10)
-      } else {
-        const nextValueString = valueString.slice(0, -1)
-        nextValue = nextValueString === '' ? 0 : Number.parseInt(nextValueString, 10)
-      }
+    const valueString = toString(value)
+    let nextValue: number
 
-      if (nextValue > MAX) return
+    if (inputType !== DELETE_INPUT) {
+      const nextValueString: string = value === 0 ? data : `${valueString}${data}`
+      nextValue = Number.parseInt(nextValueString, 10)
+    } else {
+      const nextValueString = valueString.slice(0, -1)
+      nextValue = nextValueString === '' ? 0 : Number.parseInt(nextValueString, 10)
+    }
 
-      typedOnChange(nextValue)
-    },
-    [typedOnChange, value]
+    if (nextValue > MAX && isNotNil(inputComponent)) {
+      inputComponent.value = displayCurrencyValue(value)
+      return
+    }
+
+    typedOnChange(nextValue)
+  }
+
+  return (
+    <IonInput
+      ref={ionInputRef}
+      className={cn({ 'ion-invalid ion-touched': invalid }, className)}
+      fill='solid'
+      labelPlacement='floating'
+      label={label}
+      value={displayCurrencyValue(value)}
+      onIonInput={onKeyDown}
+      inputMode='numeric'
+    />
   )
-
-  return <IonInput value={displayCurrencyValue(value)} onIonInput={onKeyDown} inputMode='numeric' />
 }

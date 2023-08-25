@@ -1,9 +1,11 @@
-import produce from 'immer'
-import { descend, difference, includes, isEmpty, isNil, join, map, prop, sort } from 'ramda'
+import { produce } from 'immer'
+import { descend, difference, includes, isEmpty, isNil, isNotNil, join, map, prop, sort } from 'ramda'
+import { Payment } from '../../App/types'
+import { Addition, Compensation, Income, Member, Purchase } from '../../stores/types'
 
-export const isPurchase = (payment: Payment): payment is Purchase => !isNil((payment as Purchase).purchaserId)
+export const isPurchase = (payment: Payment): payment is Purchase => isNotNil((payment as Purchase).purchaserId)
 
-export const isIncome = (payment: Payment): payment is Income => !isNil((payment as Income).earnerId)
+export const isIncome = (payment: Payment): payment is Income => isNotNil((payment as Income).earnerId)
 
 export const displayBeneficiaryNames = (beneficiaries: Member[], members: Member[], additionPayers?: Member[]) => {
   const isForAllMembers = isEmpty(difference(members, beneficiaries))

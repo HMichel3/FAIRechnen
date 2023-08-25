@@ -1,5 +1,6 @@
 import { join, sort, descend, prop } from 'ramda'
 import { deleteItem, isPositive } from '../../App/utils'
+import { CompensationsWithoutTimestamp, MemberWithAmounts } from '../../App/types'
 
 const removeDuplicateCompensations = (compensations: CompensationsWithoutTimestamp[]) => {
   const check = new Set()

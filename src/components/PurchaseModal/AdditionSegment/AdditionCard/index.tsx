@@ -1,29 +1,25 @@
-import { IonButton, IonCard, IonCardContent, IonCardTitle, IonIcon, IonItem, IonLabel } from '@ionic/react'
+import { IonButton, IonCard, IonCardContent, IonCardTitle, IonIcon, IonLabel, useIonAlert } from '@ionic/react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { chevronDownSharp, chevronUpSharp, trashBinSharp } from 'ionicons/icons'
-import { isEmpty, isNil, path, trim } from 'ramda'
+import { isEmpty, isNotNil, path, trim } from 'ramda'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { fadeInOutTopVariants, variantProps } from '../../../../App/animations'
-import { displayCurrencyValue } from '../../../../App/utils'
+import { cn, displayCurrencyValue } from '../../../../App/utils'
 import { FormInput } from '../../../formComponents/FormInput'
-import { FormComponent } from '../../../formComponents/FormComponent'
 import { FormCurrency } from '../../../formComponents/FormCurrency'
-import { Control, FieldError, FieldErrorsImpl, Merge, useWatch } from 'react-hook-form'
-import { isDark } from '../../../../pages/GroupPage/utils'
-import clsx from 'clsx'
-import { FormChipsComponent } from '../../../formComponents/FormChipsComponent'
+import { Control, FieldError, FieldErrorsImpl, Merge, UseFieldArrayRemove, useWatch } from 'react-hook-form'
 import { FormCheckboxGroup } from '../../../formComponents/FormCheckboxGroup'
 import { ConvertButton } from '../../PurchaseSegment/ConvertButton'
-import { FormPropertyName } from '../..'
-import './index.scss'
+import { PurchaseFormPropertyName } from '../..'
+import { NewPurchase } from '../../../../App/types'
+import { SelectedGroup } from '../../../../stores/types'
 
 interface AdditionCardProps {
   index: number
-  setAdditionIndex: Dispatch<SetStateAction<number | null>>
   control: Control<NewPurchase>
   members: SelectedGroup['members']
-  theme: Theme
-  setShowConvertModal: Dispatch<SetStateAction<FormPropertyName | ''>>
+  setShowConvertModal: Dispatch<SetStateAction<PurchaseFormPropertyName | ''>>
+  remove: UseFieldArrayRemove
   additionErrors?: Merge<
     FieldError,
     (
@@ -42,79 +38,60 @@ interface AdditionCardProps {
 
 export const AdditionCard = ({
   index,
-  setAdditionIndex,
   control,
   members,
-  theme,
   additionErrors,
   setShowConvertModal,
+  remove,
 }: AdditionCardProps): JSX.Element => {
+  const [presentDeleteAddition] = useIonAlert()
   const { name, amount } = useWatch({ control, name: `additions.${index}` })
-  const isNameEmptyOrHasAdditionError = isEmpty(name) || !isNil(path([index], additionErrors))
+  const isNameEmptyOrHasAdditionError = isEmpty(name) || isNotNil(path([index], additionErrors))
   const [showCardContent, setShowCardContent] = useState(isNameEmptyOrHasAdditionError)
 
   const onToggleShowCardContent = () => {
     setShowCardContent(prevState => !prevState)
   }
 
+  const onDeleteAddition = (additionIndex: number) => {
+    presentDeleteAddition({
+      header: 'Wollen Sie den Zusatz wirklich löschen?',
+      buttons: [
+        { role: 'cancel', text: 'Abbrechen', cssClass: 'alert-button-cancel' },
+        { role: 'confirm', text: 'Löschen', handler: () => remove(additionIndex) },
+      ],
+    })
+  }
+
   return (
-    <IonCard className='default-margin'>
-      <IonCardTitle>
-        <IonItem lines='none'>
-          <IonIcon
-            slot='start'
-            className='list-item-icon-color'
-            icon={showCardContent ? chevronUpSharp : chevronDownSharp}
-            style={{ marginInlineEnd: 12 }}
-            onClick={onToggleShowCardContent}
-          />
-          <IonLabel onClick={onToggleShowCardContent}>{isEmpty(trim(name)) ? 'Zusatz' : name}</IonLabel>
-          <IonLabel
-            slot='end'
-            color={clsx({ light: isDark(theme) })}
-            style={{ marginInlineStart: 16 }}
-            onClick={onToggleShowCardContent}
-          >
-            {displayCurrencyValue(amount)}
-          </IonLabel>
-          <IonButton
-            slot='end'
-            fill='clear'
-            onClick={() => setAdditionIndex(index)}
-            style={{ marginInlineStart: 8, marginInlineEnd: -5 }}
-          >
-            <IonIcon color='danger' slot='icon-only' icon={trashBinSharp} />
-          </IonButton>
-        </IonItem>
+    <IonCard>
+      <IonCardTitle className='mx-3 flex items-center justify-between gap-2'>
+        <IonIcon icon={showCardContent ? chevronUpSharp : chevronDownSharp} onClick={onToggleShowCardContent} />
+        <IonLabel className='flex-1 text-base' onClick={onToggleShowCardContent}>
+          {isEmpty(trim(name)) ? 'Zusatz' : name}
+        </IonLabel>
+        <IonLabel className='text-base' onClick={onToggleShowCardContent}>
+          {displayCurrencyValue(amount)}
+        </IonLabel>
+        <IonButton className='mr-1' fill='clear' onClick={() => onDeleteAddition(index)}>
+          <IonIcon color='danger' slot='icon-only' icon={trashBinSharp} />
+        </IonButton>
       </IonCardTitle>
       <AnimatePresence mode='wait'>
         {showCardContent && (
           <motion.div variants={fadeInOutTopVariants} {...variantProps}>
-            <IonCardContent className='addition-card-content'>
-              <FormComponent
-                className='addition-card-input'
-                label='Zusatzname*'
-                error={path([index, 'name'], additionErrors)}
-              >
-                <FormInput name={`additions.${index}.name`} control={control} />
-              </FormComponent>
-              <div className='addition-amount-convert-wrapper'>
-                <FormComponent
-                  className='addition-card-input flex-1'
-                  label='Betrag*'
-                  error={path([index, 'amount'], additionErrors)}
-                >
-                  <FormCurrency name={`additions.${index}.amount`} control={control} />
-                </FormComponent>
-                <ConvertButton onClick={() => setShowConvertModal(`additions.${index}.amount`)} smallLeft />
+            <IonCardContent className='flex flex-col gap-2 py-0 text-white'>
+              <FormInput label='Zusatzname*' name={`additions.${index}.name`} control={control} />
+              <div className='flex'>
+                <FormCurrency label='Betrag*' name={`additions.${index}.amount`} control={control} />
+                <ConvertButton onClick={() => setShowConvertModal(`additions.${index}.amount`)} />
               </div>
-              <FormChipsComponent
-                className='addition-card-checkbox'
-                label='Beteiligte*'
-                error={path([index, 'payerIds'], additionErrors)}
-              >
+              <div className='flex flex-col px-4 py-2'>
+                <IonLabel className='text-xs' color={cn({ danger: path([index, 'payerIds'], additionErrors) })}>
+                  Beteiligte*
+                </IonLabel>
                 <FormCheckboxGroup name={`additions.${index}.payerIds`} selectOptions={members} control={control} />
-              </FormChipsComponent>
+              </div>
             </IonCardContent>
           </motion.div>
         )}

@@ -1,6 +1,5 @@
 import {
   IonBackButton,
-  IonBackdrop,
   IonBadge,
   IonButton,
   IonButtons,
@@ -15,6 +14,7 @@ import {
   IonSegmentButton,
   IonTitle,
   IonToolbar,
+  useIonAlert,
   useIonModal,
 } from '@ionic/react'
 import { cartSharp, serverSharp, pencilSharp, personSharp, shareSharp, walletSharp } from 'ionicons/icons'
@@ -22,10 +22,8 @@ import { RouteComponentProps } from 'react-router'
 import { PaymentSegment } from '../../components/PaymentSegment'
 import { MemberSegment } from '../../components/MemberSegment'
 import { AnimatePresence } from 'framer-motion'
-import clsx from 'clsx'
 import { AddFabButton } from '../../components/AddFabButton'
 import { useAddFabButton } from '../../components/AddFabButton/useAddFabButton'
-import { SimpleSaveAlert } from '../../components/SimpleSaveAlert'
 import { useEffect, useMemo, useState } from 'react'
 import { PurchaseModal } from '../../components/PurchaseModal'
 import { IncomeModal } from '../../components/IncomeModal'
@@ -36,9 +34,9 @@ import { generateBill } from './utils'
 import { Share } from '@capacitor/share'
 import { Show } from '../../components/SolidComponents/Show'
 import { SuccessAnimation } from '../../lotties/SuccessAnimation'
-import { calculateMembersWithAmounts } from '../../App/utils'
+import { calculateMembersWithAmounts, cn } from '../../App/utils'
 import { mergeAndSortPayments } from '../../components/PaymentSegment/utils'
-import './index.scss'
+import { trim } from 'ramda'
 
 interface GroupInfoPageProps
   extends RouteComponentProps<{
@@ -56,10 +54,10 @@ export const GroupInfoPage = ({
   const setSelectedGroup = useStore(s => s.setSelectedGroup)
   const clearSelectedGroup = useStore(s => s.clearSelectedGroup)
   const showAnimation = useStore(s => s.showAnimation)
-
+  const setShowAnimation = useStore(s => s.setShowAnimation)
+  const [presentEditGroupName] = useIonAlert()
+  const [presentAddMember] = useIonAlert()
   const [showSegment, setShowSegment] = useState('members')
-  const [showEditGroupNameAlert, setShowEditGroupNameAlert] = useState(false)
-  const [showAddMemberAlert, setShowAddMemberAlert] = useState(false)
 
   const [showPurchaseModal, dismissPurchaseModal] = useIonModal(PurchaseModal, {
     onDismiss: () => dismissPurchaseModal(),
@@ -91,6 +89,42 @@ export const GroupInfoPage = ({
   // onUnmount
   useEffect(() => () => clearSelectedGroup(), [clearSelectedGroup])
 
+  const onEditGroupName = () => {
+    presentEditGroupName({
+      header: 'Gruppe umbenennen',
+      inputs: [{ name: 'groupName', value: group.name }],
+      buttons: [
+        { role: 'cancel', text: 'Abbrechen', cssClass: 'alert-button-cancel' },
+        {
+          role: 'confirm',
+          text: 'Speichern',
+          handler: ({ groupName }) => {
+            editGroupName(group.id, trim(groupName))
+            setShowAnimation()
+          },
+        },
+      ],
+    })
+  }
+
+  const onAddMember = () => {
+    presentAddMember({
+      header: 'Mitglied hinzufügen',
+      inputs: [{ cssClass: 'm-0', name: 'memberName', placeholder: 'Name eingeben' }],
+      buttons: [
+        { role: 'cancel', text: 'Abbrechen', cssClass: 'alert-button-cancel' },
+        {
+          role: 'confirm',
+          text: 'Speichern',
+          handler: ({ memberName }) => {
+            addMember(group.id, trim(memberName))
+            setShowAnimation()
+          },
+        },
+      ],
+    })
+  }
+
   const onShareBill = () => {
     Share.share({
       title: 'FAIRechnen Rechnung',
@@ -102,34 +136,38 @@ export const GroupInfoPage = ({
   return (
     <IonPage>
       <Show when={showBackdrop}>
-        <IonBackdrop className='custom-backdrop' tappable={true} onIonBackdropTap={onClickBackdrop} />
+        <div className='absolute inset-0 z-20 bg-black/60' onClick={onClickBackdrop} />
       </Show>
       <IonHeader>
-        <IonToolbar color='dark'>
+        <IonToolbar>
           <IonButtons slot='start'>
             <IonBackButton />
           </IonButtons>
           <IonTitle>{group.name}</IonTitle>
           <IonButtons slot='end'>
-            <IonButton onClick={() => setShowEditGroupNameAlert(true)}>
+            <IonButton onClick={onEditGroupName}>
               <IonIcon slot='icon-only' icon={pencilSharp} />
             </IonButton>
           </IonButtons>
         </IonToolbar>
-        <IonToolbar color='dark'>
-          <IonSegment value={showSegment} onIonChange={({ detail }) => setShowSegment(detail.value!)}>
-            <IonSegmentButton value='members'>
+        <IonToolbar>
+          <IonSegment value={showSegment}>
+            <IonSegmentButton value='members' onClick={() => setShowSegment('members')}>
               <IonLabel>
                 <IonLabel>Mitglieder</IonLabel>
-                <IonBadge className={clsx('no-background', { 'unselected-color': showSegment !== 'members' })}>
+                <IonBadge
+                  className={cn('bg-transparent text-[#a5a5a5]', { 'text-[#428cff]': showSegment === 'members' })}
+                >
                   {group.members.length}
                 </IonBadge>
               </IonLabel>
             </IonSegmentButton>
-            <IonSegmentButton value='payments'>
+            <IonSegmentButton value='payments' onClick={() => setShowSegment('payments')}>
               <IonLabel>
                 <IonLabel>Historie</IonLabel>
-                <IonBadge className={clsx('no-background', { 'unselected-color': showSegment !== 'payments' })}>
+                <IonBadge
+                  className={cn('bg-transparent text-[#a5a5a5]', { 'text-[#428cff]': showSegment === 'payments' })}
+                >
                   {group.purchases.length + group.incomes.length + group.compensations.length}
                 </IonBadge>
               </IonLabel>
@@ -143,58 +181,43 @@ export const GroupInfoPage = ({
           {showSegment === 'members' && <MemberSegment key='members' />}
           {showSegment === 'payments' && <PaymentSegment key='payments' />}
         </AnimatePresence>
-        <SimpleSaveAlert
-          isOpen={showEditGroupNameAlert}
-          header='Gruppe umbenennen'
-          setIsOpen={setShowEditGroupNameAlert}
-          onSave={newValue => editGroupName(groupId, newValue)}
-          value={group.name}
-        />
-        <SimpleSaveAlert
-          isOpen={showAddMemberAlert}
-          header='Neues Mitglied'
-          setIsOpen={setShowAddMemberAlert}
-          onSave={newValue => addMember(groupId, newValue)}
-        />
         <AddFabButton
           showFab={showFab}
           onClickFabButton={onClickFabButton}
           onClickFabButtonInList={onClickFabButtonInList}
-          onClickBackdrop={onClickBackdrop}
         >
           {[
             {
               label: 'Mitglied hinzufügen',
               description: 'Neue Person, die sich beteiligt',
               icon: personSharp,
-              onClick: () => setShowAddMemberAlert(true),
+              onClick: onAddMember,
             },
             {
               label: 'Zahlung hinzufügen',
               description: 'Neue Zahlung zwischen den Personen',
               icon: walletSharp,
-              onClick: () => showAddCompensationModal(),
+              onClick: showAddCompensationModal,
               disabled: group.members.length < 2,
             },
             {
               label: 'Einkommen hinzufügen',
               description: 'Geld wurde eingenommen (z.B. Pfand)',
               icon: serverSharp,
-              onClick: () => showIncomeModal(),
+              onClick: showIncomeModal,
               disabled: group.members.length < 1,
             },
             {
               label: 'Einkauf hinzufügen',
               description: 'Geld wurde ausgegeben',
               icon: cartSharp,
-              onClick: () => showPurchaseModal(),
+              onClick: showPurchaseModal,
               disabled: group.members.length < 1,
             },
           ]}
         </AddFabButton>
-        {/* style needed, because otherwise you can click the button, even though the other FabButton is enabled */}
-        <IonFab vertical='bottom' horizontal='start' slot='fixed' style={{ zIndex: 10 }}>
-          <IonFabButton color='medium' onClick={onShareBill}>
+        <IonFab vertical='bottom' horizontal='start' slot='fixed' className='z-10'>
+          <IonFabButton onClick={onShareBill}>
             <IonIcon icon={shareSharp} />
           </IonFabButton>
         </IonFab>

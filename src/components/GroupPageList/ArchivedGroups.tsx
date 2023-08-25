@@ -2,7 +2,6 @@ import { IonIcon, IonItem, IonItemOption, IonLabel } from '@ionic/react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { archiveSharp, chevronDownSharp, chevronUpSharp } from 'ionicons/icons'
 import { fadeInOutTopVariants, variantProps } from '../../App/animations'
-import { isLast } from '../../App/utils'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { SlidingListItem } from '../SlidingListItem'
 
@@ -20,7 +19,7 @@ export const ArchivedGroups = ({ showGroupArchive, setShowGroupArchive }: Archiv
     <>
       <IonItem onClick={() => setShowGroupArchive(prevState => !prevState)} lines='none'>
         <IonLabel>Archivierte Gruppen ({groupArchive.length})</IonLabel>
-        <IonIcon color='light' slot='end' icon={showGroupArchive ? chevronUpSharp : chevronDownSharp} />
+        <IonIcon slot='end' icon={showGroupArchive ? chevronUpSharp : chevronDownSharp} />
       </IonItem>
       <AnimatePresence mode='wait'>
         {showGroupArchive && (
@@ -31,13 +30,10 @@ export const ArchivedGroups = ({ showGroupArchive, setShowGroupArchive }: Archiv
                 label={group.name}
                 onDelete={() => deleteArchivedGroup(group.id)}
                 icon={archiveSharp}
-                transparentLine={isLast(group, groupArchive)}
                 detail={false}
                 lines='none'
                 rightSlideOption={
-                  <IonItemOption className='sliding-restore' color='success' onClick={() => restoreGroup(group.id)}>
-                    Wiederherstellen
-                  </IonItemOption>
+                  <IonItemOption onClick={() => restoreGroup(group.id)}>Wiederherstellen</IonItemOption>
                 }
               />
             ))}

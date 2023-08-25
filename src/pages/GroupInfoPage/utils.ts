@@ -1,4 +1,4 @@
-import produce from 'immer'
+import { produce } from 'immer'
 import { isEmpty, join } from 'ramda'
 import {
   calculateGroupTotalAmount,
@@ -8,6 +8,8 @@ import {
   findItemIndex,
 } from '../../App/utils'
 import { generatePossibleCompensations } from '../../components/AddCompensationModal/utils'
+import { CompensationsWithoutTimestamp, MemberWithAmounts } from '../../App/types'
+import { Compensation, Income, Member, Purchase, SelectedGroup } from '../../stores/types'
 
 const generateOnePossibleCompensationChain = (membersWithAmounts: MemberWithAmounts[]) => {
   const addedCompensations: CompensationsWithoutTimestamp[] = []

@@ -1,46 +1,41 @@
 import { IonButton, IonInput } from '@ionic/react'
 import { useState } from 'react'
 import { CurrencyInput } from '../../../noFormComponents/CurrencyInput'
-import { NumberInput } from '../../../noFormComponents/NumberInput'
+import { NumberInput, parseCommaNumber } from '../../../noFormComponents/NumberInput'
 import { displayCurrencyValue } from '../../../../App/utils'
-import { FormComponent } from '../../../formComponents/FormComponent'
-import { UseFormSetValue } from 'react-hook-form'
-import { FormPropertyName } from '../..'
-import './index.scss'
 
-interface ConvertModalProps {
-  name: FormPropertyName
-  setValue: UseFormSetValue<NewPurchase>
+type ConvertModalProps = {
+  setFormAmount: (amount: number) => void
   onDismiss: () => void
 }
 
-export const ConvertModal = ({ name, setValue, onDismiss }: ConvertModalProps) => {
+export const ConvertModal = ({ setFormAmount, onDismiss }: ConvertModalProps) => {
   const [amount, setAmount] = useState(0)
-  const [factor, setFactor] = useState(1)
+  const [factor, setFactor] = useState('1')
 
   function onSave() {
-    setValue(name, Math.round(Math.abs(amount * factor)))
+    setFormAmount(Math.round(amount * parseCommaNumber(factor)))
     onDismiss()
   }
 
   return (
     <>
-      <div className='custom-backdrop full-view' onClick={onDismiss} />
-      <div className='convert-modal'>
-        <div className='content'>
-          <h3>Betrag umrechnen</h3>
+      <div className='absolute inset-0 z-10 bg-black/60' onClick={onDismiss} />
+      <div className='absolute bottom-0 left-4 right-4 top-0 z-20 my-auto h-fit rounded bg-[rgb(18,18,18)] p-4'>
+        <div className='flex flex-col justify-center'>
+          <h3 className='mb-4 text-center text-xl'>Betrag umrechnen</h3>
           <div>
-            <FormComponent label='Betrag'>
-              <CurrencyInput value={amount} onChange={setAmount} />
-            </FormComponent>
-            <FormComponent label='Umrechnungsfaktor'>
-              <NumberInput value={factor} onChange={setFactor} />
-            </FormComponent>
-            <FormComponent label='Wert'>
-              <IonInput readonly>{displayCurrencyValue(amount * factor)}</IonInput>
-            </FormComponent>
+            <CurrencyInput label='Betrag' value={amount} onChange={setAmount} />
+            <NumberInput label='Umrechnungsfaktor' value={factor} onChange={setFactor} />
+            <IonInput
+              fill='solid'
+              labelPlacement='floating'
+              label='Wert'
+              value={displayCurrencyValue(amount * parseCommaNumber(factor))}
+              readonly
+            />
           </div>
-          <IonButton className='default-margin' type='button' color='medium' onClick={onSave}>
+          <IonButton className='mx-0 mt-4' type='button' onClick={onSave}>
             Übernehmen
           </IonButton>
         </div>

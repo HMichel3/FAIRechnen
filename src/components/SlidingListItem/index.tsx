@@ -8,11 +8,11 @@ import {
   IonReorder,
   IonText,
 } from '@ionic/react'
-import clsx from 'clsx'
 import { repeatSharp } from 'ionicons/icons'
-import { isNil } from 'ramda'
+import { isNil, isNotNil } from 'ramda'
 import { MouseEventHandler } from 'react'
 import { Show } from '../SolidComponents/Show'
+import { cn } from '../../App/utils'
 
 interface SlidingListItemProps {
   label?: string
@@ -22,14 +22,11 @@ interface SlidingListItemProps {
   endText?: string | JSX.Element
   onSelect?: MouseEventHandler<HTMLIonItemElement>
   icon?: string
-  style?: { [key: string]: number | string }
   detail?: boolean
   reorder?: boolean
-  transparentLine?: boolean
   lines?: 'inset' | 'full' | 'none'
   rightSlideOption?: JSX.Element
-  className?: string
-  iconClassName?: string
+  activeIcon?: boolean
 }
 
 export const SlidingListItem = ({
@@ -40,55 +37,39 @@ export const SlidingListItem = ({
   endText,
   onSelect,
   icon,
-  style,
   detail = true,
   reorder = false,
-  transparentLine = false,
   lines = 'inset',
   rightSlideOption,
-  className,
-  iconClassName,
+  activeIcon = false,
 }: SlidingListItemProps): JSX.Element => (
-  <IonItemSliding style={style}>
-    <Show when={!isNil(onDelete)}>
+  <IonItemSliding>
+    <Show when={isNotNil(onDelete)}>
       <IonItemOptions side='start'>
-        <IonItemOption className='sliding-delete' color='danger' onClick={onDelete}>
+        <IonItemOption color='danger' onClick={onDelete}>
           Löschen
         </IonItemOption>
       </IonItemOptions>
     </Show>
-    <IonItem
-      className={clsx('detail-icon-opacity-0-5 item-border-color', { 'transparent-line': transparentLine }, className)}
-      button
-      detail={detail && isNil(endText)}
-      routerLink={routerLink}
-      onClick={onSelect}
-      lines={lines}
-    >
+    <IonItem button detail={detail && isNil(endText)} routerLink={routerLink} onClick={onSelect} lines={lines}>
       {reorder ? (
         <IonReorder slot='start'>
-          <IonIcon
-            style={{ width: 24, height: 24 }}
-            className={clsx('list-item-icon-color', iconClassName)}
-            icon={repeatSharp}
-          />
+          <IonIcon icon={repeatSharp} />
         </IonReorder>
       ) : (
-        icon && <IonIcon className={clsx('list-item-icon-color', iconClassName)} icon={icon} slot='start' />
+        icon && <IonIcon color={cn({ primary: activeIcon })} icon={icon} slot='start' />
       )}
-      <IonLabel className={clsx({ 'default-margin-right': detail && isNil(endText) })}>
-        <Show when={!isNil(label)}>
-          <IonLabel>{label}</IonLabel>
+      <IonLabel>
+        <Show when={isNotNil(label)}>
+          <IonLabel className='mb-1'>{label}</IonLabel>
         </Show>
         {labelComponent}
       </IonLabel>
-      <Show when={!isNil(endText)}>
-        <IonText className='ion-text-end' slot='end'>
-          {endText}
-        </IonText>
+      <Show when={isNotNil(endText)}>
+        <IonText slot='end'>{endText}</IonText>
       </Show>
     </IonItem>
-    <Show when={!isNil(rightSlideOption)}>
+    <Show when={isNotNil(rightSlideOption)}>
       <IonItemOptions side='end'>{rightSlideOption}</IonItemOptions>
     </Show>
   </IonItemSliding>

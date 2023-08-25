@@ -9,8 +9,7 @@
 /coverage
 
 # production
-/build
-/android
+/dist
 
 # misc
 .DS_Store

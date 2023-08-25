@@ -1,7 +1,7 @@
 import { PersistImmer } from '../usePersistedStore'
-import { v4 as uuid } from 'uuid'
 import { isEmpty } from 'ramda'
 import { findItem, findItemIndex } from '../../App/utils'
+import { Group } from '../types'
 
 export interface GroupSlice {
   groups: Group[]
@@ -23,9 +23,9 @@ export const createGroupSlice: PersistImmer<GroupSlice> = (set, get) => ({
     set(store => {
       const members = memberNames
         .filter(({ name }) => !isEmpty(name))
-        .map(({ name }) => ({ id: uuid(), name, timestamp: Date.now() }))
+        .map(({ name }) => ({ id: crypto.randomUUID(), name, timestamp: Date.now() }))
       store.groups.unshift({
-        id: uuid(),
+        id: crypto.randomUUID(),
         name: groupName,
         members,
         purchases: [],

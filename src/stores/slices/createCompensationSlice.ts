@@ -1,7 +1,8 @@
 import { PersistImmer } from '../usePersistedStore'
-import { v4 as uuid } from 'uuid'
-import produce from 'immer'
+import { produce } from 'immer'
 import { findItemIndex } from '../../App/utils'
+import { NewCompensation } from '../../App/types'
+import { Compensation } from '../types'
 
 export interface CompensationSlice {
   addCompensation: (groupId: string, newCompensation: NewCompensation) => void
@@ -15,7 +16,7 @@ export const createCompensationSlice: PersistImmer<CompensationSlice> = set => (
       if (groupIndex === -1) return
       store.groups[groupIndex].compensations.push(
         produce(newCompensation as Compensation, draft => {
-          draft['id'] = uuid()
+          draft['id'] = crypto.randomUUID()
           draft['timestamp'] = Date.now()
         })
       )

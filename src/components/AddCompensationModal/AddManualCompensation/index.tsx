@@ -1,13 +1,14 @@
 import { motion } from 'framer-motion'
 import { Dispatch, SetStateAction, useEffect } from 'react'
 import { fadeInOutTopVariants, variantProps } from '../../../App/animations'
-import { FormComponent } from '../../formComponents/FormComponent'
 import { FormSelect } from '../../formComponents/FormSelect'
 import { FormCurrency } from '../../formComponents/FormCurrency'
 import { useStore } from '../../../stores/useStore'
 import { useForm, useWatch } from 'react-hook-form'
 import { deleteItem } from '../../../App/utils'
 import { isEmpty } from 'ramda'
+import { NewCompensation } from '../../../App/types'
+import { Compensation } from '../../../stores/types'
 
 interface AddManualCompensationProps {
   setManualCompensation: Dispatch<SetStateAction<NewCompensation | null>>
@@ -40,20 +41,10 @@ export const AddManualCompensation = ({ setManualCompensation }: AddManualCompen
   }, [amount, payerId, receiverId, setManualCompensation])
 
   return (
-    <motion.div
-      style={{ marginLeft: 72, marginRight: 16, marginBottom: 16 }}
-      variants={fadeInOutTopVariants}
-      {...variantProps}
-    >
-      <FormComponent className='form-input-no-margin' label='Zahler'>
-        <FormSelect name='payerId' selectOptions={members} control={control} />
-      </FormComponent>
-      <FormComponent className='form-input-no-margin' label='Empfänger'>
-        <FormSelect name='receiverId' selectOptions={membersWithoutPayer} control={control} />
-      </FormComponent>
-      <FormComponent className='form-input-no-margin' label='Betrag'>
-        <FormCurrency name='amount' control={control} />
-      </FormComponent>
+    <motion.div variants={fadeInOutTopVariants} {...variantProps}>
+      <FormSelect label='Zahler' name='payerId' selectOptions={members} control={control} />
+      <FormSelect label='Empfänger' name='receiverId' selectOptions={membersWithoutPayer} control={control} />
+      <FormCurrency label='Betrag' name='amount' control={control} />
     </motion.div>
   )
 }

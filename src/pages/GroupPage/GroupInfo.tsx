@@ -1,26 +1,22 @@
+import { IonText } from '@ionic/react'
 import { calculateGroupTotalAmount, displayCurrencyValue } from '../../App/utils'
-import { SmallLabelComponent } from '../../components/SlidingListItem/SmallLabelComponent'
-import { usePersistedStore } from '../../stores/usePersistedStore'
 import { displayMemberQuantity, displayHistoryQuantity } from './utils'
+import { Group } from '../../stores/types'
 
 interface GroupInfoProps {
-  groupId: string
+  group: Group
 }
 
-export const GroupInfo = ({ groupId }: GroupInfoProps): JSX.Element | null => {
-  const group = usePersistedStore(s => s.getGroup(groupId))
-
-  if (!group) return null
-
+export const GroupInfo = ({ group }: GroupInfoProps): JSX.Element | null => {
   const historyQuantity = group.purchases.length + group.incomes.length + group.compensations.length
   const groupTotalAmount = calculateGroupTotalAmount(group.purchases, group.incomes)
 
   return (
-    <>
-      <SmallLabelComponent>
+    <div className='flex flex-col'>
+      <IonText className='text-sm text-neutral-400'>
         {displayMemberQuantity(group.members.length)}, {displayHistoryQuantity(historyQuantity)}
-      </SmallLabelComponent>
-      <SmallLabelComponent>{displayCurrencyValue(groupTotalAmount)}</SmallLabelComponent>
-    </>
+      </IonText>
+      <IonText className='text-sm text-neutral-400'>{displayCurrencyValue(groupTotalAmount)}</IonText>
+    </div>
   )
 }

@@ -1,8 +1,9 @@
-import produce from 'immer'
+import { produce } from 'immer'
 import { PersistImmer } from '../usePersistedStore'
 import { calculateNewIncome } from '../utils'
-import { v4 as uuid } from 'uuid'
 import { findItemIndex } from '../../App/utils'
+import { NewIncome } from '../../App/types'
+import { Income } from '../types'
 
 export interface IncomeSlice {
   addIncome: (groupId: string, newIncome: NewIncome) => void
@@ -17,7 +18,7 @@ export const createIncomeSlice: PersistImmer<IncomeSlice> = set => ({
       if (groupIndex === -1) return
       store.groups[groupIndex].incomes.push(
         produce(calculateNewIncome(newIncome) as Income, draft => {
-          draft['id'] = uuid()
+          draft['id'] = crypto.randomUUID()
           draft['timestamp'] = Date.now()
         })
       )
