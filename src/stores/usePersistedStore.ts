@@ -8,11 +8,14 @@ import { createMemberSlice, MemberSlice } from './slices/createMemberSlice'
 import { createPurchaseSlice, PurchaseSlice } from './slices/createPurchaseSlice'
 import { createIncomeSlice, IncomeSlice } from './slices/createIncomeSlice'
 import { InfoSlideSlice, createInfoSlideSlice } from './slices/createInfoSlideSlice'
+import CordovaSQLiteDriver from 'localforage-cordovasqlitedriver'
 
 const ionicStorage = new Storage({
   name: '__db',
-  driverOrder: [Drivers.IndexedDB, Drivers.LocalStorage],
+  driverOrder: [CordovaSQLiteDriver._driver, Drivers.IndexedDB, Drivers.LocalStorage],
 })
+await ionicStorage.defineDriver(CordovaSQLiteDriver)
+await ionicStorage.create()
 
 const storage: StateStorage = {
   getItem: async key => {
@@ -54,13 +57,7 @@ export const usePersistedStore = create<PersistedState>()(
     })),
     {
       name: 'store-storage',
-      storage: createJSONStorage(() => {
-        const createStore = async () => {
-          await ionicStorage.create()
-        }
-        createStore()
-        return storage
-      }),
+      storage: createJSONStorage(() => storage),
       onRehydrateStorage: () => () => {
         usePersistedStore.setState({ _hasHydrated: true })
       },
