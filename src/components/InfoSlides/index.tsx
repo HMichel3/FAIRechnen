@@ -13,7 +13,7 @@ interface InfoSlidesProps {
 
 export const InfoSlides = ({ onHideShowInfoSlides }: InfoSlidesProps): JSX.Element => (
   <IonContent color='light' className='z-[1001]'>
-    <Swiper className='h-full p-2' modules={[Pagination, IonicSlides]} pagination={{ type: 'progressbar' }} loop={true}>
+    <Swiper className='h-full p-2' modules={[Pagination, IonicSlides]} pagination={{ type: 'progressbar' }}>
       <SwiperSlide className='h-full'>
         <InfoSlideWithIcon
           icon={informationCircleSharp}
