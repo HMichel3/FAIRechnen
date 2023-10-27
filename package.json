@@ -43,7 +43,7 @@
     "swiper": "10.2.0",
     "tailwind-merge": "^1.14.0",
     "terser": "^5.19.2",
-    "zod": "3.22.2",
+    "zod": "3.22.3",
     "zustand": "4.4.1"
   },
   "devDependencies": {
