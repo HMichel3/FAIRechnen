@@ -13,12 +13,13 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@capacitor/android": "^6.0.0",
+    "@capacitor-community/sqlite": "6.0.1",
+    "@capacitor/android": "6.1.1",
     "@capacitor/app": "^6.0.0",
-    "@capacitor/core": "^6.0.0",
+    "@capacitor/core": "6.1.1",
     "@capacitor/haptics": "^6.0.0",
-    "@capacitor/keyboard": "^6.0.0",
-    "@capacitor/share": "^6.0.0",
+    "@capacitor/keyboard": "^6.0.1",
+    "@capacitor/share": "^6.0.1",
     "@capacitor/status-bar": "^6.0.0",
     "@hookform/resolvers": "3.9.0",
     "@ionic/react": "7.8.6",
@@ -28,7 +29,6 @@
     "@maskito/kit": "1.9.0",
     "@maskito/react": "1.9.0",
     "clsx": "2.1.1",
-    "cordova-sqlite-storage": "^6.1.0",
     "date-fns": "^2.30.0",
     "framer-motion": "10.18.0",
     "immer": "10.1.1",
@@ -46,7 +46,7 @@
     "zustand": "4.5.4"
   },
   "devDependencies": {
-    "@capacitor/cli": "^6.0.0",
+    "@capacitor/cli": "6.1.1",
     "@testing-library/jest-dom": "6.4.8",
     "@testing-library/react": "^14.3.1",
     "@testing-library/user-event": "14.5.2",
