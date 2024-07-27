@@ -1,24 +1,24 @@
+import { ClassValue, clsx } from 'clsx'
 import { produce } from 'immer'
 import {
+  both,
+  curryN,
   find,
   findIndex,
+  gt,
+  identical,
+  includes,
   last,
+  lt,
   map,
+  pipe,
   propEq,
   reduce,
-  curryN,
-  pipe,
   type,
-  identical,
-  both,
-  lt,
-  gt,
-  includes,
 } from 'ramda'
+import { twMerge } from 'tailwind-merge'
 import { Compensation, Group, Income, Member, Purchase } from '../stores/types'
 import { MemberWithAmounts } from './types'
-import { twMerge } from 'tailwind-merge'
-import { clsx, ClassValue } from 'clsx'
 
 // From ramda-adjunct
 const isNumber = curryN(1, pipe(type, identical('Number')))
