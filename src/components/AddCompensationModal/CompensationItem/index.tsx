@@ -1,16 +1,17 @@
-import { IonItem, IonLabel, IonRadio } from '@ionic/react'
-import { CompensationInfo } from '../../PaymentSegment/CompensationInfo'
-import { CompensationsWithoutTimestamp } from '../../../App/types'
+import { IonItem, IonRadio } from "@ionic/react";
+import { CompensationsWithoutTimestamp } from "../../../App/types";
+import { CompensationInfo } from "../../PaymentSegment/CompensationInfo";
 
 interface CompensationItemProps {
-  compensation: CompensationsWithoutTimestamp
+  compensation: CompensationsWithoutTimestamp;
 }
 
-export const CompensationItem = ({ compensation }: CompensationItemProps): JSX.Element => (
-  <IonItem className='item-border-color'>
-    <IonRadio value={compensation.id} legacy />
-    <IonLabel className='ml-4'>
+export const CompensationItem = ({
+  compensation,
+}: CompensationItemProps): JSX.Element => (
+  <IonItem className="item-border-color">
+    <IonRadio value={compensation.id} labelPlacement="end" legacy-radio>
       <CompensationInfo compensation={compensation} />
-    </IonLabel>
+    </IonRadio>
   </IonItem>
-)
+);

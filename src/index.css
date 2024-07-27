@@ -13,3 +13,7 @@
 .swiper .swiper-pagination-progressbar .swiper-pagination-progressbar-fill {
   background-color: var(--ion-color-primary);
 }
+
+ion-radio[legacy-radio="true"]::part(label) {
+  width: 100%;
+}
