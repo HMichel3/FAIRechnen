@@ -1,0 +1,11 @@
+.form-radio-group {
+  .radio-group-wrapper {
+    @apply my-2 flex flex-wrap gap-2;
+  }
+
+  ion-radio::part(container) {
+    --size: 18px;
+    width: var(--size);
+    height: var(--size);
+  }
+}
