@@ -1,11 +1,11 @@
+import { IonLabel, IonText } from '@ionic/react'
 import { format } from 'date-fns'
 import { displayCurrencyValue, findItem, findItems } from '../../App/utils'
-import { displayBeneficiaryNames } from './utils'
-import { IonLabel, IonText } from '@ionic/react'
-import { useStore } from '../../stores/useStore'
 import { Income } from '../../stores/types'
+import { useStore } from '../../stores/useStore'
+import { displayBeneficiaryNames } from './utils'
 
-interface IncomeInfoProps {
+type IncomeInfoProps = {
   income: Income
 }
 

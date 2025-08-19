@@ -1,7 +1,7 @@
 import { StateCreator } from 'zustand'
 import { StoreState } from '../useStore'
 
-export interface AnimationSlice {
+export type AnimationSlice = {
   showAnimation: boolean
   setShowAnimation: () => void
 }

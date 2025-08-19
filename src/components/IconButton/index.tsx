@@ -2,7 +2,7 @@ import { IonButton, IonIcon } from '@ionic/react'
 import { MouseEventHandler } from 'react'
 import { cn } from '../../App/utils'
 
-interface IconButtonProps {
+type IconButtonProps = {
   children: string
   icon: string
   type?: 'button' | 'submit' | 'reset'

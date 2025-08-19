@@ -1,11 +1,11 @@
+import { produce } from 'immer'
+import { NewPurchase } from '../../App/types'
+import { findItemIndex } from '../../App/utils'
+import { Purchase } from '../types'
 import { PersistImmer } from '../usePersistedStore'
 import { calculateNewPurchase } from '../utils'
-import { produce } from 'immer'
-import { findItemIndex } from '../../App/utils'
-import { NewPurchase } from '../../App/types'
-import { Purchase } from '../types'
 
-export interface PurchaseSlice {
+export type PurchaseSlice = {
   addPurchase: (groupId: string, newPurchase: NewPurchase) => void
   editPurchase: (groupId: string, purchaseId: string, newPurchase: NewPurchase) => void
   deletePurchase: (groupId: string, purchaseId: string) => void

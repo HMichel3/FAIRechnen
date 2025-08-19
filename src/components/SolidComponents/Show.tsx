@@ -1,4 +1,4 @@
-interface ShowProps {
+type ShowProps = {
   when: boolean
   children: JSX.Element
   fallback?: JSX.Element | null

@@ -38,10 +38,9 @@ import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
 import { generateBill } from './utils'
 
-interface GroupInfoPageProps
-  extends RouteComponentProps<{
-    id: string
-  }> {}
+type GroupInfoPageProps = RouteComponentProps<{
+  id: string
+}>
 
 export const GroupInfoPage = ({
   match: {

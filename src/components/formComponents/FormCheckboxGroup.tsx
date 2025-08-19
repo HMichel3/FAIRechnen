@@ -1,10 +1,10 @@
-import { IonChip, IonCheckbox } from '@ionic/react'
+import { IonCheckbox, IonChip } from '@ionic/react'
 import { produce } from 'immer'
 import { includes, indexOf } from 'ramda'
 import { Control, FieldValues, Path, useController } from 'react-hook-form'
 import { ReactHookFormOnChange } from '../../App/types'
 
-interface FormCheckboxGroupProps<Type extends FieldValues> {
+type FormCheckboxGroupProps<Type extends FieldValues> = {
   name: Path<Type>
   control: Control<Type>
   selectOptions: { id: string; name: string }[]

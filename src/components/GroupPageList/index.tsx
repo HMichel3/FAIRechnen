@@ -1,4 +1,4 @@
-import { IonReorderGroup, IonItemOption, useIonAlert, IonText } from '@ionic/react'
+import { IonItemOption, IonReorderGroup, IonText, useIonAlert } from '@ionic/react'
 import { peopleSharp } from 'ionicons/icons'
 import { clone, isEmpty } from 'ramda'
 import { useEffect, useState } from 'react'
@@ -9,7 +9,7 @@ import { SlidingListItem } from '../SlidingListItem'
 import { Show } from '../SolidComponents/Show'
 import { ArchivedGroups } from './ArchivedGroups'
 
-interface GroupPageListProps {
+type GroupPageListProps = {
   reorder: boolean
 }
 

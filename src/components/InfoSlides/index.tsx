@@ -1,13 +1,13 @@
 import { IonButton, IonContent, IonicSlides } from '@ionic/react'
-import { informationCircleSharp, helpCircleSharp, bulbSharp } from 'ionicons/icons'
-import { InfoSlideWithIcon } from './InfoSlideWithIcon'
-import { Pagination } from 'swiper/modules'
-import { Swiper, SwiperSlide } from 'swiper/react'
+import '@ionic/react/css/ionic-swiper.css'
+import { bulbSharp, helpCircleSharp, informationCircleSharp } from 'ionicons/icons'
 import 'swiper/css'
 import 'swiper/css/pagination'
-import '@ionic/react/css/ionic-swiper.css'
+import { Pagination } from 'swiper/modules'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { InfoSlideWithIcon } from './InfoSlideWithIcon'
 
-interface InfoSlidesProps {
+type InfoSlidesProps = {
   onHideShowInfoSlides: () => void
 }
 

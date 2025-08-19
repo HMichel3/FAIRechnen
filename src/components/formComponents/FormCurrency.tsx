@@ -1,11 +1,11 @@
 import { IonInput } from '@ionic/react'
 import { isNotNil, toString } from 'ramda'
-import { Control, FieldValues, Path, useController } from 'react-hook-form'
-import { cn, displayCurrencyValue } from '../../App/utils'
-import { ReactHookFormOnChange } from '../../App/types'
 import { useRef } from 'react'
+import { Control, FieldValues, Path, useController } from 'react-hook-form'
+import { ReactHookFormOnChange } from '../../App/types'
+import { cn, displayCurrencyValue } from '../../App/utils'
 
-interface FormCurrencyProps<Type extends FieldValues> {
+type FormCurrencyProps<Type extends FieldValues> = {
   label: string
   name: Path<Type>
   control: Control<Type>

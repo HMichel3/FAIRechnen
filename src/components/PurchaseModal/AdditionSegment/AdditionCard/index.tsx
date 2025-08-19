@@ -14,7 +14,7 @@ import { FormCurrency } from '../../../formComponents/FormCurrency'
 import { FormInput } from '../../../formComponents/FormInput'
 import { ConvertButton } from '../../PurchaseSegment/ConvertButton'
 
-interface AdditionCardProps {
+type AdditionCardProps = {
   index: number
   control: Control<NewPurchase>
   members: SelectedGroup['members']

@@ -31,7 +31,7 @@ export type PurchaseFormPropertyName =
   | `additions.${number}.payerIds`
   | `additions.${number}.payerIds.${number}`
 
-interface PurchaseModalProps {
+type PurchaseModalProps = {
   onDismiss: () => void
   selectedPurchase?: Purchase
 }

@@ -11,10 +11,10 @@ import {
 import { repeatSharp } from 'ionicons/icons'
 import { isNil, isNotNil } from 'ramda'
 import { MouseEventHandler } from 'react'
-import { Show } from '../SolidComponents/Show'
 import { cn } from '../../App/utils'
+import { Show } from '../SolidComponents/Show'
 
-interface SlidingListItemProps {
+type SlidingListItemProps = {
   label?: string
   labelComponent?: JSX.Element
   onDelete?: MouseEventHandler<HTMLIonItemOptionElement>

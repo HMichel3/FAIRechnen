@@ -5,7 +5,7 @@ import { fadeInOutTopVariants, variantProps } from '../../App/animations'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { SlidingListItem } from '../SlidingListItem'
 
-interface ArchivedGroupsProps {
+type ArchivedGroupsProps = {
   showGroupArchive: boolean
   setShowGroupArchive: React.Dispatch<React.SetStateAction<boolean>>
 }

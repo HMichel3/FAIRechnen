@@ -9,7 +9,7 @@ import { NewPurchase } from '../../../App/types'
 import { SelectedGroup } from '../../../stores/types'
 import { AdditionCard } from './AdditionCard'
 
-interface AdditionSegmentProps {
+type AdditionSegmentProps = {
   pageContentRef: RefObject<HTMLIonContentElement>
   control: Control<NewPurchase>
   members: SelectedGroup['members']

@@ -13,7 +13,7 @@ import { AddManualCompensation } from './AddManualCompensation'
 import { CompensationItem } from './CompensationItem'
 import { generatePossibleCompensations } from './utils'
 
-interface AddCompensationModalProps {
+type AddCompensationModalProps = {
   onDismiss: () => void
 }
 

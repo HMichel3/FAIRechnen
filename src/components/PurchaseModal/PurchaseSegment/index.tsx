@@ -14,7 +14,7 @@ import { FormRadioGroup } from '../../formComponents/FormRadioGroup'
 import { FormTextarea } from '../../formComponents/FormTextarea'
 import { ConvertButton } from './ConvertButton'
 
-interface PurchaseSegmentProps {
+type PurchaseSegmentProps = {
   control: Control<NewPurchase>
   setShowConvertModal: Dispatch<SetStateAction<PurchaseFormPropertyName | ''>>
 }

@@ -19,4 +19,4 @@ export type NewCompensation = Pick<Compensation, 'amount' | 'payerId' | 'receive
 
 export type CompensationsWithoutTimestamp = Pick<Compensation, 'id' | 'amount' | 'payerId' | 'receiverId'>
 
-export type ReactHookFormOnChange = (...event: any[]) => void
+export type ReactHookFormOnChange = (...event: unknown[]) => void

@@ -1,6 +1,6 @@
 import { IonButton, IonButtons, IonHeader, IonTitle, IonToolbar } from '@ionic/react'
 
-interface ModalHeaderProps {
+type ModalHeaderProps = {
   title: string
   onDismiss: () => void
   children?: JSX.Element

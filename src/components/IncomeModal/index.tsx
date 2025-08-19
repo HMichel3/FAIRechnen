@@ -1,6 +1,12 @@
+import { zodResolver } from '@hookform/resolvers/zod'
 import { IonContent, IonLabel } from '@ionic/react'
 import { isEmpty, map, pick, prop } from 'ramda'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { NewIncome } from '../../App/types'
+import { cn } from '../../App/utils'
+import { Income, Member } from '../../stores/types'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
 import { FormCheckboxGroup } from '../formComponents/FormCheckboxGroup'
@@ -10,19 +16,13 @@ import { FormRadioGroup } from '../formComponents/FormRadioGroup'
 import { FormTextarea } from '../formComponents/FormTextarea'
 import { ModalFooter } from '../modalComponents/ModalFooter'
 import { ModalHeader } from '../modalComponents/ModalHeader'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { NewIncome } from '../../App/types'
-import { Income, Member } from '../../stores/types'
-import { cn } from '../../App/utils'
-import { Show } from '../SolidComponents/Show'
-import { ConvertModal } from '../PurchaseModal/PurchaseSegment/ConvertModal'
-import { useState } from 'react'
 import { ConvertButton } from '../PurchaseModal/PurchaseSegment/ConvertButton'
+import { ConvertModal } from '../PurchaseModal/PurchaseSegment/ConvertModal'
+import { Show } from '../SolidComponents/Show'
 
 export type IncomeFormPropertyName = 'name' | 'amount' | 'earnerId' | 'beneficiaryIds' | 'description'
 
-interface IncomeModalProps {
+type IncomeModalProps = {
   onDismiss: () => void
   selectedIncome?: Income
 }

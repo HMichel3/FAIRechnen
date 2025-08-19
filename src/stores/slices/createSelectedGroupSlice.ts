@@ -1,8 +1,8 @@
 import { StateCreator } from 'zustand'
-import { StoreState } from '../useStore'
 import { SelectedGroup } from '../types'
+import { StoreState } from '../useStore'
 
-export interface SelectedGroupSlice {
+export type SelectedGroupSlice = {
   selectedGroup: SelectedGroup
   setSelectedGroup: (selectedGroup: SelectedGroup) => void
   clearSelectedGroup: () => void
@@ -16,6 +16,7 @@ const initialSelectedGroup: SelectedGroup = {
   incomes: [],
   compensations: [],
   timestamp: 0,
+  factor: '1',
   membersWithAmounts: [],
   sortedPayments: [],
 }

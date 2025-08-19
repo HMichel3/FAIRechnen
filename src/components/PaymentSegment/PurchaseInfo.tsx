@@ -1,11 +1,11 @@
+import { IonLabel, IonText } from '@ionic/react'
 import { format } from 'date-fns'
 import { displayCurrencyValue, findItem, findItems } from '../../App/utils'
-import { displayAdditionQuantity, displayBeneficiaryNames, getAdditionPayerIdsNotInBeneficiaries } from './utils'
-import { IonLabel, IonText } from '@ionic/react'
-import { useStore } from '../../stores/useStore'
 import { Purchase } from '../../stores/types'
+import { useStore } from '../../stores/useStore'
+import { displayAdditionQuantity, displayBeneficiaryNames, getAdditionPayerIdsNotInBeneficiaries } from './utils'
 
-interface PurchaseInfoProps {
+type PurchaseInfoProps = {
   purchase: Purchase
 }
 

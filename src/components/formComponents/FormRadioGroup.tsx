@@ -3,7 +3,7 @@ import { Control, FieldValues, Path, useController } from 'react-hook-form'
 import { ReactHookFormOnChange } from '../../App/types'
 import './formRadioGroup.css'
 
-interface FormRadioGroupProps<Type extends FieldValues> {
+type FormRadioGroupProps<Type extends FieldValues> = {
   name: Path<Type>
   control: Control<Type>
   selectOptions: { id: string; name: string }[]

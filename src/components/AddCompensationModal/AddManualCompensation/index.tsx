@@ -10,11 +10,11 @@ import { useStore } from '../../../stores/useStore'
 import { FormCurrency } from '../../formComponents/FormCurrency'
 import { FormSelect } from '../../formComponents/FormSelect'
 
-interface AddManualCompensationProps {
+type AddManualCompensationProps = {
   setManualCompensation: Dispatch<SetStateAction<NewCompensation | null>>
 }
 
-interface CompensationFormValues {
+type CompensationFormValues = {
   payerId: Compensation['payerId']
   receiverId: Compensation['receiverId']
   amount: Compensation['amount']

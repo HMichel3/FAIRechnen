@@ -1,10 +1,10 @@
-import { IonIcon, IonButton } from '@ionic/react'
+import { IonButton, IonIcon } from '@ionic/react'
 import { closeSharp } from 'ionicons/icons'
 import { isNotNil } from 'ramda'
 import { ReactNode } from 'react'
 import { Show } from '../SolidComponents/Show'
 
-interface InfoSlideWithIconProps {
+type InfoSlideWithIconProps = {
   icon: string
   title: string
   firstParagraph: string

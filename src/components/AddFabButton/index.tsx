@@ -1,8 +1,8 @@
-import { IonFab, IonFabButton, IonIcon, IonFabList, IonText } from '@ionic/react'
+import { IonFab, IonFabButton, IonFabList, IonIcon, IonText } from '@ionic/react'
 import { addSharp } from 'ionicons/icons'
 import { cn } from '../../App/utils'
 
-interface AddFabButtonProps {
+type AddFabButtonProps = {
   showFab: boolean
   onClickFabButton: () => void
   onClickFabButtonInList: (onClick: () => void) => void
