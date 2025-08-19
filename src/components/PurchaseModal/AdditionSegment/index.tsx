@@ -1,13 +1,13 @@
 import { IonButton, IonIcon, IonLabel } from '@ionic/react'
 import { addSharp } from 'ionicons/icons'
+import { motion } from 'motion/react'
 import { Dispatch, RefObject, SetStateAction } from 'react'
-import { AdditionCard } from './AdditionCard'
 import { Control, useFieldArray, useFormState } from 'react-hook-form'
-import { motion } from 'framer-motion'
-import { fadeOutLeftVariants, variantProps } from '../../../App/animations'
 import { PurchaseFormPropertyName } from '..'
+import { fadeOutLeftVariants, variantProps } from '../../../App/animations'
 import { NewPurchase } from '../../../App/types'
 import { SelectedGroup } from '../../../stores/types'
+import { AdditionCard } from './AdditionCard'
 
 interface AdditionSegmentProps {
   pageContentRef: RefObject<HTMLIonContentElement>
@@ -35,7 +35,7 @@ export const AdditionSegment = ({
       <div className='mx-[10px] mt-[10px] flex items-center justify-between gap-2'>
         <div className='flex flex-col'>
           <IonLabel className='text-sm'>Artikel, welche nur für einzelne Mitglieder sind</IonLabel>
-          <IonLabel className='text-xs'>Werden vor der Verrechnung des Einkaufs abgezogen</IonLabel>
+          <IonLabel className='text-xs'>(werden vor der Verrechnung des Einkaufs abgezogen)</IonLabel>
         </div>
         <IonButton onClick={onAddAddition}>
           <IonIcon slot='icon-only' icon={addSharp} />
