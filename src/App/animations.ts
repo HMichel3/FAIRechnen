@@ -1,3 +1,5 @@
+import { Variants } from 'motion'
+
 export const variantProps = {
   initial: 'initial',
   animate: 'animate',
@@ -6,7 +8,7 @@ export const variantProps = {
 
 const defaultDuration = 0.3
 
-export const fadeOutRightVariants = {
+export const fadeOutRightVariants: Variants = {
   initial: {
     opacity: 0,
   },
@@ -19,7 +21,7 @@ export const fadeOutRightVariants = {
   },
 }
 
-export const fadeOutLeftVariants = {
+export const fadeOutLeftVariants: Variants = {
   initial: {
     opacity: 0,
   },
@@ -32,7 +34,7 @@ export const fadeOutLeftVariants = {
   },
 }
 
-export const fadeInOutTopVariants = {
+export const fadeInOutTopVariants: Variants = {
   initial: {
     opacity: 0,
     y: '-100%',

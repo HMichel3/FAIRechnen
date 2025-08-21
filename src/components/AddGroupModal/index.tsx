@@ -1,18 +1,18 @@
-import { IonButton, IonContent, IonIcon } from '@ionic/react'
-import { FormInput } from '../formComponents/FormInput'
-import { ModalHeader } from '../modalComponents/ModalHeader'
-import { ModalFooter } from '../modalComponents/ModalFooter'
-import { FormProvider, useFieldArray, useForm, useWatch } from 'react-hook-form'
-import { usePersistedStore } from '../../stores/usePersistedStore'
-import { useStore } from '../../stores/useStore'
-import { useEffect } from 'react'
-import { isEmpty, last } from 'ramda'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { IonButton, IonContent, IonIcon } from '@ionic/react'
+import { closeSharp } from 'ionicons/icons'
+import { isEmpty, last } from 'ramda'
+import { useEffect } from 'react'
+import { FormProvider, useFieldArray, useForm, useWatch } from 'react-hook-form'
 import { z } from 'zod'
 import { isLast } from '../../App/utils'
-import { closeSharp } from 'ionicons/icons'
+import { usePersistedStore } from '../../stores/usePersistedStore'
+import { useStore } from '../../stores/useStore'
+import { FormInput } from '../formComponents/FormInput'
+import { ModalFooter } from '../modalComponents/ModalFooter'
+import { ModalHeader } from '../modalComponents/ModalHeader'
 
-interface AddGroupModalProps {
+type AddGroupModalProps = {
   onDismiss: () => void
 }
 
@@ -21,7 +21,7 @@ const validationSchema = z.object({
   memberNames: z.object({ name: z.string() }).array(),
 })
 
-interface GroupFormValues {
+type GroupFormValues = {
   groupName: string
   memberNames: { name: string }[]
 }

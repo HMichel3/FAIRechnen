@@ -1,6 +1,6 @@
 import { PersistImmer } from '../usePersistedStore'
 
-export interface InfoSlideSlice {
+export type InfoSlideSlice = {
   showInfoSlides: boolean
   setShowInfoSlides: (showInfoSlides: boolean) => void
 }

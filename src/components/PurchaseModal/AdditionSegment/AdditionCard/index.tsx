@@ -1,20 +1,20 @@
 import { IonButton, IonCard, IonCardContent, IonCardTitle, IonIcon, IonLabel, useIonAlert } from '@ionic/react'
-import { AnimatePresence, motion } from 'framer-motion'
 import { chevronDownSharp, chevronUpSharp, trashBinSharp } from 'ionicons/icons'
+import { AnimatePresence, motion } from 'motion/react'
 import { isEmpty, isNotNil, path, trim } from 'ramda'
 import { Dispatch, SetStateAction, useState } from 'react'
-import { fadeInOutTopVariants, variantProps } from '../../../../App/animations'
-import { cn, displayCurrencyValue } from '../../../../App/utils'
-import { FormInput } from '../../../formComponents/FormInput'
-import { FormCurrency } from '../../../formComponents/FormCurrency'
 import { Control, FieldError, FieldErrorsImpl, Merge, UseFieldArrayRemove, useWatch } from 'react-hook-form'
-import { FormCheckboxGroup } from '../../../formComponents/FormCheckboxGroup'
-import { ConvertButton } from '../../PurchaseSegment/ConvertButton'
 import { PurchaseFormPropertyName } from '../..'
+import { fadeInOutTopVariants, variantProps } from '../../../../App/animations'
 import { NewPurchase } from '../../../../App/types'
+import { cn, displayCurrencyValue } from '../../../../App/utils'
 import { SelectedGroup } from '../../../../stores/types'
+import { FormCheckboxGroup } from '../../../formComponents/FormCheckboxGroup'
+import { FormCurrency } from '../../../formComponents/FormCurrency'
+import { FormInput } from '../../../formComponents/FormInput'
+import { ConvertButton } from '../../PurchaseSegment/ConvertButton'
 
-interface AdditionCardProps {
+type AdditionCardProps = {
   index: number
   control: Control<NewPurchase>
   members: SelectedGroup['members']

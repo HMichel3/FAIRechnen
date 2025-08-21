@@ -3,7 +3,7 @@ import { Control, FieldValues, Path, useController } from 'react-hook-form'
 import { ReactHookFormOnChange } from '../../App/types'
 import { cn } from '../../App/utils'
 
-interface FormTextareaProps<Type extends FieldValues> {
+type FormTextareaProps<Type extends FieldValues> = {
   label: string
   name: Path<Type>
   control: Control<Type>

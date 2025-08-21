@@ -1,15 +1,15 @@
 import { IonText, useIonAlert } from '@ionic/react'
-import { cn, displayCurrencyValue, isNegative, isPositive } from '../../App/utils'
-import { SlidingListItem } from '../SlidingListItem'
-import { motion } from 'framer-motion'
-import { variantProps, fadeOutRightVariants } from '../../App/animations'
 import { personSharp } from 'ionicons/icons'
+import { motion } from 'motion/react'
+import { isEmpty, trim } from 'ramda'
+import { fadeOutRightVariants, variantProps } from '../../App/animations'
+import { cn, displayCurrencyValue, isNegative, isPositive } from '../../App/utils'
+import { Member } from '../../stores/types'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
-import { isMemberInvolved } from './utils'
+import { SlidingListItem } from '../SlidingListItem'
 import { Show } from '../SolidComponents/Show'
-import { isEmpty, trim } from 'ramda'
-import { Member } from '../../stores/types'
+import { isMemberInvolved } from './utils'
 
 export const MemberSegment = (): JSX.Element => {
   const { id: groupId, purchases, incomes, compensations, membersWithAmounts } = useStore(s => s.selectedGroup)

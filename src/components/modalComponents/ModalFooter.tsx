@@ -2,11 +2,11 @@ import { IonFooter, IonToolbar } from '@ionic/react'
 import { saveSharp } from 'ionicons/icons'
 import { IconButton } from '../IconButton'
 
-interface ModalFooterProps {
+type ModalFooterProps = {
   children: string
 }
 
-export const ModalFooter = ({ children }: ModalFooterProps) => (
+export const ModalFooter = ({ children }: ModalFooterProps): JSX.Element => (
   <IonFooter>
     <IonToolbar>
       <IconButton type='submit' icon={saveSharp}>

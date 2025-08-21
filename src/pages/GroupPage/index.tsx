@@ -1,3 +1,4 @@
+import { App } from '@capacitor/app'
 import {
   IonButton,
   IonButtons,
@@ -17,16 +18,15 @@ import {
   useIonRouter,
 } from '@ionic/react'
 import { closeSharp, helpCircleSharp, peopleSharp, repeatSharp } from 'ionicons/icons'
+import { useEffect, useState } from 'react'
+import { AddGroupModal } from '../../components/AddGroupModal'
+import { GroupPageList } from '../../components/GroupPageList'
 import { IconButton } from '../../components/IconButton'
 import { InfoSlides } from '../../components/InfoSlides'
-import { useEffect, useState } from 'react'
-import { usePersistedStore } from '../../stores/usePersistedStore'
-import { AddGroupModal } from '../../components/AddGroupModal'
 import { Show } from '../../components/SolidComponents/Show'
-import { GroupPageList } from '../../components/GroupPageList'
 import { SuccessAnimation } from '../../lotties/SuccessAnimation'
+import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
-import { App } from '@capacitor/app'
 
 export const GroupPage = (): JSX.Element => {
   const groups = usePersistedStore(s => s.groups)
@@ -41,13 +41,13 @@ export const GroupPage = (): JSX.Element => {
 
   useEffect(() => {
     document.addEventListener('ionBackButton', event => {
-      // @ts-ignore
+      // @ts-expect-error event.detail is not defined in the type definition
       event.detail.register(-1, () => {
         if (showInfoSlides) return setShowInfoSlides(false)
         if (!ionRouter.canGoBack()) App.exitApp()
       })
     })
-  }, [ionRouter, showInfoSlides])
+  }, [ionRouter, showInfoSlides, setShowInfoSlides])
 
   return (
     <>

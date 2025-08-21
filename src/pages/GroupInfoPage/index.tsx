@@ -1,3 +1,4 @@
+import { Share } from '@capacitor/share'
 import {
   IonBackButton,
   IonBadge,
@@ -17,31 +18,29 @@ import {
   useIonAlert,
   useIonModal,
 } from '@ionic/react'
-import { cartSharp, serverSharp, pencilSharp, personSharp, shareSharp, walletSharp } from 'ionicons/icons'
+import { cartSharp, pencilSharp, personSharp, serverSharp, shareSharp, walletSharp } from 'ionicons/icons'
+import { AnimatePresence } from 'motion/react'
+import { trim } from 'ramda'
+import { useEffect, useMemo, useState } from 'react'
 import { RouteComponentProps } from 'react-router'
-import { PaymentSegment } from '../../components/PaymentSegment'
-import { MemberSegment } from '../../components/MemberSegment'
-import { AnimatePresence } from 'framer-motion'
+import { calculateMembersWithAmounts, cn } from '../../App/utils'
+import { AddCompensationModal } from '../../components/AddCompensationModal'
 import { AddFabButton } from '../../components/AddFabButton'
 import { useAddFabButton } from '../../components/AddFabButton/useAddFabButton'
-import { useEffect, useMemo, useState } from 'react'
-import { PurchaseModal } from '../../components/PurchaseModal'
 import { IncomeModal } from '../../components/IncomeModal'
-import { AddCompensationModal } from '../../components/AddCompensationModal'
+import { MemberSegment } from '../../components/MemberSegment'
+import { PaymentSegment } from '../../components/PaymentSegment'
+import { mergeAndSortPayments } from '../../components/PaymentSegment/utils'
+import { PurchaseModal } from '../../components/PurchaseModal'
+import { Show } from '../../components/SolidComponents/Show'
+import { SuccessAnimation } from '../../lotties/SuccessAnimation'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
 import { generateBill } from './utils'
-import { Share } from '@capacitor/share'
-import { Show } from '../../components/SolidComponents/Show'
-import { SuccessAnimation } from '../../lotties/SuccessAnimation'
-import { calculateMembersWithAmounts, cn } from '../../App/utils'
-import { mergeAndSortPayments } from '../../components/PaymentSegment/utils'
-import { trim } from 'ramda'
 
-interface GroupInfoPageProps
-  extends RouteComponentProps<{
-    id: string
-  }> {}
+type GroupInfoPageProps = RouteComponentProps<{
+  id: string
+}>
 
 export const GroupInfoPage = ({
   match: {
@@ -216,7 +215,7 @@ export const GroupInfoPage = ({
             },
           ]}
         </AddFabButton>
-        <IonFab vertical='bottom' horizontal='start' slot='fixed' className='z-10'>
+        <IonFab className='z-10' vertical='bottom' horizontal='start' slot='fixed'>
           <IonFabButton onClick={onShareBill}>
             <IonIcon icon={shareSharp} />
           </IonFabButton>

@@ -1,11 +1,11 @@
 import { produce } from 'immer'
+import { NewIncome } from '../../App/types'
+import { findItemIndex } from '../../App/utils'
+import { Income } from '../types'
 import { PersistImmer } from '../usePersistedStore'
 import { calculateNewIncome } from '../utils'
-import { findItemIndex } from '../../App/utils'
-import { NewIncome } from '../../App/types'
-import { Income } from '../types'
 
-export interface IncomeSlice {
+export type IncomeSlice = {
   addIncome: (groupId: string, newIncome: NewIncome) => void
   editIncome: (groupId: string, incomeId: string, newIncome: NewIncome) => void
   deleteIncome: (groupId: string, incomeId: string) => void

@@ -1,10 +1,10 @@
-import { PersistImmer } from '../usePersistedStore'
 import { produce } from 'immer'
-import { findItemIndex } from '../../App/utils'
 import { NewCompensation } from '../../App/types'
+import { findItemIndex } from '../../App/utils'
 import { Compensation } from '../types'
+import { PersistImmer } from '../usePersistedStore'
 
-export interface CompensationSlice {
+export type CompensationSlice = {
   addCompensation: (groupId: string, newCompensation: NewCompensation) => void
   deleteCompensation: (groupId: string, compensationId: string) => void
 }

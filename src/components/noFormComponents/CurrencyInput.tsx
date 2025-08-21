@@ -3,7 +3,7 @@ import { isNotNil, toString } from 'ramda'
 import { Dispatch, SetStateAction, useRef } from 'react'
 import { cn, displayCurrencyValueNoSign } from '../../App/utils'
 
-interface CurrencyInputProps {
+type CurrencyInputProps = {
   label: string
   value: number
   onChange: Dispatch<SetStateAction<number>>

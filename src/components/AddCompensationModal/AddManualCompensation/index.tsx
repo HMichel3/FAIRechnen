@@ -1,20 +1,20 @@
-import { motion } from 'framer-motion'
-import { Dispatch, SetStateAction, useEffect } from 'react'
-import { fadeInOutTopVariants, variantProps } from '../../../App/animations'
-import { FormSelect } from '../../formComponents/FormSelect'
-import { FormCurrency } from '../../formComponents/FormCurrency'
-import { useStore } from '../../../stores/useStore'
-import { useForm, useWatch } from 'react-hook-form'
-import { deleteItem } from '../../../App/utils'
+import { motion } from 'motion/react'
 import { isEmpty } from 'ramda'
+import { Dispatch, SetStateAction, useEffect } from 'react'
+import { useForm, useWatch } from 'react-hook-form'
+import { fadeInOutTopVariants, variantProps } from '../../../App/animations'
 import { NewCompensation } from '../../../App/types'
+import { deleteItem } from '../../../App/utils'
 import { Compensation } from '../../../stores/types'
+import { useStore } from '../../../stores/useStore'
+import { FormCurrency } from '../../formComponents/FormCurrency'
+import { FormSelect } from '../../formComponents/FormSelect'
 
-interface AddManualCompensationProps {
+type AddManualCompensationProps = {
   setManualCompensation: Dispatch<SetStateAction<NewCompensation | null>>
 }
 
-interface CompensationFormValues {
+type CompensationFormValues = {
   payerId: Compensation['payerId']
   receiverId: Compensation['receiverId']
   amount: Compensation['amount']

@@ -21,7 +21,7 @@ import { Compensation, Group, Income, Member, Purchase } from '../stores/types'
 import { MemberWithAmounts } from './types'
 
 // From ramda-adjunct
-const isNumber = curryN(1, pipe(type, identical('Number')))
+const isNumber = curryN(1, pipe(type, identical('Number') as (value: string) => boolean))
 export const isPositive = both(isNumber, lt(0))
 export const isNegative = curryN(1, both(isNumber, gt(0)))
 

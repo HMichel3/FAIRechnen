@@ -1,8 +1,8 @@
-import { PersistImmer } from '../usePersistedStore'
 import { findItemIndex } from '../../App/utils'
 import { Member } from '../types'
+import { PersistImmer } from '../usePersistedStore'
 
-export interface MemberSlice {
+export type MemberSlice = {
   addMember: (groupId: string, memberName: Member['name']) => void
   editMemberName: (groupId: string, memberId: string, name: Member['name']) => void
   deleteMember: (groupId: string, memberId: string) => void
