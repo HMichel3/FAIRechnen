@@ -215,7 +215,7 @@ export const GroupInfoPage = ({
             },
           ]}
         </AddFabButton>
-        <IonFab vertical='bottom' horizontal='start' slot='fixed' className='z-10'>
+        <IonFab className='z-10' vertical='bottom' horizontal='start' slot='fixed'>
           <IonFabButton onClick={onShareBill}>
             <IonIcon icon={shareSharp} />
           </IonFabButton>

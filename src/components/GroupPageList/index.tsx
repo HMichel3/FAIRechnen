@@ -54,10 +54,7 @@ export const GroupPageList = ({ reorder }: GroupPageListProps) => {
           ) : null
         }
       >
-        <IonReorderGroup
-          disabled={!reorder}
-          onIonItemReorder={({ detail }) => setGroups(detail.complete(copiedGroups))}
-        >
+        <IonReorderGroup disabled={!reorder} onIonReorderEnd={({ detail }) => setGroups(detail.complete(copiedGroups))}>
           {copiedGroups.map(group => (
             <SlidingListItem
               key={group.id}

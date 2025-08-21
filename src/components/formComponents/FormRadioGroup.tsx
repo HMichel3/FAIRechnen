@@ -1,7 +1,6 @@
 import { IonChip, IonRadio, IonRadioGroup } from '@ionic/react'
 import { Control, FieldValues, Path, useController } from 'react-hook-form'
 import { ReactHookFormOnChange } from '../../App/types'
-import './formRadioGroup.css'
 
 type FormRadioGroupProps<Type extends FieldValues> = {
   name: Path<Type>
