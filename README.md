@@ -23,7 +23,7 @@ FAIRechnen hilft Dir dabei, alle Einkäufe innerhalb einer Gruppe aufzulisten un
 🔸 Anzeige von Gesamtausgaben (Gruppen/Personen)\
 🔸 Anzeige der ausstehenden Beträge\
 🔸 Teilen von Gruppeninformationen und Zahlungsvorschlägen\
-🔸 Umrechnen von Beträgen anderer Währungen\
+🔸 Umrechnen von Beträgen anderer Währungen
 
 ## Wie wird es installiert?
 
