@@ -1,31 +1,29 @@
-# FAIRechnen
-
-## Info
+# FAIRechnen - Kosten Verrechnen
 
 FAIRechnen hilft Dir dabei, alle Einkäufe innerhalb einer Gruppe aufzulisten und den Überblick darüber zu behalten, welche Beträge am Ende noch gezahlt werden müssen. Zusätzlich werden Zahlungen vorgeschlagen, mit denen die Gruppenmitglieder bestmöglich ihre Kosten verrechnen können.
 
-### Einige Einsatzmöglichkeiten
+## Einige Einsatzmöglichkeiten
 
-- Gemeinsamer Urlaub
-- Haushaltskasse
-- Städtetrip
-- Kneipentour
-- Restaurant/Kino/Bowling usw.
+💠 Gemeinsamer Urlaub
+💠 Haushaltskasse
+💠 Städtetrip
+💠 Kneipentour
+💠 Restaurant/Kino/Bowling usw.
 
-### Details und Funktionen
+## Details und Funktionen
 
-- Nutzung komplett ohne Internet
-- Geringe Speichergröße
-- Datenspeicherung ausschließlich auf deinem Handy
-- Hinzufügen, Bearbeiten, Löschen und Archivieren von Gruppen
-- Hinzufügen, Bearbeiten und Löschen von Mitgliedern
-- Hinzufügen, Bearbeiten und Löschen von Einkäufen
-- Hinzufügen, Bearbeiten und Löschen von Einkommen (z.B. Pfand)
-- Hinzufügen und Löschen von Ausgleichszahlungen (generiert/manuell)
-- Anzeige von Gesamtausgaben (Gruppen/Personen)
-- Anzeige der ausstehenden Beträge
-- Teilen von Gruppeninformationen und Zahlungsvorschlägen
-- Umrechnen von Beträgen anderer Währungen
+🔸 Nutzung komplett ohne Internet
+🔸 Geringe Speichergröße
+🔸 Datenspeicherung ausschließlich auf deinem Handy
+🔸 Hinzufügen, Bearbeiten und Löschen von Gruppen
+🔸 Hinzufügen, Bearbeiten und Löschen von Mitgliedern
+🔸 Hinzufügen, Bearbeiten und Löschen von Einkäufen
+🔸 Hinzufügen, Bearbeiten und Löschen von Einkommen (z.B. Pfand)
+🔸 Hinzufügen und Löschen von Ausgleichszahlungen (generiert/manuell)
+🔸 Anzeige von Gesamtausgaben (Gruppen/Personen)
+🔸 Anzeige der ausstehenden Beträge
+🔸 Teilen von Gruppeninformationen und Zahlungsvorschlägen
+🔸 Umrechnen von Beträgen anderer Währungen
 
 ## Wie wird es installiert?
 
