@@ -1,4 +1,5 @@
 import { ClassValue, clsx } from 'clsx'
+import { format } from 'date-fns'
 import { produce } from 'immer'
 import {
   both,
@@ -17,8 +18,9 @@ import {
   type,
 } from 'ramda'
 import { twMerge } from 'tailwind-merge'
+import { getAdditionPayerIdsNotInBeneficiaries } from '../components/PaymentSegment/utils'
 import { Compensation, Group, Income, Member, Purchase } from '../stores/types'
-import { MemberWithAmounts } from './types'
+import { CompensationsWithoutTimestamp, MemberWithAmounts } from './types'
 
 // From ramda-adjunct
 const isNumber = curryN(1, pipe(type, identical('Number') as (value: string) => boolean))
@@ -50,6 +52,8 @@ export const displayCurrencyValue = (value: number) =>
   })
 
 export const displayCurrencyValueNoSign = (value: number) => displayCurrencyValue(value).slice(0, -2)
+
+export const displayTimestamp = (timestamp: number) => format(timestamp, 'dd.MM.y, HH:mm')
 
 export const calculateGroupTotalAmount = (purchases: Purchase[], incomes: Income[]) =>
   getTotalAmountFromArray(purchases) - getTotalAmountFromArray(incomes)
@@ -129,4 +133,27 @@ function checkPropertyNotZero<T>(array: T[], property: keyof T) {
 export function isGroupActive({ members, purchases, incomes, compensations }: Group) {
   const membersWithAmounts = calculateMembersWithAmounts(members, purchases, incomes, compensations)
   return checkPropertyNotZero(membersWithAmounts, 'current')
+}
+
+export function getPurchaseInfo(purchase: Purchase, members: Member[]) {
+  const { purchaserId, beneficiaryIds, additions } = purchase
+  const additionPayerIds = getAdditionPayerIdsNotInBeneficiaries(additions, beneficiaryIds)
+  const purchaser = findItem(purchaserId, members)
+  const beneficiaries = findItems(beneficiaryIds, members)
+  const additionPayers = findItems(additionPayerIds, members)
+  return { purchaser, beneficiaries, additionPayers }
+}
+
+export const getIncomeInfo = (income: Income, members: Member[]) => {
+  const { earnerId, beneficiaryIds } = income
+  const earner = findItem(earnerId, members)
+  const beneficiaries = findItems(beneficiaryIds, members)
+  return { earner, beneficiaries }
+}
+
+export const getCompensationInfo = (compensation: CompensationsWithoutTimestamp, members: Member[]) => {
+  const { payerId, receiverId } = compensation
+  const payer = findItem(payerId, members)
+  const receiver = findItem(receiverId, members)
+  return { payer, receiver }
 }

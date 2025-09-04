@@ -1,3 +1,4 @@
+import { Directory, Filesystem } from '@capacitor/filesystem'
 import { Share } from '@capacitor/share'
 import {
   IonBackButton,
@@ -5,8 +6,6 @@ import {
   IonButton,
   IonButtons,
   IonContent,
-  IonFab,
-  IonFabButton,
   IonHeader,
   IonIcon,
   IonLabel,
@@ -18,15 +17,26 @@ import {
   useIonAlert,
   useIonModal,
 } from '@ionic/react'
-import { cartSharp, pencilSharp, personSharp, serverSharp, shareSharp, walletSharp } from 'ionicons/icons'
+import { pdf } from '@react-pdf/renderer'
+import {
+  addSharp,
+  cartSharp,
+  documentTextSharp,
+  pencilSharp,
+  personSharp,
+  serverSharp,
+  shareSocialSharp,
+  textSharp,
+  walletSharp,
+} from 'ionicons/icons'
 import { AnimatePresence } from 'motion/react'
 import { trim } from 'ramda'
 import { useEffect, useMemo, useState } from 'react'
 import { RouteComponentProps } from 'react-router'
 import { calculateMembersWithAmounts, cn } from '../../App/utils'
 import { AddCompensationModal } from '../../components/AddCompensationModal'
-import { AddFabButton } from '../../components/AddFabButton'
-import { useAddFabButton } from '../../components/AddFabButton/useAddFabButton'
+import { BillPdf } from '../../components/BillPdf'
+import { FabButton } from '../../components/FabButton'
 import { IncomeModal } from '../../components/IncomeModal'
 import { MemberSegment } from '../../components/MemberSegment'
 import { PaymentSegment } from '../../components/PaymentSegment'
@@ -36,7 +46,7 @@ import { Show } from '../../components/SolidComponents/Show'
 import { SuccessAnimation } from '../../lotties/SuccessAnimation'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
-import { generateBill } from './utils'
+import { blobToBase64, generateBillText } from './utils'
 
 type GroupInfoPageProps = RouteComponentProps<{
   id: string
@@ -67,8 +77,6 @@ export const GroupInfoPage = ({
   const [showAddCompensationModal, dismissAddCompensationModal] = useIonModal(AddCompensationModal, {
     onDismiss: () => dismissAddCompensationModal(),
   })
-
-  const { showFab, showBackdrop, onClickFabButton, onClickFabButtonInList, onClickBackdrop } = useAddFabButton()
 
   const membersWithAmounts = useMemo(
     () => calculateMembersWithAmounts(group.members, group.purchases, group.incomes, group.compensations),
@@ -124,19 +132,44 @@ export const GroupInfoPage = ({
     })
   }
 
-  const onShareBill = () => {
+  const onShareCompensationChain = () => {
     Share.share({
-      title: 'FAIRechnen Rechnung',
-      text: generateBill(group.name, group.members, group.purchases, group.incomes, group.compensations),
-      dialogTitle: 'Rechnung teilen',
+      title: 'FAIRechnen - Zahlungsvorschläge',
+      dialogTitle: 'Zahlungsvorschläge teilen',
+      text: generateBillText(group.name, group.members, group.purchases, group.incomes, group.compensations),
+    })
+  }
+
+  const onShareGroupOverview = async () => {
+    const pdfBlob = await pdf(
+      <BillPdf
+        name={group.name}
+        purchases={group.purchases}
+        incomes={group.incomes}
+        membersWithAmounts={membersWithAmounts}
+        sortedPayments={sortedPayments}
+      />
+    ).toBlob()
+    const fileName = 'FAIRechnen_Gruppenübersicht.pdf'
+    const { uri: filePath } = await Filesystem.writeFile({
+      path: fileName,
+      data: await blobToBase64(pdfBlob),
+      directory: Directory.Cache,
+    })
+    await Share.share({
+      title: 'FAIRechnen - Gruppenübersicht',
+      dialogTitle: 'Gruppenübersicht teilen',
+      url: filePath,
+      files: [filePath],
+    })
+    await Filesystem.deleteFile({
+      path: fileName,
+      directory: Directory.Cache,
     })
   }
 
   return (
     <IonPage>
-      <Show when={showBackdrop}>
-        <div className='absolute inset-0 z-20 bg-black/60' onClick={onClickBackdrop} />
-      </Show>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot='start'>
@@ -180,11 +213,23 @@ export const GroupInfoPage = ({
           {showSegment === 'members' && <MemberSegment key='members' />}
           {showSegment === 'payments' && <PaymentSegment key='payments' />}
         </AnimatePresence>
-        <AddFabButton
-          showFab={showFab}
-          onClickFabButton={onClickFabButton}
-          onClickFabButtonInList={onClickFabButtonInList}
-        >
+        <FabButton vertical='bottom' horizontal='start' slot='fixed' icon={shareSocialSharp}>
+          {[
+            {
+              label: 'Gruppenübersicht teilen',
+              description: 'Gruppenübersicht als PDF',
+              icon: documentTextSharp,
+              onClick: onShareGroupOverview,
+            },
+            {
+              label: 'Zahlungsvorschläge teilen',
+              description: 'Zahlungsvorschläge als Text',
+              icon: textSharp,
+              onClick: onShareCompensationChain,
+            },
+          ]}
+        </FabButton>
+        <FabButton vertical='bottom' horizontal='end' slot='fixed' icon={addSharp}>
           {[
             {
               label: 'Mitglied hinzufügen',
@@ -214,12 +259,7 @@ export const GroupInfoPage = ({
               disabled: group.members.length < 1,
             },
           ]}
-        </AddFabButton>
-        <IonFab className='z-10' vertical='bottom' horizontal='start' slot='fixed'>
-          <IonFabButton onClick={onShareBill}>
-            <IonIcon icon={shareSharp} />
-          </IonFabButton>
-        </IonFab>
+        </FabButton>
       </IonContent>
       <Show when={showAnimation}>
         <SuccessAnimation />

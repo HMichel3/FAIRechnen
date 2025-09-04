@@ -1,5 +1,6 @@
 import { produce } from 'immer'
 import { isEmpty, join } from 'ramda'
+import { CompensationsWithoutTimestamp, MemberWithAmounts } from '../../App/types'
 import {
   calculateGroupTotalAmount,
   calculateMembersWithAmounts,
@@ -8,8 +9,8 @@ import {
   findItemIndex,
 } from '../../App/utils'
 import { generatePossibleCompensations } from '../../components/AddCompensationModal/utils'
-import { CompensationsWithoutTimestamp, MemberWithAmounts } from '../../App/types'
 import { Compensation, Income, Member, Purchase, SelectedGroup } from '../../stores/types'
+import { displayHistoryQuantity, displayMemberQuantity } from '../GroupPage/utils'
 
 const generateOnePossibleCompensationChain = (membersWithAmounts: MemberWithAmounts[]) => {
   const addedCompensations: CompensationsWithoutTimestamp[] = []
@@ -28,7 +29,7 @@ const generateOnePossibleCompensationChain = (membersWithAmounts: MemberWithAmou
   return addedCompensations
 }
 
-export const generateBill = (
+export const generateBillText = (
   groupName: SelectedGroup['name'],
   members: Member[],
   purchases: Purchase[],
@@ -37,24 +38,16 @@ export const generateBill = (
 ) => {
   const membersWithAmounts = calculateMembersWithAmounts(members, purchases, incomes, compensations)
   const groupTotalAmount = calculateGroupTotalAmount(purchases, incomes)
-
   const groupOverviewExplanation = [
-    `*Gruppe: ${groupName}*`,
-    `*Gesamtausgaben: ${displayCurrencyValue(groupTotalAmount)}*`,
-    '_Name_ | _Ausgaben_ | _Ausstehend_',
-    '----------------------------------------',
+    `*${groupName}*`,
+    `👤 ${displayMemberQuantity(members.length)}`,
+    `📄 ${displayHistoryQuantity(purchases.length + incomes.length + compensations.length)}`,
+    `💎 ${displayCurrencyValue(groupTotalAmount)}`,
   ]
-  const groupOverview = membersWithAmounts.map(
-    ({ name, current, total }) => `${name} | ${displayCurrencyValue(total)} | ${displayCurrencyValue(current)}`
-  )
-  const completeGroupOverview = [...groupOverviewExplanation, ...groupOverview, '']
-
+  const completeGroupOverview = [...groupOverviewExplanation, '']
   const generatedCompensationChain = generateOnePossibleCompensationChain(membersWithAmounts)
-
-  if (isEmpty(generatedCompensationChain)) return join('\n', completeGroupOverview)
-
   const compensationProposalExplanation = [
-    '*Zahlungsvorschlag*',
+    '*Zahlungsvorschläge*',
     '_Zahler_ --> _Betrag_ --> _Empfänger_',
     '----------------------------------------',
   ]
@@ -64,6 +57,14 @@ export const generateBill = (
     return `${payer.name} --> ${displayCurrencyValue(amount)} --> ${receiver.name}`
   })
   const completeCompensationProposal = [...compensationProposalExplanation, ...compensationProposal]
-
   return join('\n', [...completeGroupOverview, ...completeCompensationProposal])
+}
+
+export const blobToBase64 = (blob: Blob) => {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onloadend = () => resolve(reader.result!.toString().split(',')[1])
+    reader.onerror = reject
+    reader.readAsDataURL(blob)
+  })
 }
