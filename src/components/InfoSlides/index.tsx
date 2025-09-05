@@ -8,11 +8,21 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import { InfoSlideWithIcon } from './InfoSlideWithIcon'
 
 type InfoSlidesProps = {
+  insets: { top: number; right: number; bottom: number; left: number }
   onHideShowInfoSlides: () => void
 }
 
-export const InfoSlides = ({ onHideShowInfoSlides }: InfoSlidesProps): JSX.Element => (
-  <IonContent color='light' className='z-[1001]'>
+export const InfoSlides = ({ insets, onHideShowInfoSlides }: InfoSlidesProps): JSX.Element => (
+  <IonContent
+    color='light'
+    className='z-[1001]'
+    style={{
+      '--padding-top': `${insets.top}px`,
+      '--padding-right': `${insets.right}px`,
+      '--padding-bottom': `${insets.bottom}px`,
+      '--padding-left': `${insets.left}px`,
+    }}
+  >
     <Swiper className='h-full p-2' modules={[Pagination, IonicSlides]} pagination={{ type: 'progressbar' }}>
       <SwiperSlide className='h-full'>
         <InfoSlideWithIcon
