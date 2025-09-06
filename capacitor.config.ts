@@ -1,4 +1,5 @@
 import { CapacitorConfig } from '@capacitor/cli'
+import { Style } from '@capacitor/status-bar'
 
 const config: CapacitorConfig = {
   appId: 'holsten.fair.rechnen',
@@ -8,11 +9,16 @@ const config: CapacitorConfig = {
     androidScheme: 'https',
   },
   plugins: {
-    StatusBar: {
-      style: 'dark',
-      backgroundColor: '#ffffffff',
-      overlaysWebView: false,
+    EdgeToEdge: {
+      backgroundColor: '#1f1f1f', // --ion-toolbar-background
     },
+    StatusBar: {
+      style: Style.Dark,
+      backgroundColor: '#1f1f1f', // --ion-toolbar-background
+    },
+  },
+  android: {
+    adjustMarginsForEdgeToEdge: 'force', // Helps layout compensate correctly
   },
 }
 

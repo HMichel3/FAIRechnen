@@ -1,3 +1,6 @@
+import { Capacitor } from '@capacitor/core'
+import { Device } from '@capacitor/device'
+import { EdgeToEdge } from '@capawesome/capacitor-android-edge-to-edge-support'
 import { ClassValue, clsx } from 'clsx'
 import { format } from 'date-fns'
 import { produce } from 'immer'
@@ -130,12 +133,12 @@ function checkPropertyNotZero<T>(array: T[], property: keyof T) {
   return reduce((acc, object) => acc || object[property] !== 0, false, array)
 }
 
-export function isGroupActive({ members, purchases, incomes, compensations }: Group) {
+export const isGroupActive = ({ members, purchases, incomes, compensations }: Group) => {
   const membersWithAmounts = calculateMembersWithAmounts(members, purchases, incomes, compensations)
   return checkPropertyNotZero(membersWithAmounts, 'current')
 }
 
-export function getPurchaseInfo(purchase: Purchase, members: Member[]) {
+export const getPurchaseInfo = (purchase: Purchase, members: Member[]) => {
   const { purchaserId, beneficiaryIds, additions } = purchase
   const additionPayerIds = getAdditionPayerIdsNotInBeneficiaries(additions, beneficiaryIds)
   const purchaser = findItem(purchaserId, members)
@@ -156,4 +159,13 @@ export const getCompensationInfo = (compensation: CompensationsWithoutTimestamp,
   const payer = findItem(payerId, members)
   const receiver = findItem(receiverId, members)
   return { payer, receiver }
+}
+
+export const determineEdgeToEdge = async () => {
+  const { osVersion } = await Device.getInfo()
+  if (Capacitor.getPlatform() === 'android' && Number(osVersion) >= 15) {
+    await EdgeToEdge.enable() // Enable only on Android 15+
+  } else {
+    await EdgeToEdge.disable() // Prevents layout issues on older Android versions
+  }
 }

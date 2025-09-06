@@ -17,9 +17,8 @@ import {
   useIonModal,
   useIonRouter,
 } from '@ionic/react'
-import { SafeArea } from 'capacitor-plugin-safe-area'
 import { closeSharp, helpCircleSharp, peopleSharp, repeatSharp } from 'ionicons/icons'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AddGroupModal } from '../../components/AddGroupModal'
 import { GroupPageList } from '../../components/GroupPageList'
 import { IconButton } from '../../components/IconButton'
@@ -39,7 +38,6 @@ export const GroupPage = (): JSX.Element => {
   const [showAddGroupModal, dismissAddGroupModal] = useIonModal(AddGroupModal, {
     onDismiss: () => dismissAddGroupModal(),
   })
-  const insetsRef = useRef({ top: 0, right: 0, bottom: 0, left: 0 })
 
   useEffect(() => {
     document.addEventListener('ionBackButton', event => {
@@ -50,13 +48,6 @@ export const GroupPage = (): JSX.Element => {
       })
     })
   }, [ionRouter, showInfoSlides, setShowInfoSlides])
-
-  useEffect(() => {
-    ;(async () => {
-      const safeAreaInsets = await SafeArea.getSafeAreaInsets()
-      insetsRef.current = safeAreaInsets.insets
-    })()
-  }, [])
 
   return (
     <>
@@ -104,7 +95,7 @@ export const GroupPage = (): JSX.Element => {
         </Show>
       </IonPage>
       <Show when={showInfoSlides}>
-        <InfoSlides insets={insetsRef.current} onHideShowInfoSlides={() => setShowInfoSlides(false)} />
+        <InfoSlides onHideShowInfoSlides={() => setShowInfoSlides(false)} />
       </Show>
     </>
   )

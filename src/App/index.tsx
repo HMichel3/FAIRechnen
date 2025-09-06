@@ -1,10 +1,11 @@
 import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react'
 import { IonReactRouter } from '@ionic/react-router'
-import { SafeArea } from 'capacitor-plugin-safe-area'
+import { useEffect } from 'react'
 import { Redirect, Route } from 'react-router-dom'
 import { GroupInfoPage } from '../pages/GroupInfoPage'
 import { GroupPage } from '../pages/GroupPage'
 import { usePersistedStore } from '../stores/usePersistedStore'
+import { determineEdgeToEdge } from './utils'
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css'
@@ -25,19 +26,14 @@ import '@ionic/react/css/text-transformation.css'
 /* Theme variables */
 import '../theme/variables.css'
 
-/* Set safe area insets */
-SafeArea.getSafeAreaInsets().then(data => {
-  const { insets } = data
-  document.body.style.setProperty('--ion-safe-area-top', `${insets.top}px`)
-  document.body.style.setProperty('--ion-safe-area-right', `${insets.right}px`)
-  document.body.style.setProperty('--ion-safe-area-bottom', `${insets.bottom}px`)
-  document.body.style.setProperty('--ion-safe-area-left', `${insets.left}px`)
-})
-
 setupIonicReact()
 
 export const App = (): JSX.Element | null => {
   const hasHydrated = usePersistedStore(s => s._hasHydrated)
+
+  useEffect(() => {
+    determineEdgeToEdge()
+  }, [])
 
   // Wait for zustand to be loaded with data from database
   if (!hasHydrated) return null
