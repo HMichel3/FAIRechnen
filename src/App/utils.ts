@@ -162,8 +162,9 @@ export const getCompensationInfo = (compensation: CompensationsWithoutTimestamp,
 }
 
 export const determineEdgeToEdge = async () => {
+  if (Capacitor.getPlatform() !== 'android') return
   const { osVersion } = await Device.getInfo()
-  if (Capacitor.getPlatform() === 'android' && Number(osVersion) >= 15) {
+  if (Number(osVersion) >= 15) {
     await EdgeToEdge.enable() // Enable only on Android 15+
   } else {
     await EdgeToEdge.disable() // Prevents layout issues on older Android versions

@@ -1,10 +1,11 @@
 import { produce } from 'immer'
-import { isEmpty, join } from 'ramda'
+import { isEmpty, join, reduce } from 'ramda'
 import { CompensationsWithoutTimestamp, MemberWithAmounts } from '../../App/types'
 import {
   calculateGroupTotalAmount,
   calculateMembersWithAmounts,
   displayCurrencyValue,
+  displayCurrencyValueNoSign,
   findItem,
   findItemIndex,
 } from '../../App/utils'
@@ -12,7 +13,12 @@ import { generatePossibleCompensations } from '../../components/AddCompensationM
 import { Compensation, Income, Member, Purchase, SelectedGroup } from '../../stores/types'
 import { displayHistoryQuantity, displayMemberQuantity } from '../GroupPage/utils'
 
-const generateOnePossibleCompensationChain = (membersWithAmounts: MemberWithAmounts[]) => {
+const PAYER_HEADER = 'Zahler'
+const AMOUNT_HEADER = 'Betrag'
+const RECEIVER_HEADER = 'Empfänger'
+const ARROW = ' > '
+
+const generateCompensationChain = (membersWithAmounts: MemberWithAmounts[]) => {
   const addedCompensations: CompensationsWithoutTimestamp[] = []
   for (let result; (result = generatePossibleCompensations(membersWithAmounts)); ) {
     if (isEmpty(result)) break
@@ -29,6 +35,73 @@ const generateOnePossibleCompensationChain = (membersWithAmounts: MemberWithAmou
   return addedCompensations
 }
 
+const formatGroupOverview = (
+  groupName: SelectedGroup['name'],
+  members: Member[],
+  purchases: Purchase[],
+  incomes: Income[],
+  compensations: Compensation[]
+) => {
+  const memberCount = members.length
+  const historyCount = purchases.length + incomes.length + compensations.length
+  const groupTotalAmount = calculateGroupTotalAmount(purchases, incomes)
+  return [
+    `*${groupName}*`,
+    `👤 ${displayMemberQuantity(memberCount)}`,
+    `📄 ${displayHistoryQuantity(historyCount)}`,
+    `💎 ${displayCurrencyValue(groupTotalAmount)}`,
+  ]
+}
+
+const monospace = (text: string) => '```' + text + '```'
+
+const formatPaymentSuggestions = (
+  members: Member[],
+  purchases: Purchase[],
+  incomes: Income[],
+  compensations: Compensation[]
+) => {
+  const membersWithAmounts = calculateMembersWithAmounts(members, purchases, incomes, compensations)
+  const generatedCompensationChain = generateCompensationChain(membersWithAmounts)
+  const suggestions = generatedCompensationChain.map(({ amount, payerId, receiverId }) => {
+    const payer = findItem(payerId, members)
+    const receiver = findItem(receiverId, members)
+    return { payer: payer.name, amount, receiver: receiver.name }
+  })
+  const payerLength = reduce(
+    (maxLength, { payer }) => {
+      if (payer.length > maxLength) return payer.length
+      return maxLength
+    },
+    PAYER_HEADER.length,
+    suggestions
+  )
+  const amountLength = reduce(
+    (maxLength, { amount }) => {
+      const formattedAmount = displayCurrencyValueNoSign(amount)
+      if (formattedAmount.length > maxLength) return formattedAmount.length
+      return maxLength
+    },
+    AMOUNT_HEADER.length,
+    suggestions
+  )
+  const formattedPayerHeader = PAYER_HEADER.padEnd(payerLength)
+  const formattedAmountHeader = AMOUNT_HEADER.padStart(amountLength)
+  const headerLine = `${formattedPayerHeader}${ARROW}${formattedAmountHeader}${ARROW}${RECEIVER_HEADER}`
+  let maxRowLength = headerLine.length
+  const suggestionsList = suggestions.map(({ payer, amount, receiver }) => {
+    const payerPart = payer.padEnd(payerLength)
+    const amountPart = displayCurrencyValueNoSign(amount).padStart(amountLength)
+    const suggestionRow = `${payerPart}${ARROW}${amountPart}${ARROW}${receiver}`
+    if (suggestionRow.length > maxRowLength) {
+      maxRowLength = suggestionRow.length
+    }
+    return monospace(suggestionRow)
+  })
+  const separatorLine = '-'.repeat(maxRowLength)
+  return ['*Zahlungsvorschläge*', monospace(headerLine), monospace(separatorLine), ...suggestionsList]
+}
+
 export const generateBillText = (
   groupName: SelectedGroup['name'],
   members: Member[],
@@ -36,28 +109,9 @@ export const generateBillText = (
   incomes: Income[],
   compensations: Compensation[]
 ) => {
-  const membersWithAmounts = calculateMembersWithAmounts(members, purchases, incomes, compensations)
-  const groupTotalAmount = calculateGroupTotalAmount(purchases, incomes)
-  const groupOverviewExplanation = [
-    `*${groupName}*`,
-    `👤 ${displayMemberQuantity(members.length)}`,
-    `📄 ${displayHistoryQuantity(purchases.length + incomes.length + compensations.length)}`,
-    `💎 ${displayCurrencyValue(groupTotalAmount)}`,
-  ]
-  const completeGroupOverview = [...groupOverviewExplanation, '']
-  const generatedCompensationChain = generateOnePossibleCompensationChain(membersWithAmounts)
-  const compensationProposalExplanation = [
-    '*Zahlungsvorschläge*',
-    '_Zahler_ --> _Betrag_ --> _Empfänger_',
-    '----------------------------------------',
-  ]
-  const compensationProposal = generatedCompensationChain.map(({ amount, payerId, receiverId }) => {
-    const payer = findItem(payerId, members)
-    const receiver = findItem(receiverId, members)
-    return `${payer.name} --> ${displayCurrencyValue(amount)} --> ${receiver.name}`
-  })
-  const completeCompensationProposal = [...compensationProposalExplanation, ...compensationProposal]
-  return join('\n', [...completeGroupOverview, ...completeCompensationProposal])
+  const groupOverview = formatGroupOverview(groupName, members, purchases, incomes, compensations)
+  const paymentSuggestions = formatPaymentSuggestions(members, purchases, incomes, compensations)
+  return join('\n', [...groupOverview, '', ...paymentSuggestions])
 }
 
 export const blobToBase64 = (blob: Blob) => {
