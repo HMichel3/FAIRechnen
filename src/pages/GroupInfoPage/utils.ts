@@ -1,4 +1,4 @@
-import { join } from 'ramda'
+import { isEmpty, join } from 'ramda'
 import { CompensationsWithoutTimestamp } from '../../App/types'
 import { calculateGroupTotalAmount, displayCurrencyValue, displayCurrencyValueNoSign, findItem } from '../../App/utils'
 import { Compensation, Income, Member, Purchase, SelectedGroup } from '../../stores/types'
@@ -30,6 +30,7 @@ const formatGroupOverview = (
 const monospace = (text: string) => '```' + text + '```'
 
 const formatPaymentSuggestions = (members: Member[], compensationChain: CompensationsWithoutTimestamp[]) => {
+  if (isEmpty(compensationChain)) return []
   const formattedSuggestions = compensationChain.map(({ amount, payerId, receiverId }) => {
     const payer = findItem(payerId, members)
     const receiver = findItem(receiverId, members)
