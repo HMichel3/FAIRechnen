@@ -26,18 +26,29 @@ const FabButtonText = ({
         <IonFabButton color='primary' onClick={() => onClickFabButtonInList(onClick)} disabled={disabled}>
           <IonIcon icon={icon} />
         </IonFabButton>
-        <div className='mr-[-204px] mt-[-5px] flex w-48 flex-col items-start justify-center'>
-          <IonText className={cn({ 'text-neutral-400': disabled })}>{label}</IonText>
-          <IonText className='whitespace-nowrap text-sm text-neutral-400'>{description}</IonText>
+        <div
+          className={cn(
+            'mr-[-204px] flex w-[216px] flex-col items-start justify-center bg-[#3a7be0] rounded-3xl px-4',
+            {
+              'opacity-50': disabled,
+            }
+          )}
+        >
+          <IonText>{label}</IonText>
+          <IonText className='text-sm'>{description}</IonText>
         </div>
       </div>
     )
   }
   return (
     <div className='flex gap-3'>
-      <div className='ml-[-204px] mt-[-5px] flex w-48 flex-col items-end justify-center'>
-        <IonText className={cn({ 'text-neutral-400': disabled })}>{label}</IonText>
-        <IonText className='whitespace-nowrap text-sm text-neutral-400'>{description}</IonText>
+      <div
+        className={cn('ml-[-280.7px] flex w-[269px] flex-col items-end justify-center bg-[#3a7be0] rounded-3xl px-4', {
+          'opacity-50': disabled,
+        })}
+      >
+        <IonText>{label}</IonText>
+        <IonText className='text-sm'>{description}</IonText>
       </div>
       <IonFabButton color='primary' onClick={() => onClickFabButtonInList(onClick)} disabled={disabled}>
         <IonIcon icon={icon} />

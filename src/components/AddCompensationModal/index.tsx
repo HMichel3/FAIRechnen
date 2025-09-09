@@ -5,7 +5,6 @@ import { isNotEmpty } from 'ramda'
 import { useRef, useState } from 'react'
 import { NewCompensation } from '../../App/types'
 import { findItem } from '../../App/utils'
-import { generateCompensationChain } from '../../pages/GroupInfoPage/utils'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
 import { IconButton } from '../IconButton'
@@ -13,7 +12,7 @@ import { ModalHeader } from '../modalComponents/ModalHeader'
 import { Show } from '../SolidComponents/Show'
 import { AddManualCompensation } from './AddManualCompensation'
 import { CompensationItem } from './CompensationItem'
-import { generatePossibleCompensations } from './utils'
+import { generateCompensationChain, generatePossibleCompensations } from './utils'
 
 type AddCompensationModalProps = {
   onDismiss: () => void
