@@ -1,35 +1,51 @@
-import { descend, join, prop, sort } from 'ramda'
+import { produce } from 'immer'
+import { descend, isEmpty, join, prop, sort } from 'ramda'
 import { CompensationsWithoutTimestamp, MemberWithAmounts } from '../../App/types'
-import { deleteItem, isPositive } from '../../App/utils'
-
-const removeDuplicateCompensations = (compensations: CompensationsWithoutTimestamp[]) => {
-  const check = new Set()
-  return compensations.filter(obj => !check.has(obj.id) && check.add(obj.id))
-}
+import { findItemIndex, isNegative, isPositive } from '../../App/utils'
 
 export const generatePossibleCompensations = (membersWithAmounts: MemberWithAmounts[]) => {
-  // filter members, to only contain members with current !== 0, continue if at least 2 members are left
-  const possibleMembers = membersWithAmounts.filter(member => member.current !== 0)
-  if (possibleMembers.length < 2) return []
-  let partner: MemberWithAmounts
-  const compensations = possibleMembers.map(member => {
-    let minAmountDiff: number
-    const membersWithoutCurrentMember = deleteItem(member.id, possibleMembers)
-    membersWithoutCurrentMember.forEach(secondMember => {
-      if (Math.sign(member.current) === Math.sign(secondMember.current)) return
-      const amountDiff = member.current + secondMember.current
-      if (amountDiff >= minAmountDiff) return
-      minAmountDiff = amountDiff
-      partner = secondMember
-    })
-    const amount = Math.min(Math.abs(member.current), Math.abs(partner.current))
-    // sorts the payer and receiver id and combines it for a unique id (needed for removing duplicates)
-    const payerReceiverId = join('--', [partner.id, member.id].sort())
-    if (isPositive(member.current)) {
-      return { id: payerReceiverId, amount, payerId: partner.id, receiverId: member.id }
+  const debtors = membersWithAmounts
+    .filter(m => isNegative(m.current))
+    .map(m => ({ ...m, current: -m.current }))
+    .toSorted(descend(prop('current')))
+  const creditors = membersWithAmounts
+    .filter(m => isPositive(m.current))
+    .map(m => ({ ...m }))
+    .toSorted(descend(prop('current')))
+  const compensations: CompensationsWithoutTimestamp[] = []
+  let debtorIndex = 0
+  let creditorIndex = 0
+  while (debtorIndex < debtors.length && creditorIndex < creditors.length) {
+    const debtor = debtors[debtorIndex]
+    const creditor = creditors[creditorIndex]
+    const amountToPay = Math.min(debtor.current, creditor.current)
+    const id = join('--', [debtor.id, creditor.id].toSorted())
+    compensations.push({ id, payerId: debtor.id, receiverId: creditor.id, amount: amountToPay })
+    debtor.current -= amountToPay
+    creditor.current -= amountToPay
+    if (debtor.current === 0) {
+      debtorIndex++
     }
-    return { id: payerReceiverId, amount, payerId: member.id, receiverId: partner.id }
-  })
-  const compensationsWithoutDuplicates = removeDuplicateCompensations(compensations)
-  return sort(descend(prop('amount')), compensationsWithoutDuplicates)
+    if (creditor.current === 0) {
+      creditorIndex++
+    }
+  }
+  return sort(descend(prop('amount')), compensations)
+}
+
+export const generateCompensationChain = (membersWithAmounts: MemberWithAmounts[]) => {
+  const addedCompensations: CompensationsWithoutTimestamp[] = []
+  for (let result; (result = generatePossibleCompensations(membersWithAmounts)); ) {
+    if (isEmpty(result)) break
+    const { amount, payerId, receiverId } = result[0]
+    membersWithAmounts = produce(membersWithAmounts, draft => {
+      const payerIndex = findItemIndex(payerId, draft)
+      const receiverIndex = findItemIndex(receiverId, draft)
+      if (payerIndex === -1 || receiverIndex === -1) return
+      draft[payerIndex].current += amount
+      draft[receiverIndex].current += -amount
+    })
+    addedCompensations.push(result[0])
+  }
+  return addedCompensations
 }

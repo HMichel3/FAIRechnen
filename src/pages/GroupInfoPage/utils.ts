@@ -1,15 +1,12 @@
-import { produce } from 'immer'
-import { isEmpty, join, reduce } from 'ramda'
-import { CompensationsWithoutTimestamp, MemberWithAmounts } from '../../App/types'
+import { join, reduce } from 'ramda'
 import {
   calculateGroupTotalAmount,
   calculateMembersWithAmounts,
   displayCurrencyValue,
   displayCurrencyValueNoSign,
   findItem,
-  findItemIndex,
 } from '../../App/utils'
-import { generatePossibleCompensations } from '../../components/AddCompensationModal/utils'
+import { generateCompensationChain } from '../../components/AddCompensationModal/utils'
 import { Compensation, Income, Member, Purchase, SelectedGroup } from '../../stores/types'
 import { displayHistoryQuantity, displayMemberQuantity } from '../GroupPage/utils'
 
@@ -17,23 +14,6 @@ const PAYER_HEADER = 'Zahler'
 const AMOUNT_HEADER = 'Betrag'
 const RECEIVER_HEADER = 'Empfänger'
 const ARROW = ' > '
-
-export const generateCompensationChain = (membersWithAmounts: MemberWithAmounts[]) => {
-  const addedCompensations: CompensationsWithoutTimestamp[] = []
-  for (let result; (result = generatePossibleCompensations(membersWithAmounts)); ) {
-    if (isEmpty(result)) break
-    const { amount, payerId, receiverId } = result[0]
-    membersWithAmounts = produce(membersWithAmounts, draft => {
-      const payerIndex = findItemIndex(payerId, draft)
-      const receiverIndex = findItemIndex(receiverId, draft)
-      if (payerIndex === -1 || receiverIndex === -1) return
-      draft[payerIndex].current += amount
-      draft[receiverIndex].current += -amount
-    })
-    addedCompensations.push(result[0])
-  }
-  return addedCompensations
-}
 
 const formatGroupOverview = (
   groupName: SelectedGroup['name'],
