@@ -49,7 +49,7 @@ export const AddGroupModal = ({ onDismiss }: AddGroupModalProps): JSX.Element =>
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={onSubmit} className='flex flex-col flex-1'>
+      <form onSubmit={onSubmit} className='flex flex-1 flex-col'>
         <ModalHeader title='Neue Gruppe' onDismiss={onDismiss} />
         <IonContent>
           <FormInput label='Gruppenname*' name='groupName' control={methods.control} />
@@ -58,7 +58,7 @@ export const AddGroupModal = ({ onDismiss }: AddGroupModalProps): JSX.Element =>
               <FormInput label='Mitglied' name={`memberNames.${index}.name`} control={methods.control} />
               {!isLast(field, fields) && (
                 <IonButton
-                  className='m-0 h-14 w-14 bg-[#1e1e1e] border-b-[0.666667px] border-[#898989]'
+                  className='m-0 h-14 w-14 border-b-[0.666667px] border-[#898989] bg-[#1e1e1e]'
                   color='danger'
                   slot='end'
                   fill='clear'

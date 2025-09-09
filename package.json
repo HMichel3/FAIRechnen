@@ -8,7 +8,8 @@
     "build": "tsc && vite build",
     "build-android": "cordova-res android --skip-config --copy && ionic capacitor build android",
     "preview": "vite preview",
-    "lint": "eslint ."
+    "lint": "eslint . && prettier --check .",
+    "format": "eslint --fix . && prettier --write ."
   },
   "dependencies": {
     "@ag-media/react-pdf-table": "^2.0.3",

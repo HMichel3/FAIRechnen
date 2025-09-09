@@ -13,7 +13,7 @@ export const CompensationInfo = ({ compensation }: CompensationInfoProps): JSX.E
   const { payer, receiver } = getCompensationInfo(compensation, members)
 
   return (
-    <IonGrid className='p-0 w-full'>
+    <IonGrid className='w-full p-0'>
       <IonRow>
         <IonCol className='flex items-center p-0' size='4.5'>
           <IonLabel>{payer.name}</IonLabel>

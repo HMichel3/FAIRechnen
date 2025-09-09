@@ -28,7 +28,7 @@ const FabButtonText = ({
         </IonFabButton>
         <div
           className={cn(
-            'mr-[-204px] flex w-[216px] flex-col items-start justify-center bg-[#3a7be0] rounded-3xl px-4',
+            'mr-[-204px] flex w-[216px] flex-col items-start justify-center rounded-3xl bg-[#3a7be0] px-4',
             {
               'opacity-50': disabled,
             }
@@ -43,7 +43,7 @@ const FabButtonText = ({
   return (
     <div className='flex gap-3'>
       <div
-        className={cn('ml-[-280.7px] flex w-[269px] flex-col items-end justify-center bg-[#3a7be0] rounded-3xl px-4', {
+        className={cn('ml-[-280.7px] flex w-[269px] flex-col items-end justify-center rounded-3xl bg-[#3a7be0] px-4', {
           'opacity-50': disabled,
         })}
       >

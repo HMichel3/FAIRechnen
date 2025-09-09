@@ -53,7 +53,7 @@ export const SlidingListItem = ({
     </Show>
     <IonItem button detail={detail && isNil(endText)} routerLink={routerLink} onClick={onSelect} lines={lines}>
       {reorder ? (
-        <IonReorder slot='start' className='mr-8 my-3'>
+        <IonReorder slot='start' className='my-3 mr-8'>
           <IonIcon className='text-2xl' icon={repeatSharp} />
         </IonReorder>
       ) : (
