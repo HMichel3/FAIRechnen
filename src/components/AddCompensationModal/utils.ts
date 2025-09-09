@@ -1,6 +1,6 @@
-import { join, sort, descend, prop } from 'ramda'
-import { deleteItem, isPositive } from '../../App/utils'
+import { descend, join, prop, sort } from 'ramda'
 import { CompensationsWithoutTimestamp, MemberWithAmounts } from '../../App/types'
+import { deleteItem, isPositive } from '../../App/utils'
 
 const removeDuplicateCompensations = (compensations: CompensationsWithoutTimestamp[]) => {
   const check = new Set()
@@ -23,7 +23,7 @@ export const generatePossibleCompensations = (membersWithAmounts: MemberWithAmou
       partner = secondMember
     })
     const amount = Math.min(Math.abs(member.current), Math.abs(partner.current))
-    // sorts the the payer and receiver id and combines it for a unique id (needed for removing duplicates)
+    // sorts the payer and receiver id and combines it for a unique id (needed for removing duplicates)
     const payerReceiverId = join('--', [partner.id, member.id].sort())
     if (isPositive(member.current)) {
       return { id: payerReceiverId, amount, payerId: partner.id, receiverId: member.id }

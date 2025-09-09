@@ -114,17 +114,14 @@ export const calculateMembersWithAmounts = (
   purchases: Purchase[],
   incomes: Income[],
   compensations: Compensation[]
-) =>
+): MemberWithAmounts[] =>
   members.map(member => {
     const { purchaseCurrent, purchasesTotal } = calculatePurchaseAmounts(member.id, purchases)
     const { incomesCurrent, incomesTotal } = calculateIncomeAmounts(member.id, incomes)
     const compensationAmount = calculateCompensationAmount(member.id, compensations)
     const current = purchaseCurrent + incomesCurrent + compensationAmount
     const total = purchasesTotal + incomesTotal + compensationAmount
-    return produce(member as MemberWithAmounts, draft => {
-      draft['current'] = current
-      draft['total'] = total
-    })
+    return { ...member, current, total }
   })
 
 export const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs))

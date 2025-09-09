@@ -1,12 +1,11 @@
-import { produce } from 'immer'
 import { NewCompensation } from '../../App/types'
 import { findItemIndex } from '../../App/utils'
-import { Compensation } from '../types'
 import { PersistImmer } from '../usePersistedStore'
 
 export type CompensationSlice = {
   addCompensation: (groupId: string, newCompensation: NewCompensation) => void
   deleteCompensation: (groupId: string, compensationId: string) => void
+  addCompensations: (groupId: string, newCompensations: NewCompensation[]) => void
 }
 
 export const createCompensationSlice: PersistImmer<CompensationSlice> = set => ({
@@ -14,12 +13,12 @@ export const createCompensationSlice: PersistImmer<CompensationSlice> = set => (
     set(store => {
       const groupIndex = findItemIndex(groupId, store.groups)
       if (groupIndex === -1) return
-      store.groups[groupIndex].compensations.push(
-        produce(newCompensation as Compensation, draft => {
-          draft['id'] = crypto.randomUUID()
-          draft['timestamp'] = Date.now()
-        })
-      )
+      const compensation = {
+        ...newCompensation,
+        id: crypto.randomUUID(),
+        timestamp: Date.now(),
+      }
+      store.groups[groupIndex].compensations.push(compensation)
     }),
   deleteCompensation: (groupId, compensationId) =>
     set(store => {
@@ -28,5 +27,16 @@ export const createCompensationSlice: PersistImmer<CompensationSlice> = set => (
       const compensationIndex = findItemIndex(compensationId, store.groups[groupIndex].compensations)
       if (compensationIndex === -1) return
       store.groups[groupIndex].compensations.splice(compensationIndex, 1)
+    }),
+  addCompensations: (groupId, newCompensations) =>
+    set(store => {
+      const groupIndex = findItemIndex(groupId, store.groups)
+      if (groupIndex === -1) return
+      const compensations = newCompensations.map(newCompensation => ({
+        ...newCompensation,
+        id: crypto.randomUUID(),
+        timestamp: Date.now(),
+      }))
+      store.groups[groupIndex].compensations.push(...compensations.toReversed())
     }),
 })

@@ -18,11 +18,11 @@ const AMOUNT_HEADER = 'Betrag'
 const RECEIVER_HEADER = 'Empfänger'
 const ARROW = ' > '
 
-const generateCompensationChain = (membersWithAmounts: MemberWithAmounts[]) => {
+export const generateCompensationChain = (membersWithAmounts: MemberWithAmounts[]) => {
   const addedCompensations: CompensationsWithoutTimestamp[] = []
   for (let result; (result = generatePossibleCompensations(membersWithAmounts)); ) {
     if (isEmpty(result)) break
-    const { amount, payerId, receiverId } = result.at(0)!
+    const { amount, payerId, receiverId } = result[0]
     membersWithAmounts = produce(membersWithAmounts, draft => {
       const payerIndex = findItemIndex(payerId, draft)
       const receiverIndex = findItemIndex(receiverId, draft)
@@ -30,7 +30,7 @@ const generateCompensationChain = (membersWithAmounts: MemberWithAmounts[]) => {
       draft[payerIndex].current += amount
       draft[receiverIndex].current += -amount
     })
-    addedCompensations.push(result.at(0)!)
+    addedCompensations.push(result[0])
   }
   return addedCompensations
 }

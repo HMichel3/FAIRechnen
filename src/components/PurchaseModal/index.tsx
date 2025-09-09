@@ -57,7 +57,7 @@ const defaultValues = (members: Member[], selectedPurchase?: Purchase): NewPurch
     return {
       name: '',
       amount: 0,
-      purchaserId: memberIds.at(0)!,
+      purchaserId: memberIds[0],
       beneficiaryIds: memberIds,
       description: '',
       additions: [],

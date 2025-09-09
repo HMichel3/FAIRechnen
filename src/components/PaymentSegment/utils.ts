@@ -1,5 +1,4 @@
-import { produce } from 'immer'
-import { descend, difference, includes, isEmpty, isNil, isNotNil, join, map, prop, sort } from 'ramda'
+import { descend, difference, includes, isEmpty, isNotNil, join, map, prop, sort } from 'ramda'
 import { Payment } from '../../App/types'
 import { Addition, Compensation, Income, Member, Purchase } from '../../stores/types'
 
@@ -11,12 +10,8 @@ export const displayBeneficiaryNames = (beneficiaries: Member[], members: Member
   const isForAllMembers = isEmpty(difference(members, beneficiaries))
   if (isForAllMembers) return 'Alle'
   const beneficiaryNames = map(prop('name'), beneficiaries)
-  const completeBeneficiaryNames = produce(beneficiaryNames, draft => {
-    if (isNil(additionPayers) || isEmpty(additionPayers)) return
-    const beneficiaryNamesWithBrackets = additionPayers.map(({ name }) => `(${name})`)
-    draft.push(...beneficiaryNamesWithBrackets)
-  })
-  return join(', ', completeBeneficiaryNames)
+  const additionalNames = additionPayers?.map(({ name }) => `(${name})`) ?? []
+  return join(', ', [...beneficiaryNames, ...additionalNames])
 }
 
 export const displayAdditionQuantity = (additionQuantity: number) =>

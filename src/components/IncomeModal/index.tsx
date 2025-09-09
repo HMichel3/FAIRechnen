@@ -41,7 +41,7 @@ const defaultValues = (members: Member[], selectedIncome?: Income): NewIncome =>
     return {
       name: '',
       amount: 0,
-      earnerId: memberIds.at(0)!,
+      earnerId: memberIds[0],
       beneficiaryIds: memberIds,
       description: '',
     }

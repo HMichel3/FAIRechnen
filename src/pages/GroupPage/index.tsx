@@ -51,7 +51,7 @@ export const GroupPage = (): JSX.Element => {
 
   return (
     <>
-      <IonMenu side='start' contentId='main-content' swipeGesture={!showInfoSlides}>
+      <IonMenu side='start' contentId='main-content' swipeGesture={!showInfoSlides} maxEdgeStart={-1}>
         <IonHeader>
           <IonToolbar>
             <IonTitle>Optionen</IonTitle>

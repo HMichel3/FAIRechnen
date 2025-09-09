@@ -1,7 +1,5 @@
-import { produce } from 'immer'
 import { NewPurchase } from '../../App/types'
 import { findItemIndex } from '../../App/utils'
-import { Purchase } from '../types'
 import { PersistImmer } from '../usePersistedStore'
 import { calculateNewPurchase } from '../utils'
 
@@ -16,12 +14,12 @@ export const createPurchaseSlice: PersistImmer<PurchaseSlice> = set => ({
     set(store => {
       const groupIndex = findItemIndex(groupId, store.groups)
       if (groupIndex === -1) return
-      store.groups[groupIndex].purchases.push(
-        produce(calculateNewPurchase(newPurchase) as Purchase, draft => {
-          draft['id'] = crypto.randomUUID()
-          draft['timestamp'] = Date.now()
-        })
-      )
+      const purchase = {
+        ...calculateNewPurchase(newPurchase),
+        id: crypto.randomUUID(),
+        timestamp: Date.now(),
+      }
+      store.groups[groupIndex].purchases.push(purchase)
     }),
   editPurchase: (groupId, purchaseId, newPurchase) =>
     set(store => {
