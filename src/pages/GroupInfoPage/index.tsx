@@ -30,11 +30,12 @@ import {
   walletSharp,
 } from 'ionicons/icons'
 import { AnimatePresence } from 'motion/react'
-import { trim } from 'ramda'
+import { isEmpty, trim } from 'ramda'
 import { useEffect, useMemo, useState } from 'react'
 import { RouteComponentProps } from 'react-router'
 import { calculateMembersWithAmounts, cn } from '../../App/utils'
 import { AddCompensationModal } from '../../components/AddCompensationModal'
+import { generateCompensationChain } from '../../components/AddCompensationModal/utils'
 import { BillPdf } from '../../components/BillPdf'
 import { FabButton } from '../../components/FabButton'
 import { IncomeModal } from '../../components/IncomeModal'
@@ -88,6 +89,8 @@ export const GroupInfoPage = ({
     [group.purchases, group.incomes, group.compensations]
   )
 
+  const compensationChain = useMemo(() => generateCompensationChain(membersWithAmounts), [membersWithAmounts])
+
   // saves the selectedGroup onMount to make it accessible through the application
   useEffect(() => {
     setSelectedGroup({ ...group, membersWithAmounts, sortedPayments })
@@ -136,7 +139,14 @@ export const GroupInfoPage = ({
     Share.share({
       title: 'FAIRechnen - Zahlungsvorschläge',
       dialogTitle: 'Zahlungsvorschläge teilen',
-      text: generateBillText(group.name, group.members, group.purchases, group.incomes, group.compensations),
+      text: generateBillText(
+        group.name,
+        group.members,
+        group.purchases,
+        group.incomes,
+        group.compensations,
+        compensationChain
+      ),
     })
   }
 
@@ -226,6 +236,7 @@ export const GroupInfoPage = ({
               description: 'Zahlungsvorschläge als Text',
               icon: textSharp,
               onClick: onShareCompensationChain,
+              disabled: isEmpty(compensationChain),
             },
           ]}
         </FabButton>

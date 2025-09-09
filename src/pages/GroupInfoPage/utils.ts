@@ -1,12 +1,6 @@
-import { join, reduce } from 'ramda'
-import {
-  calculateGroupTotalAmount,
-  calculateMembersWithAmounts,
-  displayCurrencyValue,
-  displayCurrencyValueNoSign,
-  findItem,
-} from '../../App/utils'
-import { generateCompensationChain } from '../../components/AddCompensationModal/utils'
+import { join } from 'ramda'
+import { CompensationsWithoutTimestamp } from '../../App/types'
+import { calculateGroupTotalAmount, displayCurrencyValue, displayCurrencyValueNoSign, findItem } from '../../App/utils'
 import { Compensation, Income, Member, Purchase, SelectedGroup } from '../../stores/types'
 import { displayHistoryQuantity, displayMemberQuantity } from '../GroupPage/utils'
 
@@ -35,51 +29,36 @@ const formatGroupOverview = (
 
 const monospace = (text: string) => '```' + text + '```'
 
-const formatPaymentSuggestions = (
-  members: Member[],
-  purchases: Purchase[],
-  incomes: Income[],
-  compensations: Compensation[]
-) => {
-  const membersWithAmounts = calculateMembersWithAmounts(members, purchases, incomes, compensations)
-  const generatedCompensationChain = generateCompensationChain(membersWithAmounts)
-  const suggestions = generatedCompensationChain.map(({ amount, payerId, receiverId }) => {
+const formatPaymentSuggestions = (members: Member[], compensationChain: CompensationsWithoutTimestamp[]) => {
+  const formattedSuggestions = compensationChain.map(({ amount, payerId, receiverId }) => {
     const payer = findItem(payerId, members)
     const receiver = findItem(receiverId, members)
-    return { payer: payer.name, amount, receiver: receiver.name }
-  })
-  const payerLength = reduce(
-    (maxLength, { payer }) => {
-      if (payer.length > maxLength) return payer.length
-      return maxLength
-    },
-    PAYER_HEADER.length,
-    suggestions
-  )
-  const amountLength = reduce(
-    (maxLength, { amount }) => {
-      const formattedAmount = displayCurrencyValueNoSign(amount)
-      if (formattedAmount.length > maxLength) return formattedAmount.length
-      return maxLength
-    },
-    AMOUNT_HEADER.length,
-    suggestions
-  )
-  const formattedPayerHeader = PAYER_HEADER.padEnd(payerLength)
-  const formattedAmountHeader = AMOUNT_HEADER.padStart(amountLength)
-  const headerLine = `${formattedPayerHeader}${ARROW}${formattedAmountHeader}${ARROW}${RECEIVER_HEADER}`
-  let maxRowLength = headerLine.length
-  const suggestionsList = suggestions.map(({ payer, amount, receiver }) => {
-    const payerPart = payer.padEnd(payerLength)
-    const amountPart = displayCurrencyValueNoSign(amount).padStart(amountLength)
-    const suggestionRow = `${payerPart}${ARROW}${amountPart}${ARROW}${receiver}`
-    if (suggestionRow.length > maxRowLength) {
-      maxRowLength = suggestionRow.length
+    return {
+      payerName: payer.name,
+      receiverName: receiver.name,
+      amountString: displayCurrencyValueNoSign(amount),
     }
-    return monospace(suggestionRow)
   })
+  const payerLength = Math.max(PAYER_HEADER.length, ...formattedSuggestions.map(({ payerName }) => payerName.length))
+  const amountLength = Math.max(
+    AMOUNT_HEADER.length,
+    ...formattedSuggestions.map(({ amountString }) => amountString.length)
+  )
+  const header = [
+    PAYER_HEADER.padEnd(payerLength),
+    ARROW,
+    AMOUNT_HEADER.padStart(amountLength),
+    ARROW,
+    RECEIVER_HEADER,
+  ].join('')
+  const suggestionRows = formattedSuggestions.map(({ payerName, amountString, receiverName }) => {
+    const payerPart = payerName.padEnd(payerLength)
+    const amountPart = amountString.padStart(amountLength)
+    return [payerPart, ARROW, amountPart, ARROW, receiverName].join('')
+  })
+  const maxRowLength = Math.max(header.length, ...suggestionRows.map(row => row.length))
   const separatorLine = '-'.repeat(maxRowLength)
-  return ['*Zahlungsvorschläge*', monospace(headerLine), monospace(separatorLine), ...suggestionsList]
+  return ['*Zahlungsvorschläge*', monospace(header), monospace(separatorLine), ...suggestionRows.map(monospace)]
 }
 
 export const generateBillText = (
@@ -87,10 +66,11 @@ export const generateBillText = (
   members: Member[],
   purchases: Purchase[],
   incomes: Income[],
-  compensations: Compensation[]
+  compensations: Compensation[],
+  compensationChain: CompensationsWithoutTimestamp[]
 ) => {
   const groupOverview = formatGroupOverview(groupName, members, purchases, incomes, compensations)
-  const paymentSuggestions = formatPaymentSuggestions(members, purchases, incomes, compensations)
+  const paymentSuggestions = formatPaymentSuggestions(members, compensationChain)
   return join('\n', [...groupOverview, '', ...paymentSuggestions])
 }
 
