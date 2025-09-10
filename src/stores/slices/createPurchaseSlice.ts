@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid'
 import { NewPurchase } from '../../App/types'
 import { findItemIndex } from '../../App/utils'
 import { PersistImmer } from '../usePersistedStore'
@@ -16,7 +17,7 @@ export const createPurchaseSlice: PersistImmer<PurchaseSlice> = set => ({
       if (groupIndex === -1) return
       const purchase = {
         ...calculateNewPurchase(newPurchase),
-        id: crypto.randomUUID(),
+        id: uuidv4(),
         timestamp: Date.now(),
       }
       store.groups[groupIndex].purchases.push(purchase)

@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid'
 import { findItemIndex } from '../../App/utils'
 import { Member } from '../types'
 import { PersistImmer } from '../usePersistedStore'
@@ -13,7 +14,7 @@ export const createMemberSlice: PersistImmer<MemberSlice> = set => ({
     set(store => {
       const groupIndex = findItemIndex(groupId, store.groups)
       if (groupIndex === -1) return
-      store.groups[groupIndex].members.push({ id: crypto.randomUUID(), name: memberName, timestamp: Date.now() })
+      store.groups[groupIndex].members.push({ id: uuidv4(), name: memberName, timestamp: Date.now() })
     }),
   editMemberName: (groupId, memberId, name) =>
     set(store => {

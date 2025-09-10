@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid'
 import { NewIncome } from '../../App/types'
 import { findItemIndex } from '../../App/utils'
 import { PersistImmer } from '../usePersistedStore'
@@ -16,7 +17,7 @@ export const createIncomeSlice: PersistImmer<IncomeSlice> = set => ({
       if (groupIndex === -1) return
       const income = {
         ...calculateNewIncome(newIncome),
-        id: crypto.randomUUID(),
+        id: uuidv4(),
         timestamp: Date.now(),
       }
       store.groups[groupIndex].incomes.push(income)

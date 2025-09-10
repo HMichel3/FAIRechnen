@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid'
 import { NewCompensation } from '../../App/types'
 import { findItemIndex } from '../../App/utils'
 import { PersistImmer } from '../usePersistedStore'
@@ -15,7 +16,7 @@ export const createCompensationSlice: PersistImmer<CompensationSlice> = set => (
       if (groupIndex === -1) return
       const compensation = {
         ...newCompensation,
-        id: crypto.randomUUID(),
+        id: uuidv4(),
         timestamp: Date.now(),
       }
       store.groups[groupIndex].compensations.push(compensation)
@@ -34,7 +35,7 @@ export const createCompensationSlice: PersistImmer<CompensationSlice> = set => (
       if (groupIndex === -1) return
       const compensations = newCompensations.map(newCompensation => ({
         ...newCompensation,
-        id: crypto.randomUUID(),
+        id: uuidv4(),
         timestamp: Date.now(),
       }))
       store.groups[groupIndex].compensations.push(...compensations.toReversed())
