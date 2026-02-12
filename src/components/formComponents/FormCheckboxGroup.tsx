@@ -2,23 +2,21 @@ import { IonCheckbox, IonChip } from '@ionic/react'
 import { produce } from 'immer'
 import { includes, indexOf } from 'ramda'
 import { Control, FieldValues, Path, useController } from 'react-hook-form'
-import { ReactHookFormOnChange } from '../../App/types'
 
-type FormCheckboxGroupProps<Type extends FieldValues> = {
-  name: Path<Type>
-  control: Control<Type>
+type FormCheckboxGroupProps<T extends FieldValues> = {
+  name: Path<T>
+  control: Control<T>
   selectOptions: { id: string; name: string }[]
 }
 
-export const FormCheckboxGroup = <Type extends FieldValues>({
+export const FormCheckboxGroup = <T extends FieldValues>({
   name,
   control,
   selectOptions,
-}: FormCheckboxGroupProps<Type>) => {
+}: FormCheckboxGroupProps<T>) => {
   const {
     field: { value, onChange },
   } = useController({ name, control })
-  const typedOnChange: ReactHookFormOnChange = onChange
 
   const onCheckboxChange = (event: CustomEvent, memberId: string) => {
     const { checked } = event.detail
@@ -28,12 +26,12 @@ export const FormCheckboxGroup = <Type extends FieldValues>({
         if (memberIdIndex === -1) return
         draft.splice(memberIdIndex, 1)
       })
-      return typedOnChange(valueWithoutId)
+      return onChange(valueWithoutId)
     }
     const valueWithId = produce<string[]>(value, draft => {
       draft.push(memberId)
     })
-    typedOnChange(valueWithId)
+    onChange(valueWithId)
   }
 
   return (

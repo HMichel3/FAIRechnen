@@ -24,7 +24,7 @@ export const ConvertModal = ({ setFormAmount, onDismiss }: ConvertModalProps) =>
 
   return (
     <>
-      <div className='absolute inset-0 z-10 bg-black/60' onClick={onDismiss} />
+      <div className='backdrop absolute inset-0 z-20' onClick={onDismiss} />
       <div className='absolute bottom-0 left-4 right-4 top-0 z-20 my-auto h-fit rounded bg-[rgb(18,18,18)] p-4'>
         <div className='flex flex-col justify-center'>
           <h3 className='mb-4 text-center text-xl'>Betrag umrechnen</h3>

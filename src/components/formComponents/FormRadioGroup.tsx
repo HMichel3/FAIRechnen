@@ -1,27 +1,21 @@
 import { IonChip, IonRadio, IonRadioGroup } from '@ionic/react'
 import { Control, FieldValues, Path, useController } from 'react-hook-form'
-import { ReactHookFormOnChange } from '../../App/types'
 
-type FormRadioGroupProps<Type extends FieldValues> = {
-  name: Path<Type>
-  control: Control<Type>
+type FormRadioGroupProps<T extends FieldValues> = {
+  name: Path<T>
+  control: Control<T>
   selectOptions: { id: string; name: string }[]
 }
 
-export const FormRadioGroup = <Type extends FieldValues>({
-  name,
-  control,
-  selectOptions,
-}: FormRadioGroupProps<Type>) => {
+export const FormRadioGroup = <T extends FieldValues>({ name, control, selectOptions }: FormRadioGroupProps<T>) => {
   const {
     field: { value, onChange },
   } = useController({ name, control })
-  const typedOnChange: ReactHookFormOnChange = onChange
 
   return (
     <IonRadioGroup className='form-radio-group' value={value}>
       {selectOptions.map(option => (
-        <IonChip className='m-0' key={option.id} onClick={() => typedOnChange(option.id)}>
+        <IonChip className='m-0' key={option.id} onClick={() => onChange(option.id)}>
           <IonRadio value={option.id}>{option.name}</IonRadio>
         </IonChip>
       ))}

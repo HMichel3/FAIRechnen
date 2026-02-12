@@ -1,7 +1,7 @@
-import { v4 as uuidv4 } from 'uuid'
 import { NewCompensation } from '../../App/types'
 import { findItemIndex } from '../../App/utils'
 import { PersistImmer } from '../usePersistedStore'
+import { withMetaData } from '../utils'
 
 export type CompensationSlice = {
   addCompensation: (groupId: string, newCompensation: NewCompensation) => void
@@ -14,11 +14,7 @@ export const createCompensationSlice: PersistImmer<CompensationSlice> = set => (
     set(store => {
       const groupIndex = findItemIndex(groupId, store.groups)
       if (groupIndex === -1) return
-      const compensation = {
-        ...newCompensation,
-        id: uuidv4(),
-        timestamp: Date.now(),
-      }
+      const compensation = withMetaData(newCompensation)
       store.groups[groupIndex].compensations.push(compensation)
     }),
   deleteCompensation: (groupId, compensationId) =>
@@ -33,11 +29,7 @@ export const createCompensationSlice: PersistImmer<CompensationSlice> = set => (
     set(store => {
       const groupIndex = findItemIndex(groupId, store.groups)
       if (groupIndex === -1) return
-      const compensations = newCompensations.map(newCompensation => ({
-        ...newCompensation,
-        id: uuidv4(),
-        timestamp: Date.now(),
-      }))
+      const compensations = newCompensations.map(withMetaData)
       store.groups[groupIndex].compensations.push(...compensations.toReversed())
     }),
 })

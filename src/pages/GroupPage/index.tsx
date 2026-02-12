@@ -1,102 +1,105 @@
-import { App } from '@capacitor/app'
+import { FilePicker } from '@capawesome/capacitor-file-picker'
 import {
   IonButton,
   IonButtons,
   IonContent,
-  IonFooter,
   IonHeader,
   IonIcon,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonMenu,
   IonMenuButton,
   IonPage,
   IonTitle,
   IonToolbar,
+  useIonAlert,
   useIonModal,
-  useIonRouter,
 } from '@ionic/react'
-import { closeSharp, helpCircleSharp, peopleSharp, repeatSharp } from 'ionicons/icons'
-import { useEffect, useState } from 'react'
+import { addSharp, closeSharp, peopleSharp, repeatSharp, swapHorizontalSharp } from 'ionicons/icons'
+import { isEmpty } from 'ramda'
+import { useState } from 'react'
+import { isIdInArray, parseError } from '../../App/utils'
 import { AddGroupModal } from '../../components/AddGroupModal'
+import { FabButton } from '../../components/FabButton'
 import { GroupPageList } from '../../components/GroupPageList'
-import { IconButton } from '../../components/IconButton'
-import { InfoSlides } from '../../components/InfoSlides'
-import { Show } from '../../components/SolidComponents/Show'
-import { SuccessAnimation } from '../../lotties/SuccessAnimation'
 import { usePersistedStore } from '../../stores/usePersistedStore'
-import { useStore } from '../../stores/useStore'
+import { extractGroupFromFile } from './utils'
 
 export const GroupPage = (): JSX.Element => {
   const groups = usePersistedStore(s => s.groups)
-  const showInfoSlides = usePersistedStore(s => s.showInfoSlides)
-  const setShowInfoSlides = usePersistedStore(s => s.setShowInfoSlides)
-  const showAnimation = useStore(s => s.showAnimation)
+  const importNewGroup = usePersistedStore(s => s.importNewGroup)
+  const importExistingGroup = usePersistedStore(s => s.importExistingGroup)
+  const copyImportedGroup = usePersistedStore(s => s.copyImportedGroup)
   const [reorder, setReorder] = useState(false)
-  const ionRouter = useIonRouter()
   const [showAddGroupModal, dismissAddGroupModal] = useIonModal(AddGroupModal, {
     onDismiss: () => dismissAddGroupModal(),
   })
+  const [presentGroupImport] = useIonAlert()
 
-  useEffect(() => {
-    document.addEventListener('ionBackButton', event => {
-      // @ts-expect-error event.detail is not defined in the type definition
-      event.detail.register(-1, () => {
-        if (showInfoSlides) return setShowInfoSlides(false)
-        if (!ionRouter.canGoBack()) App.exitApp()
+  const pickJsonFile = async () => {
+    try {
+      const result = await FilePicker.pickFiles({ types: ['application/json'], limit: 1 })
+      if (isEmpty(result.files)) return
+      const extractedGroup = await extractGroupFromFile(result.files[0])
+      if (isIdInArray(extractedGroup.id, groups)) {
+        presentGroupImport({
+          header: `Möchten Sie die Gruppe wirklich überschreiben?`,
+          message: `Die Gruppe "${extractedGroup.name}" existiert bereits. Mit dem Überschreiben gehen sämtliche Informationen verloren!`,
+          buttons: [
+            { role: 'cancel', text: 'Abbrechen', cssClass: 'alert-button-cancel' },
+            { role: 'confirm', text: 'Überschreiben', handler: () => importExistingGroup(extractedGroup) },
+            { role: 'confirm', text: 'Kopie anlegen', handler: () => copyImportedGroup(extractedGroup) },
+          ],
+        })
+        return
+      }
+      importNewGroup(extractedGroup)
+      presentGroupImport({
+        header: 'Gruppe erfolgreich importiert',
+        message: 'Die Gruppe wurde erfolgreich importiert und kann in der Gruppenübersicht ausgewählt werden.',
+        buttons: [{ role: 'cancel', text: 'OK' }],
       })
-    })
-  }, [ionRouter, showInfoSlides, setShowInfoSlides])
+    } catch (error) {
+      const parsedError = parseError(error)
+      presentGroupImport({
+        header: parsedError.name,
+        message: parsedError.message,
+        buttons: [{ role: 'cancel', text: 'OK' }],
+      })
+    }
+  }
 
   return (
-    <>
-      <IonMenu side='start' contentId='main-content' swipeGesture={!showInfoSlides} maxEdgeStart={-1}>
-        <IonHeader>
-          <IonToolbar>
-            <IonTitle>Optionen</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent>
-          <IonList>
-            <IonItem onClick={() => setShowInfoSlides(true)} lines='none'>
-              <IonIcon icon={helpCircleSharp} slot='start' />
-              <IonLabel>Hilfe</IonLabel>
-            </IonItem>
-          </IonList>
-        </IonContent>
-      </IonMenu>
-      <IonPage id='main-content'>
-        <IonHeader>
-          <IonToolbar>
-            <IonButtons slot='start'>
-              <IonMenuButton />
-            </IonButtons>
-            <IonTitle>Gruppenübersicht</IonTitle>
-            <IonButtons slot='end'>
-              <IonButton disabled={groups.length < 2} onClick={() => setReorder(prevState => !prevState)}>
-                <IonIcon slot='icon-only' icon={reorder ? closeSharp : repeatSharp} />
-              </IonButton>
-            </IonButtons>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent>
-          <GroupPageList reorder={reorder} />
-        </IonContent>
-        <IonFooter>
-          <IonToolbar>
-            <IconButton icon={peopleSharp} onClick={() => showAddGroupModal()}>
-              Gruppe hinzufügen
-            </IconButton>
-          </IonToolbar>
-        </IonFooter>
-        <Show when={showAnimation}>
-          <SuccessAnimation />
-        </Show>
-      </IonPage>
-      <Show when={showInfoSlides}>
-        <InfoSlides onHideShowInfoSlides={() => setShowInfoSlides(false)} />
-      </Show>
-    </>
+    <IonPage>
+      <IonHeader>
+        <IonToolbar>
+          <IonButtons slot='start'>
+            <IonMenuButton />
+          </IonButtons>
+          <IonTitle>Gruppenübersicht</IonTitle>
+          <IonButtons slot='end'>
+            <IonButton disabled={groups.length < 2} onClick={() => setReorder(prevState => !prevState)}>
+              <IonIcon slot='icon-only' icon={reorder ? closeSharp : repeatSharp} />
+            </IonButton>
+          </IonButtons>
+        </IonToolbar>
+      </IonHeader>
+      <IonContent>
+        <GroupPageList reorder={reorder} />
+        <FabButton className='bottom-tabs' horizontal='end' icon={addSharp}>
+          {[
+            {
+              label: 'Gruppe importieren (JSON)',
+              description: 'Vorher exportierte Daten importieren',
+              icon: swapHorizontalSharp,
+              onClick: pickJsonFile,
+            },
+            {
+              label: 'Gruppe erstellen',
+              description: 'Neue Gruppe erstellen',
+              icon: peopleSharp,
+              onClick: showAddGroupModal,
+            },
+          ]}
+        </FabButton>
+      </IonContent>
+    </IonPage>
   )
 }

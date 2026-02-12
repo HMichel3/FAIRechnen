@@ -1,14 +1,15 @@
-import { create, StateCreator } from 'zustand'
 import { Drivers, Storage } from '@ionic/storage'
+import CordovaSQLiteDriver from 'localforage-cordovasqlitedriver'
+import { create, StateCreator } from 'zustand'
 import { createJSONStorage, persist, StateStorage } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
-import { createCompensationSlice, CompensationSlice } from './slices/createCompensationSlice'
+import { CompensationSlice, createCompensationSlice } from './slices/createCompensationSlice'
+import { ContactSlice, createContactSlice } from './slices/createContactSlice'
 import { createGroupSlice, GroupSlice } from './slices/createGroupSlice'
+import { createIncomeSlice, IncomeSlice } from './slices/createIncomeSlice'
+import { createInfoSlideSlice, InfoSlideSlice } from './slices/createInfoSlideSlice'
 import { createMemberSlice, MemberSlice } from './slices/createMemberSlice'
 import { createPurchaseSlice, PurchaseSlice } from './slices/createPurchaseSlice'
-import { createIncomeSlice, IncomeSlice } from './slices/createIncomeSlice'
-import { InfoSlideSlice, createInfoSlideSlice } from './slices/createInfoSlideSlice'
-import CordovaSQLiteDriver from 'localforage-cordovasqlitedriver'
 
 const ionicStorage = new Storage({
   name: '__db',
@@ -34,7 +35,8 @@ export type PersistedState = GroupSlice &
   PurchaseSlice &
   IncomeSlice &
   CompensationSlice &
-  InfoSlideSlice & { _hasHydrated: boolean }
+  InfoSlideSlice &
+  ContactSlice & { _hasHydrated: boolean }
 
 // Needed for the Type of the Slices, where T is the particular SliceState
 export type PersistImmer<T> = StateCreator<
@@ -53,11 +55,18 @@ export const usePersistedStore = create<PersistedState>()(
       ...createIncomeSlice(...a),
       ...createCompensationSlice(...a),
       ...createInfoSlideSlice(...a),
+      ...createContactSlice(...a),
       _hasHydrated: false,
     })),
     {
       name: 'store-storage',
       storage: createJSONStorage(() => storage),
+      partialize: state => ({
+        groups: state.groups,
+        groupArchive: state.groupArchive,
+        showInfoSlides: state.showInfoSlides,
+        contacts: state.contacts,
+      }),
       onRehydrateStorage: () => () => {
         usePersistedStore.setState({ _hasHydrated: true })
       },

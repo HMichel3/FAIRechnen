@@ -1,26 +1,19 @@
 import { IonTextarea } from '@ionic/react'
 import { Control, FieldValues, Path, useController } from 'react-hook-form'
-import { ReactHookFormOnChange } from '../../App/types'
 import { cn } from '../../App/utils'
 
-type FormTextareaProps<Type extends FieldValues> = {
+type FormTextareaProps<T extends FieldValues> = {
   label: string
-  name: Path<Type>
-  control: Control<Type>
+  name: Path<T>
+  control: Control<T>
   className?: string
 }
 
-export const FormTextarea = <Type extends FieldValues>({
-  label,
-  name,
-  control,
-  className,
-}: FormTextareaProps<Type>) => {
+export const FormTextarea = <T extends FieldValues>({ label, name, control, className }: FormTextareaProps<T>) => {
   const {
     field: { value, onChange },
     fieldState: { invalid },
   } = useController({ name, control })
-  const typedOnChange: ReactHookFormOnChange = onChange
 
   return (
     <IonTextarea
@@ -29,7 +22,7 @@ export const FormTextarea = <Type extends FieldValues>({
       labelPlacement='floating'
       label={label}
       value={value}
-      onIonChange={typedOnChange}
+      onIonChange={onChange}
       autocapitalize='sentences'
       autoGrow
     />

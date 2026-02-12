@@ -1,6 +1,6 @@
 import { Circle, Path, Svg } from '@react-pdf/renderer'
 
-type PDFIconProps = {
+export type PDFIconProps = {
   size: number
 }
 
@@ -25,31 +25,10 @@ export const PDFIcons = {
       <Path d='M31.33 259.5V116c0-12.33 5.72-18.48 15.42-20 35.2-5.53 108.58-8.5 108.58-8.5s-8.33 16-27.33 16V128c18.5 0 31.33 23.5 31.33 23.5L84.83 236z' />
     </Svg>
   ),
-  ArrowForwardSharp: ({ size }: PDFIconProps) => (
-    <Svg viewBox='0 0 512 512' width={size} height={size} fill='black'>
-      <Path
-        fill='none'
-        stroke='currentColor'
-        strokeLinecap='square'
-        strokeWidth='48'
-        d='M268 112l144 144-144 144M392 256H100'
-      />
-    </Svg>
-  ),
-  PersonSharp: ({ size }: PDFIconProps) => (
-    <Svg viewBox='0 0 512 512' width={size} height={size} fill='black'>
-      <Path d='M256 256a112 112 0 10-112-112 112 112 0 00112 112zm0 32c-69.42 0-208 42.88-208 128v64h416v-64c0-85.12-138.58-128-208-128z' />
-    </Svg>
-  ),
-  DocumentTextSharp: ({ size }: PDFIconProps) => (
-    <Svg viewBox='0 0 512 512' width={size} height={size} fill='black'>
-      <Path d='M272 41.69V188a4 4 0 004 4h146.31a2 2 0 001.42-3.41L275.41 40.27a2 2 0 00-3.41 1.42z' />
-      <Path d='M248 224a8 8 0 01-8-8V32H92a12 12 0 00-12 12v424a12 12 0 0012 12h328a12 12 0 0012-12V224zm104 160H160v-32h192zm0-80H160v-32h192z' />
-    </Svg>
-  ),
-  DiamondSharp: ({ size }: PDFIconProps) => (
-    <Svg viewBox='0 0 512 512' width={size} height={size} fill='black'>
-      <Path d='M396.31 32H264l84.19 112.26L396.31 32zM115.69 32l48.12 112.26L248 32H115.69zM256 74.67L192 160h128l-64-85.33zM422.95 51.06L376.26 160H488L422.95 51.06zM89.05 51.06L23 160h112.74L89.05 51.06zM146.68 192H24l222.8 288h.53L146.68 192zM365.32 192L264.67 480h.53L488 192H365.32zM329.39 192H182.61L256 400l73.39-208z' />
+  PayPal: ({ size }: PDFIconProps) => (
+    <Svg viewBox='0 0 512 512' width={size} height={size} fill='white'>
+      <Path d='M424.81 148.79c-.43 2.76-.93 5.58-1.49 8.48-19.17 98-84.76 131.8-168.54 131.8h-42.65a20.67 20.67 0 00-20.47 17.46l-21.84 137.84-6.18 39.07a10.86 10.86 0 009.07 12.42 10.72 10.72 0 001.7.13h75.65a18.18 18.18 0 0018-15.27l.74-3.83 14.24-90 .91-4.94a18.16 18.16 0 0118-15.3h11.31c73.3 0 130.67-29.62 147.44-115.32 7-35.8 3.38-65.69-15.16-86.72a72.27 72.27 0 00-20.73-15.82z' />
+      <Path d='M385.52 51.09C363.84 26.52 324.71 16 274.63 16H129.25a20.75 20.75 0 00-20.54 17.48l-60.55 382a12.43 12.43 0 0010.39 14.22 12.58 12.58 0 001.94.15h89.76l22.54-142.29-.7 4.46a20.67 20.67 0 0120.47-17.46h42.65c83.77 0 149.36-33.86 168.54-131.8.57-2.9 1.05-5.72 1.49-8.48 5.7-36.22-.05-60.87-19.72-83.19z' />
     </Svg>
   ),
 }

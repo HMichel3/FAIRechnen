@@ -1,35 +1,56 @@
-import { v4 as uuidv4 } from 'uuid'
-import { findItemIndex } from '../../App/utils'
-import { Member } from '../types'
+import { NewMember } from '../../App/types'
+import { findItem, findItemIndex, isNameInArray, rejectById } from '../../App/utils'
 import { PersistImmer } from '../usePersistedStore'
+import { withMetaData } from '../utils'
+
+export type MemberSliceResult =
+  | { success: true }
+  | { success: false; reason: 'group_not_found' | 'member_not_found' | 'duplicate_name' }
 
 export type MemberSlice = {
-  addMember: (groupId: string, memberName: Member['name']) => void
-  editMemberName: (groupId: string, memberId: string, name: Member['name']) => void
+  addMember: (groupId: string, newMember: NewMember) => MemberSliceResult
+  editMember: (groupId: string, memberId: string, newMember: NewMember) => MemberSliceResult
   deleteMember: (groupId: string, memberId: string) => void
 }
 
-export const createMemberSlice: PersistImmer<MemberSlice> = set => ({
-  addMember: (groupId, memberName) =>
+export const createMemberSlice: PersistImmer<MemberSlice> = (set, get) => ({
+  addMember: (groupId, newMember) => {
+    const { groups, addContact } = get()
+    const groupIndex = findItemIndex(groupId, groups)
+    if (groupIndex === -1) {
+      return { success: false, reason: 'group_not_found' }
+    }
+    if (isNameInArray(newMember.name, groups[groupIndex].members)) {
+      return { success: false, reason: 'duplicate_name' }
+    }
     set(store => {
-      const groupIndex = findItemIndex(groupId, store.groups)
-      if (groupIndex === -1) return
-      store.groups[groupIndex].members.push({ id: uuidv4(), name: memberName, timestamp: Date.now() })
-    }),
-  editMemberName: (groupId, memberId, name) =>
+      store.groups[groupIndex].members.push(withMetaData(newMember))
+    })
+    addContact(newMember)
+    return { success: true }
+  },
+  editMember: (groupId, memberId, newMember) => {
+    const { groups } = get()
+    const groupIndex = findItemIndex(groupId, groups)
+    if (groupIndex === -1) {
+      return { success: false, reason: 'group_not_found' }
+    }
+    const memberIndex = findItemIndex(memberId, groups[groupIndex].members)
+    if (memberIndex === -1) {
+      return { success: false, reason: 'member_not_found' }
+    }
+    if (isNameInArray(newMember.name, groups[groupIndex].members, memberId)) {
+      return { success: false, reason: 'duplicate_name' }
+    }
     set(store => {
-      const groupIndex = findItemIndex(groupId, store.groups)
-      if (groupIndex === -1) return
-      const memberIndex = findItemIndex(memberId, store.groups[groupIndex].members)
-      if (memberIndex === -1) return
-      store.groups[groupIndex].members[memberIndex].name = name
-    }),
+      Object.assign(store.groups[groupIndex].members[memberIndex], newMember)
+    })
+    return { success: true }
+  },
   deleteMember: (groupId, memberId) =>
     set(store => {
-      const groupIndex = findItemIndex(groupId, store.groups)
-      if (groupIndex === -1) return
-      const memberIndex = findItemIndex(memberId, store.groups[groupIndex].members)
-      if (memberIndex === -1) return
-      store.groups[groupIndex].members.splice(memberIndex, 1)
+      const foundGroup = findItem(groupId, store.groups)
+      if (!foundGroup) return
+      foundGroup.members = rejectById(memberId, foundGroup.members)
     }),
 })

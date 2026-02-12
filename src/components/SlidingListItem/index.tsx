@@ -9,7 +9,6 @@ import {
   IonText,
 } from '@ionic/react'
 import { repeatSharp } from 'ionicons/icons'
-import { isNil, isNotNil } from 'ramda'
 import { MouseEventHandler } from 'react'
 import { cn } from '../../App/utils'
 import { Show } from '../SolidComponents/Show'
@@ -37,21 +36,21 @@ export const SlidingListItem = ({
   endText,
   onSelect,
   icon,
-  detail = true,
+  detail,
   reorder = false,
   lines = 'inset',
   rightSlideOption,
   activeIcon = false,
 }: SlidingListItemProps): JSX.Element => (
   <IonItemSliding>
-    <Show when={isNotNil(onDelete)}>
+    <Show when={onDelete}>
       <IonItemOptions side='start'>
         <IonItemOption color='danger' onClick={onDelete}>
           Löschen
         </IonItemOption>
       </IonItemOptions>
     </Show>
-    <IonItem button detail={detail && isNil(endText)} routerLink={routerLink} onClick={onSelect} lines={lines}>
+    <IonItem lines={lines} {...(!reorder && { routerLink, onClick: onSelect, detail })}>
       {reorder ? (
         <IonReorder slot='start' className='my-3 mr-8'>
           <IonIcon className='text-2xl' icon={repeatSharp} />
@@ -60,16 +59,16 @@ export const SlidingListItem = ({
         icon && <IonIcon color={cn({ primary: activeIcon })} icon={icon} slot='start' />
       )}
       <IonLabel>
-        <Show when={isNotNil(label)}>
-          <IonLabel className='mb-1'>{label}</IonLabel>
+        <Show when={label}>
+          <IonLabel className='mb-1 truncate'>{label}</IonLabel>
         </Show>
         {labelComponent}
       </IonLabel>
-      <Show when={isNotNil(endText)}>
+      <Show when={endText}>
         <IonText slot='end'>{endText}</IonText>
       </Show>
     </IonItem>
-    <Show when={isNotNil(rightSlideOption)}>
+    <Show when={rightSlideOption}>
       <IonItemOptions side='end'>{rightSlideOption}</IonItemOptions>
     </Show>
   </IonItemSliding>

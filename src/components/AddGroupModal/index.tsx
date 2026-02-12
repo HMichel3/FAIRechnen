@@ -1,16 +1,18 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { IonButton, IonContent, IonIcon } from '@ionic/react'
-import { closeSharp } from 'ionicons/icons'
-import { isEmpty, last } from 'ramda'
+import { IonButton, IonChip, IonContent, IonIcon, IonText } from '@ionic/react'
+import { checkmarkCircleSharp, closeCircleSharp, personCircleSharp } from 'ionicons/icons'
+import { isEmpty, isNotEmpty, last } from 'ramda'
 import { useEffect } from 'react'
-import { FormProvider, useFieldArray, useForm, useWatch } from 'react-hook-form'
+import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { isLast } from '../../App/utils'
+import { cn, filterNonEmptyNames, findItemIndexByName, isLast, isNameInArray, normalizeString } from '../../App/utils'
+import { Member } from '../../stores/types'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
 import { FormInput } from '../formComponents/FormInput'
 import { ModalFooter } from '../modalComponents/ModalFooter'
 import { ModalHeader } from '../modalComponents/ModalHeader'
+import { Show } from '../SolidComponents/Show'
 
 type AddGroupModalProps = {
   onDismiss: () => void
@@ -18,31 +20,61 @@ type AddGroupModalProps = {
 
 const validationSchema = z.object({
   groupName: z.string().trim().min(1),
-  memberNames: z.object({ name: z.string() }).array(),
+  members: z
+    .object({
+      name: z.string().trim(),
+      payPalMe: z.string().trim(),
+    })
+    .array()
+    .superRefine((members, ctx) => {
+      const seenNames = new Set<string>()
+      members.forEach((member, index) => {
+        const normalizedName = normalizeString(member.name)
+        if (isEmpty(normalizedName)) return
+        if (seenNames.has(normalizedName)) {
+          ctx.addIssue({
+            code: 'custom',
+            message: 'Name existiert bereits',
+            path: [index, 'name'],
+          })
+        } else {
+          seenNames.add(normalizedName)
+        }
+      })
+    }),
 })
 
-type GroupFormValues = {
-  groupName: string
-  memberNames: { name: string }[]
-}
+type GroupFormValues = z.infer<typeof validationSchema>
 
-const defaultValues: GroupFormValues = { groupName: '', memberNames: [{ name: '' }] }
+const defaultValues: GroupFormValues = { groupName: '', members: [{ name: '', payPalMe: '' }] }
 
 export const AddGroupModal = ({ onDismiss }: AddGroupModalProps): JSX.Element => {
+  const contacts = usePersistedStore(s => s.contacts)
   const addGroup = usePersistedStore(s => s.addGroup)
   const setShowAnimation = useStore(s => s.setShowAnimation)
   const methods = useForm({ resolver: zodResolver(validationSchema), defaultValues })
-  const { fields, append, remove } = useFieldArray({ control: methods.control, name: 'memberNames' })
-  const memberNamesFields = useWatch({ control: methods.control, name: 'memberNames' })
+  const { fields, append, remove } = useFieldArray({ control: methods.control, name: 'members' })
+  const watchMembers = methods.watch('members')
+  const memberFields = fields.map((field, index) => ({ ...field, ...watchMembers[index] }))
 
   useEffect(() => {
-    if (!isEmpty(last(memberNamesFields)?.name)) {
-      append({ name: '' })
+    if (isNotEmpty(last(memberFields)?.name)) {
+      append({ name: '', payPalMe: '' })
     }
-  }, [memberNamesFields, append])
+  }, [memberFields, append])
 
-  const onSubmit = methods.handleSubmit(({ groupName, memberNames }) => {
-    addGroup(groupName, memberNames)
+  const toggleContact = (contact: Member) => {
+    const memberFieldIndex = findItemIndexByName(contact.name, memberFields)
+    if (memberFieldIndex !== -1) {
+      remove(memberFieldIndex)
+      return
+    }
+    const newMemberField = { name: contact.name, payPalMe: contact.payPalMe }
+    methods.setValue(`members.${memberFields.length - 1}`, newMemberField)
+  }
+
+  const onSubmit = methods.handleSubmit(({ groupName, members }) => {
+    addGroup(groupName, members)
     setShowAnimation()
     onDismiss()
   })
@@ -52,23 +84,67 @@ export const AddGroupModal = ({ onDismiss }: AddGroupModalProps): JSX.Element =>
       <form onSubmit={onSubmit} className='flex flex-1 flex-col'>
         <ModalHeader title='Neue Gruppe' onDismiss={onDismiss} />
         <IonContent>
-          <FormInput label='Gruppenname*' name='groupName' control={methods.control} />
-          {fields.map((field, index) => (
-            <div key={field.id} className='flex'>
-              <FormInput label='Mitglied' name={`memberNames.${index}.name`} control={methods.control} />
-              {!isLast(field, fields) && (
-                <IonButton
-                  className='m-0 h-14 w-14 border-b-[0.666667px] border-[#898989] bg-[#1e1e1e]'
-                  color='danger'
-                  slot='end'
-                  fill='clear'
-                  onClick={() => remove(index)}
-                >
-                  <IonIcon slot='icon-only' icon={closeSharp} />
-                </IonButton>
-              )}
+          <div className='my-2 flex flex-col gap-4'>
+            <FormInput label='Gruppenname*' name='groupName' control={methods.control} />
+            <Show when={isNotEmpty(contacts)}>
+              <div className='flex flex-col gap-2 px-4'>
+                <IonText>Aus Kontakten wählen</IonText>
+                <div className='no-scrollbar flex gap-2 overflow-x-auto'>
+                  {contacts.map(contact => {
+                    const isActive = isNameInArray(contact.name, memberFields)
+                    return (
+                      <div
+                        key={contact.id}
+                        onClick={() => toggleContact(contact)}
+                        className='flex w-16 flex-none flex-col items-center gap-2 text-neutral-400'
+                      >
+                        <IonIcon
+                          icon={isActive ? checkmarkCircleSharp : personCircleSharp}
+                          className='text-4xl'
+                          color={cn({ primary: isActive })}
+                        />
+                        <IonText
+                          className='line-clamp-2 text-center text-sm leading-tight'
+                          color={cn({ primary: isActive })}
+                        >
+                          {contact.name}
+                        </IonText>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            </Show>
+            <div className='flex flex-col gap-2 px-4'>
+              <div className='flex items-center justify-between'>
+                <IonText>Gruppenmitglieder</IonText>
+                <IonChip className='pointer-events-none m-0'>{filterNonEmptyNames(memberFields).length}</IonChip>
+              </div>
+              <div className='flex flex-col gap-2'>
+                {memberFields.map((field, index) => (
+                  <div
+                    key={field.id}
+                    className={cn(
+                      'flex flex-col rounded-2xl border border-neutral-400 p-4',
+                      isNotEmpty(field.name) ? 'bg-zinc-900' : 'border-dashed bg-transparent opacity-60'
+                    )}
+                  >
+                    <div className='flex items-center gap-3'>
+                      <div className='flex-1'>
+                        <FormInput label='Name*' name={`members.${index}.name`} control={methods.control} />
+                        <FormInput label='PayPal.Me' name={`members.${index}.payPalMe`} control={methods.control} />
+                      </div>
+                      <Show when={!isLast(index, memberFields)}>
+                        <IonButton className='m-0' fill='clear' color='danger' onClick={() => remove(index)}>
+                          <IonIcon slot='icon-only' icon={closeCircleSharp} />
+                        </IonButton>
+                      </Show>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-          ))}
+          </div>
         </IonContent>
         <ModalFooter>Gruppe speichern</ModalFooter>
       </form>

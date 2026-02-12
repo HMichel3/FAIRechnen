@@ -6,6 +6,8 @@ export const isPurchase = (payment: Payment): payment is Purchase => isNotNil((p
 
 export const isIncome = (payment: Payment): payment is Income => isNotNil((payment as Income).earnerId)
 
+export const isCompensation = (payment: Payment): payment is Compensation => isNotNil((payment as Compensation).payerId)
+
 export const displayBeneficiaryNames = (beneficiaries: Member[], members: Member[], additionPayers?: Member[]) => {
   const isForAllMembers = isEmpty(difference(members, beneficiaries))
   if (isForAllMembers) return 'Alle'

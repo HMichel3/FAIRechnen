@@ -1,8 +1,7 @@
-import { v4 as uuidv4 } from 'uuid'
 import { NewIncome } from '../../App/types'
-import { findItemIndex } from '../../App/utils'
+import { findItem, rejectById } from '../../App/utils'
 import { PersistImmer } from '../usePersistedStore'
-import { calculateNewIncome } from '../utils'
+import { calculateNewIncome, withMetaData } from '../utils'
 
 export type IncomeSlice = {
   addIncome: (groupId: string, newIncome: NewIncome) => void
@@ -13,36 +12,23 @@ export type IncomeSlice = {
 export const createIncomeSlice: PersistImmer<IncomeSlice> = set => ({
   addIncome: (groupId, newIncome) =>
     set(store => {
-      const groupIndex = findItemIndex(groupId, store.groups)
-      if (groupIndex === -1) return
-      const income = {
-        ...calculateNewIncome(newIncome),
-        id: uuidv4(),
-        timestamp: Date.now(),
-      }
-      store.groups[groupIndex].incomes.push(income)
+      const foundGroup = findItem(groupId, store.groups)
+      if (!foundGroup) return
+      const income = withMetaData(calculateNewIncome(newIncome))
+      foundGroup.incomes.push(income)
     }),
   editIncome: (groupId, incomeId, newIncome) =>
     set(store => {
-      const groupIndex = findItemIndex(groupId, store.groups)
-      if (groupIndex === -1) return
-      const incomeIndex = findItemIndex(incomeId, store.groups[groupIndex].incomes)
-      if (incomeIndex === -1) return
-      const { name, amount, earnerId, beneficiaryIds, description, memberAmount } = calculateNewIncome(newIncome)
-      const income = store.groups[groupIndex].incomes[incomeIndex]
-      income.name = name
-      income.amount = amount
-      income.earnerId = earnerId
-      income.beneficiaryIds = beneficiaryIds
-      income.description = description
-      income.memberAmount = memberAmount
+      const foundGroup = findItem(groupId, store.groups)
+      if (!foundGroup) return
+      const foundIncome = findItem(incomeId, foundGroup.incomes)
+      if (!foundIncome) return
+      Object.assign(foundIncome, calculateNewIncome(newIncome))
     }),
   deleteIncome: (groupId, incomeId) =>
     set(store => {
-      const groupIndex = findItemIndex(groupId, store.groups)
-      if (groupIndex === -1) return
-      const incomeIndex = findItemIndex(incomeId, store.groups[groupIndex].incomes)
-      if (incomeIndex === -1) return
-      store.groups[groupIndex].incomes.splice(incomeIndex, 1)
+      const foundGroup = findItem(groupId, store.groups)
+      if (!foundGroup) return
+      foundGroup.incomes = rejectById(incomeId, foundGroup.incomes)
     }),
 })

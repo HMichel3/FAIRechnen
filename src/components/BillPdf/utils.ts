@@ -1,21 +1,29 @@
-import { isNegative, isPositive } from '../../App/utils'
+import { CSSProperties } from 'react'
+import { getEuroValue, isNegative, isPositive } from '../../App/utils'
 
-export const TW_BLUE_500 = '#2b7fff'
-const TW_GREEN_200 = '#b9f8cf'
-const TW_RED_200 = '#ffc9c9'
-
-type RowStyle = {
-  borderBottom?: number
-  backgroundColor?: string
-  color?: string
+// see variables.css
+export const ION_COLORS = {
+  successShade: '#28ba62',
+  danger: '#eb445a',
+  mediumShade: '#808289',
+  light: '#f4f5f8',
+  lightShade: '#d7d8da',
+  payPal: '#0038ba',
 }
 
-export const getRowStyle = (current: number) => {
-  const style: RowStyle = {}
+export const COLLATOR = new Intl.Collator('de', { sensitivity: 'accent' })
+
+export const getCurrentColor = (current: number) => {
+  let color: CSSProperties['color'] = 'inherit'
   if (isPositive(current)) {
-    style.backgroundColor = TW_GREEN_200
+    color = ION_COLORS.successShade
   } else if (isNegative(current)) {
-    style.backgroundColor = TW_RED_200
+    color = ION_COLORS.danger
   }
-  return { style }
+  return color
+}
+
+export const getPayPalUrl = (payPalMe: string, name: string, amount: number) => {
+  const itemName = `FAIRechnen - ${name}`
+  return `https://www.paypal.com/paypalme/${payPalMe}/${getEuroValue(amount)}EUR?item_name=${encodeURIComponent(itemName)}`
 }

@@ -20,49 +20,39 @@ const FabButtonText = ({
   onClick,
   disabled,
 }: FabButtonTextProps): JSX.Element => {
-  if (equals(horizontal, 'start')) {
-    return (
-      <div className='flex gap-3'>
-        <IonFabButton color='primary' onClick={() => onClickFabButtonInList(onClick)} disabled={disabled}>
-          <IonIcon icon={icon} />
-        </IonFabButton>
-        <div
-          className={cn(
-            'mr-[-204px] flex w-[219px] flex-col items-start justify-center text-nowrap rounded-3xl bg-[#3a7be0] px-4',
-            {
-              'opacity-50': disabled,
-            }
-          )}
-        >
-          <IonText>{label}</IonText>
-          <IonText className='text-sm'>{description}</IonText>
-        </div>
-      </div>
-    )
-  }
+  const Button = (
+    <IonFabButton color='primary' onClick={() => onClickFabButtonInList(onClick)} disabled={disabled}>
+      <IonIcon icon={icon} />
+    </IonFabButton>
+  )
+
+  const className = cn(
+    'flex flex-col justify-center text-nowrap bg-[var(--ion-item-background)]',
+    disabled && 'opacity-50',
+    equals(horizontal, 'start')
+      ? 'ml-[-40px] w-[292px] items-start rounded-e-3xl pl-10 pr-4'
+      : 'ml-[-263px] mr-[-40px] w-[290px] items-end rounded-s-3xl pl-4 pr-10'
+  )
+
   return (
     <div className='flex gap-3'>
-      <div
-        className={cn(
-          'ml-[-283.7px] flex w-[272px] flex-col items-end justify-center text-nowrap rounded-3xl bg-[#3a7be0] px-4',
-          {
-            'opacity-50': disabled,
-          }
-        )}
-      >
+      {equals(horizontal, 'start') && Button}
+      <div className={className}>
         <IonText>{label}</IonText>
-        <IonText className='text-sm'>{description}</IonText>
+        <IonText className='text-sm text-neutral-400'>{description}</IonText>
       </div>
-      <IonFabButton color='primary' onClick={() => onClickFabButtonInList(onClick)} disabled={disabled}>
-        <IonIcon icon={icon} />
-      </IonFabButton>
+      {equals(horizontal, 'end') && Button}
     </div>
   )
 }
 
-type FabButtonProps = Omit<ComponentProps<typeof IonFab>, 'activated' | 'children'> & {
+type FabButtonProps = Omit<
+  ComponentProps<typeof IonFab>,
+  'activated' | 'children' | 'horizontal' | 'vertical' | 'slot'
+> & {
   icon: string
   children: { label: string; description: string; icon: string; onClick: () => void; disabled?: boolean }[]
+  horizontal: 'start' | 'end'
 }
 
 export const FabButton = ({ icon, children, horizontal, ...props }: FabButtonProps): JSX.Element => {
@@ -70,7 +60,7 @@ export const FabButton = ({ icon, children, horizontal, ...props }: FabButtonPro
 
   const component = (
     <>
-      <IonFab activated={activated} horizontal={horizontal} {...props}>
+      <IonFab activated={activated} horizontal={horizontal} vertical='bottom' slot='fixed' {...props}>
         <IonFabButton onClick={onClickFabButton}>
           <IonIcon icon={icon} />
         </IonFabButton>
@@ -86,8 +76,9 @@ export const FabButton = ({ icon, children, horizontal, ...props }: FabButtonPro
           ))}
         </IonFabList>
       </IonFab>
+      {/* IonBackdrop is not working properly */}
       <Show when={showBackdrop}>
-        <div className='absolute inset-0 bg-black/60' onClick={onClickBackdrop} />
+        <div className='backdrop absolute inset-0' onClick={onClickBackdrop} />
       </Show>
     </>
   )

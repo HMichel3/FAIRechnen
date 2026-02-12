@@ -1,10 +1,10 @@
-import { IonChip, IonText, useIonAlert, useIonModal } from '@ionic/react'
+import { IonChip, IonIcon, IonLabel, IonText, useIonAlert, useIonModal } from '@ionic/react'
 import { cartSharp, serverSharp, walletSharp } from 'ionicons/icons'
 import { motion } from 'motion/react'
-import { isEmpty } from 'ramda'
+import { isNotEmpty } from 'ramda'
 import { useRef, useState } from 'react'
 import { fadeOutLeftVariants, variantProps } from '../../App/animations'
-import { cn } from '../../App/utils'
+import { cn, getCompensationInfo, getIncomeInfo, getPurchaseInfo, isLast } from '../../App/utils'
 import { Income, Purchase } from '../../stores/types'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
@@ -12,22 +12,20 @@ import { IncomeModal } from '../IncomeModal'
 import { PurchaseModal } from '../PurchaseModal'
 import { SlidingListItem } from '../SlidingListItem'
 import { Show } from '../SolidComponents/Show'
-import { CompensationInfo } from './CompensationInfo'
-import { IncomeInfo } from './IncomeInfo'
-import { PurchaseInfo } from './PurchaseInfo'
+import { PaymentInfo } from './PaymentInfo'
 import { isIncome, isPurchase } from './utils'
 
 export const PaymentSegment = (): JSX.Element => {
   const deletePurchase = usePersistedStore(s => s.deletePurchase)
   const deleteIncome = usePersistedStore(s => s.deleteIncome)
   const deleteCompensation = usePersistedStore(s => s.deleteCompensation)
-  const { id: groupId, sortedPayments } = useStore(s => s.selectedGroup)
+  const { id: groupId, sortedPayments, members } = useStore(s => s.selectedGroup)
   const [presentCantEditCompensation] = useIonAlert()
   const [showPurchases, setShowPurchases] = useState(true)
   const [showIncomes, setShowIncomes] = useState(true)
   const [showCompensations, setShowCompensations] = useState(true)
-  const selectedPurchaseRef = useRef<Purchase | null>()
-  const selectedIncomeRef = useRef<Income | null>()
+  const selectedPurchaseRef = useRef<Purchase | null>(null)
+  const selectedIncomeRef = useRef<Income | null>(null)
 
   const [showPurchaseModal, dismissPurchaseModal] = useIonModal(PurchaseModal, {
     onDismiss: () => {
@@ -44,7 +42,7 @@ export const PaymentSegment = (): JSX.Element => {
     selectedIncome: selectedIncomeRef.current,
   })
 
-  const filteredGroupPayments = sortedPayments.filter(payment => {
+  const filteredPayments = sortedPayments.filter(payment => {
     if (isPurchase(payment)) {
       return showPurchases
     }
@@ -78,23 +76,26 @@ export const PaymentSegment = (): JSX.Element => {
           color={cn({ medium: !showPurchases, primary: showPurchases })}
           onClick={() => setShowPurchases(prev => !prev)}
         >
-          Einkäufe
+          <IonIcon icon={cartSharp} />
+          <IonLabel>Einkäufe</IonLabel>
         </IonChip>
         <IonChip
           color={cn({ medium: !showIncomes, primary: showIncomes })}
           onClick={() => setShowIncomes(prev => !prev)}
         >
-          Einkommen
+          <IonIcon icon={serverSharp} />
+          <IonLabel>Einkommen</IonLabel>
         </IonChip>
         <IonChip
           color={cn({ medium: !showCompensations, primary: showCompensations })}
           onClick={() => setShowCompensations(prev => !prev)}
         >
-          Zahlungen
+          <IonIcon icon={walletSharp} />
+          <IonLabel>Zahlungen</IonLabel>
         </IonChip>
       </div>
       <Show
-        when={!isEmpty(sortedPayments)}
+        when={isNotEmpty(sortedPayments)}
         fallback={
           <IonText
             className='grid place-items-center text-center text-lg text-neutral-400'
@@ -107,39 +108,45 @@ export const PaymentSegment = (): JSX.Element => {
         }
       >
         <div className='pb-20'>
-          {filteredGroupPayments.map(groupPayment => {
-            if (isPurchase(groupPayment)) {
+          {filteredPayments.map((payment, index) => {
+            if (isPurchase(payment)) {
+              const { purchaser } = getPurchaseInfo(payment, members)
               return (
                 <SlidingListItem
-                  key={groupPayment.id}
-                  onDelete={() => deletePurchase(groupId, groupPayment.id)}
-                  onSelect={() => onSelectPurchase(groupPayment)}
-                  labelComponent={<PurchaseInfo purchase={groupPayment} />}
+                  key={payment.id}
+                  onDelete={() => deletePurchase(groupId, payment.id)}
+                  onSelect={() => onSelectPurchase(payment)}
+                  labelComponent={<PaymentInfo {...payment} subtitle={`Von ${purchaser?.name}`} />}
                   icon={cartSharp}
                   detail={false}
+                  lines={isLast(index, filteredPayments) ? 'none' : 'inset'}
                 />
               )
             }
-            if (isIncome(groupPayment)) {
+            if (isIncome(payment)) {
+              const { earner } = getIncomeInfo(payment, members)
               return (
                 <SlidingListItem
-                  key={groupPayment.id}
-                  onDelete={() => deleteIncome(groupId, groupPayment.id)}
-                  onSelect={() => onSelectIncome(groupPayment)}
-                  labelComponent={<IncomeInfo income={groupPayment} />}
+                  key={payment.id}
+                  onDelete={() => deleteIncome(groupId, payment.id)}
+                  onSelect={() => onSelectIncome(payment)}
+                  labelComponent={<PaymentInfo {...payment} subtitle={`Von ${earner?.name}`} />}
                   icon={serverSharp}
                   detail={false}
+                  lines={isLast(index, filteredPayments) ? 'none' : 'inset'}
                 />
               )
             }
+            const { payer, receiver } = getCompensationInfo(payment, members)
             return (
               <SlidingListItem
-                key={groupPayment.id}
-                onDelete={() => deleteCompensation(groupId, groupPayment.id)}
+                key={payment.id}
+                onDelete={() => deleteCompensation(groupId, payment.id)}
                 onSelect={onSelectCompensation}
-                labelComponent={<CompensationInfo compensation={groupPayment} />}
+                labelComponent={<PaymentInfo {...payment} name={payer!.name} subtitle={`An ${receiver?.name}`} />}
                 icon={walletSharp}
                 detail={false}
+                lines={isLast(index, filteredPayments) ? 'none' : 'inset'}
               />
             )
           })}

@@ -76,7 +76,8 @@ http://ionicframework.com/docs/theming/ */
   --ion-color-light-tint: #f5f6f9;
 
   /** others **/
-  --ion-backdrop-opacity: 0.6;
+  --ion-backdrop-color: #000000;
+  --ion-backdrop-opacity: 0.75;
 }
 
 /* TODO: If i want to enable prefers-color-scheme i have to uncomment the following line and remove the .dark  */

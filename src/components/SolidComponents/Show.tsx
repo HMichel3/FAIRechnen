@@ -1,7 +1,17 @@
-type ShowProps = {
-  when: boolean
-  children: JSX.Element
-  fallback?: JSX.Element | null
+import { ReactNode } from 'react'
+
+type ShowProps<T> = {
+  when: T | undefined | null | false
+  fallback?: ReactNode
+  children: ReactNode | ((item: T) => ReactNode)
 }
 
-export const Show = ({ when, children, fallback = null }: ShowProps): JSX.Element | null => (when ? children : fallback)
+export function Show<T>({ when, fallback = null, children }: ShowProps<T>) {
+  if (!when) return <>{fallback}</>
+
+  if (typeof children === 'function') {
+    return <>{children(when)}</>
+  }
+
+  return <>{children}</>
+}

@@ -1,9 +1,10 @@
 import { IonItemOption, IonReorderGroup, IonText, useIonAlert } from '@ionic/react'
 import { peopleSharp } from 'ionicons/icons'
-import { clone, isEmpty } from 'ramda'
+import { clone, isEmpty, isNotEmpty } from 'ramda'
 import { useEffect, useState } from 'react'
-import { isGroupActive, isLast } from '../../App/utils'
+import { isGroupActive } from '../../App/utils'
 import { GroupInfo } from '../../pages/GroupPage/GroupInfo'
+import { determineLines } from '../../pages/GroupPage/utils'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { SlidingListItem } from '../SlidingListItem'
 import { Show } from '../SolidComponents/Show'
@@ -45,7 +46,7 @@ export const GroupPageList = ({ reorder }: GroupPageListProps) => {
   return (
     <>
       <Show
-        when={!isEmpty(copiedGroups)}
+        when={isNotEmpty(copiedGroups)}
         fallback={
           isGroupArchiveEmpty ? (
             <IonText className='grid h-full place-items-center text-lg text-neutral-400'>
@@ -55,23 +56,23 @@ export const GroupPageList = ({ reorder }: GroupPageListProps) => {
         }
       >
         <IonReorderGroup disabled={!reorder} onIonReorderEnd={({ detail }) => setGroups(detail.complete(copiedGroups))}>
-          {copiedGroups.map(group => (
+          {copiedGroups.map((group, index) => (
             <SlidingListItem
               key={group.id}
-              label={group.name}
               routerLink={`/groups/${group.id}`}
               onDelete={() => onDeleteGroup(group.id)}
               icon={peopleSharp}
               labelComponent={<GroupInfo group={group} />}
               reorder={reorder}
-              lines={isLast(group, copiedGroups) && !isEmpty(groupArchive) ? 'full' : 'inset'}
+              lines={determineLines(index, copiedGroups, groupArchive)}
               rightSlideOption={<IonItemOption onClick={() => archiveGroup(group.id)}>Archivieren</IonItemOption>}
               activeIcon={isGroupActive(group)}
+              detail
             />
           ))}
         </IonReorderGroup>
       </Show>
-      <Show when={!isEmpty(groupArchive)}>
+      <Show when={isNotEmpty(groupArchive)}>
         <ArchivedGroups showGroupArchive={showGroupArchive} setShowGroupArchive={setShowGroupArchive} />
       </Show>
     </>

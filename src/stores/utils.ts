@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid'
 import { NewAddition, NewIncome, NewPurchase } from '../App/types'
 import { Addition } from './types'
 
@@ -37,3 +38,5 @@ export const calculateNewIncome = (income: NewIncome) => {
   const [newIncomeAmount, incomeMemberAmount] = calculateNewAmount(income.amount, income.beneficiaryIds)
   return { ...income, amount: newIncomeAmount, memberAmount: incomeMemberAmount }
 }
+
+export const withMetaData = <T>(object: T) => ({ id: uuidv4(), timestamp: Date.now(), ...object })

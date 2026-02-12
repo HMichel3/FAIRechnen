@@ -32,16 +32,21 @@ export const AddManualCompensation = ({ setManualCompensation }: AddManualCompen
   const isPayerEqualToReceiver = payerId === receiverId
 
   useEffect(() => {
-    if (isPayerEqualToReceiver) setValue('receiverId', '')
+    if (isPayerEqualToReceiver) {
+      setValue('receiverId', '')
+    }
   }, [isPayerEqualToReceiver, setValue])
 
   useEffect(() => {
-    if (isEmpty(payerId) || isEmpty(receiverId) || amount <= 0) return setManualCompensation(null)
+    if (isEmpty(payerId) || isEmpty(receiverId) || amount <= 0) {
+      setManualCompensation(null)
+      return
+    }
     setManualCompensation({ payerId, receiverId, amount })
   }, [amount, payerId, receiverId, setManualCompensation])
 
   return (
-    <motion.div variants={fadeInOutTopVariants} {...variantProps}>
+    <motion.div variants={fadeInOutTopVariants} {...variantProps} className='bg-[var(--ion-item-background)] pl-9'>
       <FormSelect label='Zahler' name='payerId' selectOptions={members} control={control} />
       <FormSelect label='Empfänger' name='receiverId' selectOptions={membersWithoutPayer} control={control} />
       <FormCurrency label='Betrag' name='amount' control={control} />

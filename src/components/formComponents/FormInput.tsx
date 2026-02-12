@@ -1,22 +1,22 @@
 import { IonInput } from '@ionic/react'
 import { trim } from 'ramda'
+import { KeyboardEventHandler } from 'react'
 import { Control, FieldValues, Path, useController } from 'react-hook-form'
-import { ReactHookFormOnChange } from '../../App/types'
 import { cn } from '../../App/utils'
 
-type FormInputProps<Type extends FieldValues> = {
+type FormInputProps<T extends FieldValues> = {
   label: string
-  name: Path<Type>
-  control: Control<Type>
+  name: Path<T>
+  control: Control<T>
   className?: string
+  onKeyDown?: KeyboardEventHandler<HTMLIonInputElement>
 }
 
-export const FormInput = <Type extends FieldValues>({ label, name, control, className }: FormInputProps<Type>) => {
+export const FormInput = <T extends FieldValues>({ label, name, control, className, onKeyDown }: FormInputProps<T>) => {
   const {
     field: { value, onChange },
     fieldState: { invalid },
   } = useController({ name, control })
-  const typedOnChange: ReactHookFormOnChange = onChange
 
   return (
     <IonInput
@@ -25,9 +25,10 @@ export const FormInput = <Type extends FieldValues>({ label, name, control, clas
       labelPlacement='floating'
       label={label}
       value={value}
-      onIonInput={typedOnChange}
-      onIonBlur={() => typedOnChange(trim(value))}
+      onIonInput={onChange}
+      onIonBlur={() => onChange(trim(value))}
       autocapitalize='sentences'
+      onKeyDown={onKeyDown}
     />
   )
 }

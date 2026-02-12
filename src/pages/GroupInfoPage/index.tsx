@@ -1,4 +1,4 @@
-import { Directory, Filesystem } from '@capacitor/filesystem'
+import { Directory, Encoding, Filesystem } from '@capacitor/filesystem'
 import { Share } from '@capacitor/share'
 import {
   IonBackButton,
@@ -26,28 +26,28 @@ import {
   personSharp,
   serverSharp,
   shareSocialSharp,
-  textSharp,
+  swapHorizontalSharp,
   walletSharp,
 } from 'ionicons/icons'
 import { AnimatePresence } from 'motion/react'
-import { isEmpty, trim } from 'ramda'
+import { trim } from 'ramda'
 import { useEffect, useMemo, useState } from 'react'
 import { RouteComponentProps } from 'react-router'
-import { calculateMembersWithAmounts, cn } from '../../App/utils'
+import { stringify } from 'superjson'
+import { calculateMembersWithAmounts, cn, createFileName } from '../../App/utils'
 import { AddCompensationModal } from '../../components/AddCompensationModal'
 import { generateCompensationChain } from '../../components/AddCompensationModal/utils'
 import { BillPdf } from '../../components/BillPdf'
 import { FabButton } from '../../components/FabButton'
 import { IncomeModal } from '../../components/IncomeModal'
+import { MemberModal } from '../../components/MemberModal'
 import { MemberSegment } from '../../components/MemberSegment'
 import { PaymentSegment } from '../../components/PaymentSegment'
 import { mergeAndSortPayments } from '../../components/PaymentSegment/utils'
 import { PurchaseModal } from '../../components/PurchaseModal'
-import { Show } from '../../components/SolidComponents/Show'
-import { SuccessAnimation } from '../../lotties/SuccessAnimation'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
-import { blobToBase64, generateBillText } from './utils'
+import { blobToBase64 } from './utils'
 
 type GroupInfoPageProps = RouteComponentProps<{
   id: string
@@ -60,15 +60,15 @@ export const GroupInfoPage = ({
 }: GroupInfoPageProps): JSX.Element => {
   const group = usePersistedStore(s => s.getGroup(groupId))
   const editGroupName = usePersistedStore(s => s.editGroupName)
-  const addMember = usePersistedStore(s => s.addMember)
   const setSelectedGroup = useStore(s => s.setSelectedGroup)
   const clearSelectedGroup = useStore(s => s.clearSelectedGroup)
-  const showAnimation = useStore(s => s.showAnimation)
   const setShowAnimation = useStore(s => s.setShowAnimation)
   const [presentEditGroupName] = useIonAlert()
-  const [presentAddMember] = useIonAlert()
   const [showSegment, setShowSegment] = useState('members')
 
+  const [showMemberModal, dismissMemberModal] = useIonModal(MemberModal, {
+    onDismiss: () => dismissMemberModal(),
+  })
   const [showPurchaseModal, dismissPurchaseModal] = useIonModal(PurchaseModal, {
     onDismiss: () => dismissPurchaseModal(),
   })
@@ -117,39 +117,6 @@ export const GroupInfoPage = ({
     })
   }
 
-  const onAddMember = () => {
-    presentAddMember({
-      header: 'Mitglied hinzufügen',
-      inputs: [{ cssClass: 'm-0', name: 'memberName', placeholder: 'Name eingeben' }],
-      buttons: [
-        { role: 'cancel', text: 'Abbrechen', cssClass: 'alert-button-cancel' },
-        {
-          role: 'confirm',
-          text: 'Speichern',
-          handler: ({ memberName }) => {
-            addMember(group.id, trim(memberName))
-            setShowAnimation()
-          },
-        },
-      ],
-    })
-  }
-
-  const onShareCompensationChain = () => {
-    Share.share({
-      title: 'FAIRechnen - Zahlungsvorschläge',
-      dialogTitle: 'Zahlungsvorschläge teilen',
-      text: generateBillText(
-        group.name,
-        group.members,
-        group.purchases,
-        group.incomes,
-        group.compensations,
-        compensationChain
-      ),
-    })
-  }
-
   const onShareGroupOverview = async () => {
     const pdfBlob = await pdf(
       <BillPdf
@@ -158,23 +125,34 @@ export const GroupInfoPage = ({
         incomes={group.incomes}
         membersWithAmounts={membersWithAmounts}
         sortedPayments={sortedPayments}
+        compensationChain={compensationChain}
       />
     ).toBlob()
-    const fileName = 'FAIRechnen_Gruppenübersicht.pdf'
+    const fileName = createFileName(group.name, 'pdf')
     const { uri: filePath } = await Filesystem.writeFile({
       path: fileName,
       data: await blobToBase64(pdfBlob),
       directory: Directory.Cache,
     })
     await Share.share({
-      title: 'FAIRechnen - Gruppenübersicht',
-      dialogTitle: 'Gruppenübersicht teilen',
-      url: filePath,
+      title: `FAIRechnen - ${group.name} (PDF)`,
+      dialogTitle: `${group.name} teilen`,
       files: [filePath],
     })
-    await Filesystem.deleteFile({
+  }
+
+  const onShareGroupData = async () => {
+    const fileName = createFileName(group.name, 'json')
+    const { uri: filePath } = await Filesystem.writeFile({
       path: fileName,
+      data: stringify(group),
       directory: Directory.Cache,
+      encoding: Encoding.UTF8,
+    })
+    await Share.share({
+      title: `FAIRechnen - ${group.name} (JSON)`,
+      dialogTitle: `${group.name} teilen`,
+      files: [filePath],
     })
   }
 
@@ -223,30 +201,29 @@ export const GroupInfoPage = ({
           {showSegment === 'members' && <MemberSegment key='members' />}
           {showSegment === 'payments' && <PaymentSegment key='payments' />}
         </AnimatePresence>
-        <FabButton vertical='bottom' horizontal='start' slot='fixed' icon={shareSocialSharp}>
+        <FabButton horizontal='start' icon={shareSocialSharp}>
           {[
             {
-              label: 'Gruppenübersicht teilen',
-              description: 'Gruppenübersicht als PDF',
+              label: 'Gruppe exportieren (JSON)',
+              description: 'Daten für späteren Import exportieren',
+              icon: swapHorizontalSharp,
+              onClick: onShareGroupData,
+            },
+            {
+              label: 'Gruppen teilen (PDF)',
+              description: 'Details und Zahlungsvorschläge teilen',
               icon: documentTextSharp,
               onClick: onShareGroupOverview,
             },
-            {
-              label: 'Zahlungsvorschläge teilen',
-              description: 'Zahlungsvorschläge als Text',
-              icon: textSharp,
-              onClick: onShareCompensationChain,
-              disabled: isEmpty(compensationChain),
-            },
           ]}
         </FabButton>
-        <FabButton vertical='bottom' horizontal='end' slot='fixed' icon={addSharp}>
+        <FabButton horizontal='end' icon={addSharp}>
           {[
             {
               label: 'Mitglied hinzufügen',
               description: 'Neue Person, die sich beteiligt',
               icon: personSharp,
-              onClick: onAddMember,
+              onClick: showMemberModal,
             },
             {
               label: 'Zahlung hinzufügen',
@@ -271,10 +248,19 @@ export const GroupInfoPage = ({
             },
           ]}
         </FabButton>
+        {/* can be used to preview the PDF in the browser for making easy adjustments */}
+        {/* {renderPdf(
+          <BillPdf
+            name={group.name}
+            purchases={group.purchases}
+            incomes={group.incomes}
+            membersWithAmounts={membersWithAmounts}
+            sortedPayments={sortedPayments}
+            compensationChain={compensationChain}
+          />,
+          true
+        )} */}
       </IonContent>
-      <Show when={showAnimation}>
-        <SuccessAnimation />
-      </Show>
     </IonPage>
   )
 }

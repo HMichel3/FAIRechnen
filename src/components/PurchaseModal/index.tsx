@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { IonContent, IonLabel, IonSegment, IonSegmentButton, IonToolbar, useIonAlert } from '@ionic/react'
 import { AnimatePresence } from 'motion/react'
-import { isEmpty, map, pick, prop } from 'ramda'
+import { isNotEmpty, map, pick, prop } from 'ramda'
 import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -136,7 +136,7 @@ export const PurchaseModal = ({ onDismiss, selectedPurchase }: PurchaseModalProp
         </AnimatePresence>
       </IonContent>
       <ModalFooter>Einkauf speichern</ModalFooter>
-      <Show when={!isEmpty(showConvertModal)}>
+      <Show when={isNotEmpty(showConvertModal)}>
         <ConvertModal
           setFormAmount={amount => setValue(showConvertModal as PurchaseFormPropertyName, amount)}
           onDismiss={() => setShowConvertModal('')}

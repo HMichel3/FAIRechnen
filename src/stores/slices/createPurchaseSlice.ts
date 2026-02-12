@@ -1,8 +1,7 @@
-import { v4 as uuidv4 } from 'uuid'
 import { NewPurchase } from '../../App/types'
-import { findItemIndex } from '../../App/utils'
+import { findItem, rejectById } from '../../App/utils'
 import { PersistImmer } from '../usePersistedStore'
-import { calculateNewPurchase } from '../utils'
+import { calculateNewPurchase, withMetaData } from '../utils'
 
 export type PurchaseSlice = {
   addPurchase: (groupId: string, newPurchase: NewPurchase) => void
@@ -13,38 +12,23 @@ export type PurchaseSlice = {
 export const createPurchaseSlice: PersistImmer<PurchaseSlice> = set => ({
   addPurchase: (groupId, newPurchase) =>
     set(store => {
-      const groupIndex = findItemIndex(groupId, store.groups)
-      if (groupIndex === -1) return
-      const purchase = {
-        ...calculateNewPurchase(newPurchase),
-        id: uuidv4(),
-        timestamp: Date.now(),
-      }
-      store.groups[groupIndex].purchases.push(purchase)
+      const foundGroup = findItem(groupId, store.groups)
+      if (!foundGroup) return
+      const purchase = withMetaData(calculateNewPurchase(newPurchase))
+      foundGroup.purchases.push(purchase)
     }),
   editPurchase: (groupId, purchaseId, newPurchase) =>
     set(store => {
-      const groupIndex = findItemIndex(groupId, store.groups)
-      if (groupIndex === -1) return
-      const purchaseIndex = findItemIndex(purchaseId, store.groups[groupIndex].purchases)
-      if (purchaseIndex === -1) return
-      const { name, amount, purchaserId, beneficiaryIds, description, additions, memberAmount } =
-        calculateNewPurchase(newPurchase)
-      const purchase = store.groups[groupIndex].purchases[purchaseIndex]
-      purchase.name = name
-      purchase.amount = amount
-      purchase.purchaserId = purchaserId
-      purchase.beneficiaryIds = beneficiaryIds
-      purchase.description = description
-      purchase.additions = additions
-      purchase.memberAmount = memberAmount
+      const foundGroup = findItem(groupId, store.groups)
+      if (!foundGroup) return
+      const foundPurchase = findItem(purchaseId, foundGroup.purchases)
+      if (!foundPurchase) return
+      Object.assign(foundPurchase, calculateNewPurchase(newPurchase))
     }),
   deletePurchase: (groupId, purchaseId) =>
     set(store => {
-      const groupIndex = findItemIndex(groupId, store.groups)
-      if (groupIndex === -1) return
-      const purchaseIndex = findItemIndex(purchaseId, store.groups[groupIndex].purchases)
-      if (purchaseIndex === -1) return
-      store.groups[groupIndex].purchases.splice(purchaseIndex, 1)
+      const foundGroup = findItem(groupId, store.groups)
+      if (!foundGroup) return
+      foundGroup.purchases = rejectById(purchaseId, foundGroup.purchases)
     }),
 })

@@ -1,6 +1,5 @@
 import { IonButton, IonIcon } from '@ionic/react'
 import { closeSharp } from 'ionicons/icons'
-import { isNotNil } from 'ramda'
 import { ReactNode } from 'react'
 import { Show } from '../SolidComponents/Show'
 
@@ -33,10 +32,10 @@ export const InfoSlideWithIcon = ({
     </div>
     <div className='flex flex-col gap-4 px-8'>
       <p>{firstParagraph}</p>
-      <Show when={isNotNil(secondParagraph)}>
+      <Show when={secondParagraph}>
         <p>{secondParagraph}</p>
       </Show>
-      <Show when={isNotNil(thirdParagraph)}>
+      <Show when={thirdParagraph}>
         <p>{thirdParagraph}</p>
       </Show>
       {children}

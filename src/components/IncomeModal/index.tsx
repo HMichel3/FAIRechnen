@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { IonContent, IonLabel } from '@ionic/react'
-import { isEmpty, map, pick, prop } from 'ramda'
+import { isNotEmpty, map, pick, prop } from 'ramda'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -99,7 +99,7 @@ export const IncomeModal = ({ onDismiss, selectedIncome }: IncomeModalProps): JS
         </div>
       </IonContent>
       <ModalFooter>Einkommen speichern</ModalFooter>
-      <Show when={!isEmpty(showConvertModal)}>
+      <Show when={isNotEmpty(showConvertModal)}>
         <ConvertModal
           setFormAmount={amount => setValue(showConvertModal as IncomeFormPropertyName, amount)}
           onDismiss={() => setShowConvertModal('')}

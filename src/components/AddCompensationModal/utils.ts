@@ -1,6 +1,6 @@
 import { produce } from 'immer'
 import { descend, isEmpty, join, prop, sort } from 'ramda'
-import { CompensationsWithoutTimestamp, MemberWithAmounts } from '../../App/types'
+import { CompensationWithoutTimestamp, MemberWithAmounts } from '../../App/types'
 import { findItemIndex, isNegative, isPositive } from '../../App/utils'
 
 export const generatePossibleCompensations = (membersWithAmounts: MemberWithAmounts[]) => {
@@ -12,7 +12,7 @@ export const generatePossibleCompensations = (membersWithAmounts: MemberWithAmou
     .filter(m => isPositive(m.current))
     .map(m => ({ ...m }))
     .toSorted(descend(prop('current')))
-  const compensations: CompensationsWithoutTimestamp[] = []
+  const compensations: CompensationWithoutTimestamp[] = []
   let debtorIndex = 0
   let creditorIndex = 0
   while (debtorIndex < debtors.length && creditorIndex < creditors.length) {
@@ -34,7 +34,7 @@ export const generatePossibleCompensations = (membersWithAmounts: MemberWithAmou
 }
 
 export const generateCompensationChain = (membersWithAmounts: MemberWithAmounts[]) => {
-  const addedCompensations: CompensationsWithoutTimestamp[] = []
+  const addedCompensations: CompensationWithoutTimestamp[] = []
   for (let result; (result = generatePossibleCompensations(membersWithAmounts)); ) {
     if (isEmpty(result)) break
     const { amount, payerId, receiverId } = result[0]

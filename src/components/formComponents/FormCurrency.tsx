@@ -2,13 +2,12 @@ import { IonInput } from '@ionic/react'
 import { isNotNil, toString } from 'ramda'
 import { useRef } from 'react'
 import { Control, FieldValues, Path, useController } from 'react-hook-form'
-import { ReactHookFormOnChange } from '../../App/types'
 import { cn, displayCurrencyValue } from '../../App/utils'
 
-type FormCurrencyProps<Type extends FieldValues> = {
+type FormCurrencyProps<T extends FieldValues> = {
   label: string
-  name: Path<Type>
-  control: Control<Type>
+  name: Path<T>
+  control: Control<T>
   className?: string
 }
 
@@ -17,18 +16,17 @@ const VALID_NEXT = /^[0-9]{1}$/
 const DELETE_INPUT = 'deleteContentBackward'
 const MAX = Number.MAX_SAFE_INTEGER
 
-export const FormCurrency = <Type extends FieldValues>({
+export const FormCurrency = <T extends FieldValues>({
   label,
   name,
   control,
   className,
-}: FormCurrencyProps<Type>): JSX.Element => {
+}: FormCurrencyProps<T>): JSX.Element => {
   const {
     field: { value, onChange },
     fieldState: { invalid },
   } = useController({ name, control })
   const ionInputRef = useRef<HTMLIonInputElement>(null)
-  const typedOnChange: ReactHookFormOnChange = onChange
 
   const valueAbsTrunc = Math.trunc(Math.abs(value))
 
@@ -65,7 +63,7 @@ export const FormCurrency = <Type extends FieldValues>({
       return
     }
 
-    typedOnChange(nextValue)
+    onChange(nextValue)
   }
 
   return (
