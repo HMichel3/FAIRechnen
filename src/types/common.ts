@@ -1,4 +1,4 @@
-import { Addition, Compensation, Income, Member, Purchase } from '../stores/types'
+import { Addition, Compensation, Income, Member, Purchase } from './store'
 
 export type MemberWithAmounts = Member & {
   current: number

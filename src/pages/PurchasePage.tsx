@@ -15,10 +15,10 @@ import { PageFooter } from '../components/ui/PageFooter'
 import { PageHeader } from '../components/ui/PageHeader'
 import { useDismiss } from '../hooks/useDissmiss'
 import { useOverlay } from '../hooks/useOverlay'
-import { Member, Purchase } from '../stores/types'
 import { usePersistedStore } from '../stores/usePersistedStore'
 import { useStore } from '../stores/useStore'
 import { NewPurchase } from '../types/common'
+import { Member, Purchase } from '../types/store'
 import { displayCurrencyValue, findItem, getTotalAmountFromArray } from '../utils/common'
 
 export type PurchaseFormPropertyName =

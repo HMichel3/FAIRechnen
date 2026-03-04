@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { MemberWithAmounts, Payment } from '../types/common'
+import { MemberWithAmounts, Payment } from './common'
 
 export type Theme = 'dark' | 'white'
 

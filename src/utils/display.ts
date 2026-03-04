@@ -1,5 +1,5 @@
 import { isNotEmpty } from 'ramda'
-import { Group } from '../stores/types'
+import { Group } from '../types/store'
 import { isLast } from './common'
 
 export const displayMemberQuantity = (memberQuantity: number) =>

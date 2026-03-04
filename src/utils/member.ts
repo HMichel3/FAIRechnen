@@ -1,5 +1,5 @@
 import { equals, includes, where, whereAny } from 'ramda'
-import { Addition, Compensation, Income, Purchase } from '../stores/types'
+import { Addition, Compensation, Income, Purchase } from '../types/store'
 
 const isMemberInAdditions = (memberId: string, additions: Addition[]) =>
   additions.some(

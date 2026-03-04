@@ -1,6 +1,6 @@
 import { descend, difference, includes, isEmpty, isNotNil, join, map, prop, sort } from 'ramda'
-import { Addition, Compensation, Income, Member, Purchase } from '../stores/types'
 import { Payment } from '../types/common'
+import { Addition, Compensation, Income, Member, Purchase } from '../types/store'
 
 export const isPurchase = (payment: Payment): payment is Purchase => isNotNil((payment as Purchase).purchaserId)
 

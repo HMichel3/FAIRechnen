@@ -11,9 +11,9 @@ import { IconButton } from '../components/ui/IconButton'
 import { PageFooter } from '../components/ui/PageFooter'
 import { PageHeader } from '../components/ui/PageHeader'
 import { useDismiss } from '../hooks/useDissmiss'
-import { Member } from '../stores/types'
 import { usePersistedStore } from '../stores/usePersistedStore'
 import { useStore } from '../stores/useStore'
+import { Member } from '../types/store'
 import { cn, filterNonEmptyNames, findItemIndexByName, isLast, isNameInArray, normalizeString } from '../utils/common'
 
 const validationSchema = z.object({

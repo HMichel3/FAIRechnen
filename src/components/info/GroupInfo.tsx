@@ -1,5 +1,5 @@
 import { IonText } from '@ionic/react'
-import { Group } from '../../stores/types'
+import { Group } from '../../types/store'
 import { calculateGroupTotalAmount, displayCurrencyValue, displayTimestamp } from '../../utils/common'
 import { displayHistoryQuantity, displayMemberQuantity } from '../../utils/display'
 

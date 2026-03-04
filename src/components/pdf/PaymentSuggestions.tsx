@@ -1,7 +1,7 @@
 import { Link, StyleSheet, View } from '@react-pdf/renderer'
 import { groupBy, prop, sort, toPairs } from 'ramda'
-import { Member } from '../../stores/types'
 import { CompensationWithoutTimestamp } from '../../types/common'
+import { Member } from '../../types/store'
 import { displayCurrencyValue, findItem, getTotalAmountFromArray, isNotEmptyString } from '../../utils/common'
 import { COLLATOR, getPayPalUrl, ION_COLORS } from '../../utils/pdf'
 import { PDFText } from './PDFComponents'

@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
 import { NewAddition, NewIncome, NewPurchase } from '../types/common'
-import { Addition } from './types'
+import { Addition } from '../types/store'
 
 const calculateNewAmount = (amount: number, beneficiaryIds: string[]) => {
   const memberCount = beneficiaryIds.length

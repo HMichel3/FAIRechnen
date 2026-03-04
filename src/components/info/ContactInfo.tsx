@@ -1,5 +1,5 @@
 import { IonText } from '@ionic/react'
-import { Member } from '../../stores/types'
+import { Member } from '../../types/store'
 import { isNotEmptyString } from '../../utils/common'
 
 type ContactInfoProps = {

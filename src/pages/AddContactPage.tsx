@@ -9,10 +9,10 @@ import { PageFooter } from '../components/ui/PageFooter'
 import { PageHeader } from '../components/ui/PageHeader'
 import { useDismiss } from '../hooks/useDissmiss'
 import { ContactSliceResult } from '../stores/slices/createContactSlice'
-import { Member } from '../stores/types'
 import { usePersistedStore } from '../stores/usePersistedStore'
 import { useStore } from '../stores/useStore'
 import { NewMember } from '../types/common'
+import { Member } from '../types/store'
 import { findItem } from '../utils/common'
 
 type AddContactPageProps = RouteComponentProps<{

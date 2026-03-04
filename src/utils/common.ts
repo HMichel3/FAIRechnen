@@ -33,12 +33,9 @@ import {
   uniqBy,
 } from 'ramda'
 import { twMerge } from 'tailwind-merge'
-import { Compensation, Group, Income, Member, Purchase } from '../stores/types'
 import { CompensationWithoutTimestamp, MemberWithAmounts } from '../types/common'
+import { Compensation, Group, Income, Member, Purchase } from '../types/store'
 import { getAdditionPayerIdsNotInBeneficiaries } from './payment'
-
-// TODO: Nochmal durch alle utils durchgehen, auch die anderen Dateien und die einzelnen Funktionen "richtig" einsortieren und ggf. auch zu remeda migrieren
-// TODO: Nochmal alle packages updaten
 
 // From ramda-adjunct
 const isNumber = curryN(1, pipe(type, identical('Number') as (value: string) => boolean))

@@ -1,7 +1,7 @@
 import { StyleSheet, View } from '@react-pdf/renderer'
 import { isNotEmpty } from 'ramda'
 import { ElementType } from 'react'
-import { Addition } from '../../stores/types'
+import { Addition } from '../../types/store'
 import { displayCurrencyValue, displayTimestamp, isNotEmptyString } from '../../utils/common'
 import { displayAdditionQuantity } from '../../utils/payment'
 import { ION_COLORS } from '../../utils/pdf'

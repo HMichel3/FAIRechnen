@@ -1,7 +1,7 @@
 import { Capacitor } from '@capacitor/core'
 import { PickedFile } from '@capawesome/capacitor-file-picker'
 import { parse } from 'superjson'
-import { GroupSchema } from '../stores/types'
+import { GroupSchema } from '../types/store'
 
 export const extractGroupFromFile = async (file: PickedFile) => {
   const webPath = Capacitor.convertFileSrc(file.path!)

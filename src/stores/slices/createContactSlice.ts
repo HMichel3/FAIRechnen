@@ -1,7 +1,7 @@
 import { isEmpty } from 'ramda'
 import { NewMember } from '../../types/common'
+import { Member } from '../../types/store'
 import { findItemIndex, isNameInArray, rejectById } from '../../utils/common'
-import { Member } from '../types'
 import { PersistImmer } from '../usePersistedStore'
 import { withMetaData } from '../utils'
 
