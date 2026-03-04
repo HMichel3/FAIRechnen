@@ -1,5 +1,5 @@
 import { StateCreator } from 'zustand'
-import { SelectedGroup } from '../types'
+import { SelectedGroup } from '../../types/store'
 import { StoreState } from '../useStore'
 
 export type SelectedGroupSlice = {

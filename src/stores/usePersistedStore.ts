@@ -64,7 +64,7 @@ export const usePersistedStore = create<PersistedState>()(
       partialize: state => ({
         groups: state.groups,
         groupArchive: state.groupArchive,
-        showInfoSlides: state.showInfoSlides,
+        isInfoSlideOpen: state.isInfoSlideOpen,
         contacts: state.contacts,
       }),
       onRehydrateStorage: () => () => {

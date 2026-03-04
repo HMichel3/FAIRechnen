@@ -1,11 +1,11 @@
 import { isEmpty } from 'ramda'
-import { NewMember } from '../../App/types'
-import { findItemIndex, isNameInArray, rejectById } from '../../App/utils'
-import { Member } from '../types'
+import { NewMember } from '../../types/common'
+import { Member } from '../../types/store'
+import { findItemIndex, isNameInArray, rejectById } from '../../utils/common'
 import { PersistImmer } from '../usePersistedStore'
 import { withMetaData } from '../utils'
 
-type ContactSliceResult = { success: true } | { success: false; reason: 'contact_not_found' | 'duplicate_name' }
+export type ContactSliceResult = { success: true } | { success: false; reason: 'contact_not_found' | 'duplicate_name' }
 
 export type ContactSlice = {
   contacts: Member[]

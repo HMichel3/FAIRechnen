@@ -1,5 +1,5 @@
-import { NewIncome } from '../../App/types'
-import { findItem, rejectById } from '../../App/utils'
+import { NewIncome } from '../../types/common'
+import { findItem, rejectById } from '../../utils/common'
 import { PersistImmer } from '../usePersistedStore'
 import { calculateNewIncome, withMetaData } from '../utils'
 

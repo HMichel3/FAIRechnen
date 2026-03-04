@@ -1,5 +1,5 @@
-import { NewCompensation } from '../../App/types'
-import { findItemIndex } from '../../App/utils'
+import { NewCompensation } from '../../types/common'
+import { findItemIndex } from '../../utils/common'
 import { PersistImmer } from '../usePersistedStore'
 import { withMetaData } from '../utils'
 
