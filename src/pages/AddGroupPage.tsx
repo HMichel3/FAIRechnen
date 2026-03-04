@@ -131,7 +131,7 @@ export const AddGroupPage = () => {
                     >
                       <div className='flex items-center gap-3'>
                         <div className='flex-1'>
-                          <FormInput label='Name*' name={`members.${index}.name`} control={methods.control} />
+                          <FormInput label='Name' name={`members.${index}.name`} control={methods.control} />
                           <FormInput label='PayPal.Me' name={`members.${index}.payPalMe`} control={methods.control} />
                         </div>
                         {!isLast(index, memberFields) && (

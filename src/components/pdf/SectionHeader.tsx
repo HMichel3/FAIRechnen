@@ -7,7 +7,9 @@ export const SectionHeader = ({ children }: PropsWithChildren) => {
   return (
     <View style={styles.sectionHeader} wrap={false}>
       <View style={styles.sectionAccent} />
-      <PDFText variant='h2'>{children}</PDFText>
+      <PDFText variant='h2' style={{ lineHeight: 1 }}>
+        {children}
+      </PDFText>
     </View>
   )
 }
@@ -16,7 +18,7 @@ const styles = StyleSheet.create({
   sectionHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: 8,
     marginBottom: 8,
   },
   sectionAccent: {
