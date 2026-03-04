@@ -1,10 +1,10 @@
 import { IonIcon, IonItem, IonLabel } from '@ionic/react'
 import { archiveSharp, chevronDownSharp, chevronUpSharp } from 'ionicons/icons'
 import { AnimatePresence, motion } from 'motion/react'
-import { Group } from '../types/store'
-import { fadeInOutTopVariants } from '../utils/animation'
-import { usePersistedStore } from './../stores/usePersistedStore'
-import { SlidingListItem } from './ui/SlidingListItem'
+import { usePersistedStore } from '../../stores/usePersistedStore'
+import { Group } from '../../types/store'
+import { fadeInOutTopVariants } from '../../utils/animation'
+import { SlidingListItem } from '../ui/SlidingListItem'
 
 type ArchivedGroupsProps = {
   groupArchive: Group[]

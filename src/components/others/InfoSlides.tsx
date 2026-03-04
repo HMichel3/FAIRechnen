@@ -6,7 +6,7 @@ import 'swiper/css'
 import 'swiper/css/pagination'
 import { Pagination } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
-import { IconButton } from './ui/IconButton'
+import { IconButton } from '../ui/IconButton'
 
 type InfoSlideWithIconProps = PropsWithChildren<{
   icon: string

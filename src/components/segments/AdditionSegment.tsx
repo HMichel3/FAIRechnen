@@ -7,7 +7,7 @@ import { PurchaseFormPropertyName } from '../../pages/PurchasePage'
 import { NewPurchase } from '../../types/common'
 import { SelectedGroup } from '../../types/store'
 import { fadeOutLeftVariants } from '../../utils/animation'
-import { AdditionCard } from '../AdditionCard'
+import { AdditionCard } from '../others/AdditionCard'
 import { IconButton } from '../ui/IconButton'
 
 type AdditionSegmentProps = {

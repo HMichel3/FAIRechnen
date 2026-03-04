@@ -13,7 +13,7 @@ import {
 } from '@ionic/react'
 import { helpCircleSharp } from 'ionicons/icons'
 import { usePersistedStore } from '../../stores/usePersistedStore'
-import { InfoSlides } from '../InfoSlides'
+import { InfoSlides } from '../others/InfoSlides'
 
 export const SideMenu = () => {
   const isInfoSlideOpen = usePersistedStore(s => s.isInfoSlideOpen)
