@@ -2,14 +2,13 @@ import { StateCreator } from 'zustand'
 import { StoreState } from '../useStore'
 
 export type AnimationSlice = {
-  showAnimation: boolean
-  setShowAnimation: () => void
+  isAnimationVisible: boolean
+  showAnimation: () => void
+  hideAnimation: () => void
 }
 
 export const createAnimationSlice: StateCreator<StoreState, [], [], AnimationSlice> = set => ({
-  showAnimation: false,
-  setShowAnimation: () => {
-    set({ showAnimation: true })
-    setTimeout(() => set({ showAnimation: false }), 1000)
-  },
+  isAnimationVisible: false,
+  showAnimation: () => set({ isAnimationVisible: true }),
+  hideAnimation: () => set({ isAnimationVisible: false }),
 })

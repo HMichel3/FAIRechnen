@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
-import { NewMember } from '../../App/types'
-import { filterDuplicateNames, filterNonEmptyNames, findItem, findItemIndex } from '../../App/utils'
+import { NewMember } from '../../types/common'
+import { filterDuplicateNames, filterNonEmptyNames, findItem, findItemIndex } from '../../utils/common'
 import { Group } from '../types'
 import { PersistImmer } from '../usePersistedStore'
 import { withMetaData } from '../utils'

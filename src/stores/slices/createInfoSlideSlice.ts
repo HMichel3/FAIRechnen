@@ -1,11 +1,13 @@
 import { PersistImmer } from '../usePersistedStore'
 
 export type InfoSlideSlice = {
-  showInfoSlides: boolean
-  setShowInfoSlides: (showInfoSlides: boolean) => void
+  isInfoSlideOpen: boolean
+  openInfoSlides: () => void
+  closeInfoSlides: () => void
 }
 
 export const createInfoSlideSlice: PersistImmer<InfoSlideSlice> = set => ({
-  showInfoSlides: true,
-  setShowInfoSlides: (showInfoSlides: boolean) => set({ showInfoSlides }),
+  isInfoSlideOpen: true,
+  openInfoSlides: () => set({ isInfoSlideOpen: true }),
+  closeInfoSlides: () => set({ isInfoSlideOpen: false }),
 })

@@ -1,5 +1,5 @@
-import { NewMember } from '../../App/types'
-import { findItem, findItemIndex, isNameInArray, rejectById } from '../../App/utils'
+import { NewMember } from '../../types/common'
+import { findItem, findItemIndex, isNameInArray, rejectById } from '../../utils/common'
 import { PersistImmer } from '../usePersistedStore'
 import { withMetaData } from '../utils'
 

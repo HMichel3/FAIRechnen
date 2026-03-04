@@ -1,5 +1,5 @@
-import { NewPurchase } from '../../App/types'
-import { findItem, rejectById } from '../../App/utils'
+import { NewPurchase } from '../../types/common'
+import { findItem, rejectById } from '../../utils/common'
 import { PersistImmer } from '../usePersistedStore'
 import { calculateNewPurchase, withMetaData } from '../utils'
 

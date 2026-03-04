@@ -1,0 +1,44 @@
+/* copied the styles from the ion-alert component */
+ion-modal.custom-alert-modal {
+  --min-width: 300px;
+  --max-width: 300px;
+  --height: fit-content;
+  --border-radius: 8px;
+  /* background: var(--ion-background-color); */
+  --box-shadow:
+    0 11px 15px -7px rgba(0, 0, 0, 0.2), 0 24px 38px 3px rgba(0, 0, 0, 0.14), 0 9px 46px 8px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+
+  .custom-alert-head {
+    padding: 20px 23px 22px 23px;
+
+    .custom-alert-title {
+      color: var(--ion-text-color, #000);
+      font-size: 1.25rem;
+      font-weight: 500;
+    }
+  }
+
+  .custom-alert-message {
+    padding: 0 24px 20px 24px;
+  }
+
+  .custom-alert-button-group {
+    padding: 14px 8px 8px 8px;
+    flex-wrap: wrap-reverse;
+    justify-content: flex-end;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+
+    .custom-alert-button {
+      margin: 0 8px 0 0;
+
+      &::part(native) {
+        min-height: 40px;
+        padding: 10px;
+      }
+    }
+  }
+}

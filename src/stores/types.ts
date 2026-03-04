@@ -1,5 +1,5 @@
-import z from 'zod'
-import { MemberWithAmounts, Payment } from '../App/types'
+import { z } from 'zod'
+import { MemberWithAmounts, Payment } from '../types/common'
 
 export type Theme = 'dark' | 'white'
 
