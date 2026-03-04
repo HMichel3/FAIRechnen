@@ -2,8 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-.alert-wrapper.sc-ion-alert-md {
-  border-radius: 16px;
+.custom-alert .alert-wrapper {
+  border-radius: 16px !important;
   --min-width: 300px;
   --max-width: 300px;
 }

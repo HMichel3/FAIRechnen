@@ -83,6 +83,7 @@ export const GroupPage = () => {
         message={importErrorOverlay.selected?.message ?? ''}
       />
       <IonAlert
+        cssClass='custom-alert'
         isOpen={groupExistsOverlay.isOpen}
         onDidDismiss={groupExistsOverlay.onDidDismiss}
         header={`„${groupExistsOverlay.selected?.name}“ existiert bereits`}

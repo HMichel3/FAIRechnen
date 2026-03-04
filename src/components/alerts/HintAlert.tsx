@@ -9,6 +9,7 @@ type HintAlertProps = {
 export const HintAlert = ({ overlay, header, message }: HintAlertProps) => {
   return (
     <IonAlert
+      cssClass='custom-alert'
       isOpen={overlay.isOpen}
       onDidDismiss={overlay.onDidDismiss}
       header={header}

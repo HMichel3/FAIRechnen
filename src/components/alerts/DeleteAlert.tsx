@@ -10,6 +10,7 @@ type DeleteAlertProps<T extends string | number> = {
 export const DeleteAlert = <T extends string | number>({ overlay, onDelete, message }: DeleteAlertProps<T>) => {
   return (
     <IonAlert
+      cssClass='custom-alert'
       isOpen={overlay.isOpen}
       onDidDismiss={overlay.onDidDismiss}
       header={`„${overlay.selected?.name}“ löschen?`}
