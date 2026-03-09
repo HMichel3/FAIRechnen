@@ -1,12 +1,11 @@
 import { personSharp } from 'ionicons/icons'
 import { motion } from 'motion/react'
-import { isEmptyish } from 'remeda'
+import { isEmpty } from 'remeda'
 import { useOverlay } from '../../hooks/useOverlay'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
 import { fadeOutRightVariants } from '../../utils/animation'
-import { isLast } from '../../utils/common'
-import { isMemberInvolved } from '../../utils/member'
+import { isLast, isMemberInvolved } from '../../utils/guard'
 import { HintAlert } from '../alerts/HintAlert'
 import { MemberInfo } from '../info/MemberInfo'
 import { FullscreenText } from '../ui/FullscreenText'
@@ -25,7 +24,7 @@ export const MemberSegment = () => {
     deleteMember(groupId, memberId)
   }
 
-  if (isEmptyish(membersWithAmounts)) {
+  if (isEmpty(membersWithAmounts)) {
     return <FullscreenText>Füge neue Mitglieder hinzu!</FullscreenText>
   }
 

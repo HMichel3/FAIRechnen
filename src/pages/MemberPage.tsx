@@ -1,9 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { IonContent, IonPage, IonSelect, IonSelectOption, IonText } from '@ionic/react'
-import { isEmpty, isNotEmpty, pick } from 'ramda'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { RouteComponentProps } from 'react-router'
+import { pick } from 'remeda'
 import { z } from 'zod'
 import { FormInput } from '../components/ui/formComponents/FormInput'
 import { PageFooter } from '../components/ui/PageFooter'
@@ -15,6 +15,7 @@ import { useStore } from '../stores/useStore'
 import { NewMember } from '../types/common'
 import { Member } from '../types/store'
 import { findItem } from '../utils/common'
+import { isEmptyString, isNotEmptyString } from '../utils/guard'
 
 type MemberPageProps = RouteComponentProps<{
   id: string
@@ -33,7 +34,7 @@ const defaultValues = (selectedMember?: Member): NewMember => {
       payPalMe: '',
     }
   }
-  return pick(['name', 'payPalMe'], selectedMember)
+  return pick(selectedMember, ['name', 'payPalMe'])
 }
 
 export const MemberPage = ({
@@ -55,7 +56,7 @@ export const MemberPage = ({
   const onDismiss = useDismiss(`/groups/${groupId}`)
 
   const resetCurrentContactId = () => {
-    if (isNotEmpty(currentContactId)) {
+    if (isNotEmptyString(currentContactId)) {
       setCurrentContactId('')
     }
   }
@@ -77,7 +78,7 @@ export const MemberPage = ({
 
   const onSelectContact = (contactId: string) => {
     setCurrentContactId(contactId)
-    if (isEmpty(contactId)) {
+    if (isEmptyString(contactId)) {
       setValue('name', '')
       setValue('payPalMe', '')
       return

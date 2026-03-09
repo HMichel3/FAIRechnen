@@ -1,16 +1,17 @@
 import { IonCard, IonCardContent, IonCardTitle, IonLabel } from '@ionic/react'
 import { calculatorSharp, chevronDownSharp, chevronUpSharp, closeCircleSharp } from 'ionicons/icons'
 import { AnimatePresence, motion } from 'motion/react'
-import { isEmpty, isNotNil, path, trim } from 'ramda'
 import { useState } from 'react'
 import { Control, FieldError, FieldErrorsImpl, Merge, UseFieldArrayRemove, useWatch } from 'react-hook-form'
-import { isEmptyish } from 'remeda'
+import { isNonNullish } from 'remeda'
 import { useOverlay } from '../../hooks/useOverlay'
 import { PurchaseFormPropertyName } from '../../pages/PurchasePage'
 import { NewPurchase } from '../../types/common'
 import { SelectedGroup } from '../../types/store'
 import { fadeInOutTopVariants } from '../../utils/animation'
-import { cn, displayCurrencyValue } from '../../utils/common'
+import { cn } from '../../utils/common'
+import { displayCurrencyValue } from '../../utils/display'
+import { isEmptyString } from '../../utils/guard'
 import { DeleteAlert } from '../alerts/DeleteAlert'
 import { FormCheckboxGroup } from '../ui/formComponents/FormCheckboxGroup'
 import { FormCurrency } from '../ui/formComponents/FormCurrency'
@@ -49,7 +50,7 @@ export const AdditionCard = ({
 }: AdditionCardProps) => {
   const deleteAdditionOverlay = useOverlay<{ id: number; name: string }>()
   const { name, amount } = useWatch({ control, name: `additions.${index}` })
-  const isNameEmptyOrHasAdditionError = isEmpty(name) || isNotNil(path([index], additionErrors))
+  const isNameEmptyOrHasAdditionError = isEmptyString(name) || isNonNullish(additionErrors?.[index])
   const [showCardContent, setShowCardContent] = useState(isNameEmptyOrHasAdditionError)
 
   const onToggleShowCardContent = () => {
@@ -57,7 +58,7 @@ export const AdditionCard = ({
   }
 
   const onDeleteAddition = (additionIndex: number) => {
-    if (isEmptyish(name)) {
+    if (isEmptyString(name)) {
       remove(additionIndex)
       return
     }
@@ -69,7 +70,7 @@ export const AdditionCard = ({
       <IonCardTitle className='flex items-center justify-between gap-2 px-4 py-2'>
         <IconButton icon={showCardContent ? chevronUpSharp : chevronDownSharp} onClick={onToggleShowCardContent} />
         <IonLabel className='flex-1 text-base' onClick={onToggleShowCardContent}>
-          {isEmpty(trim(name)) ? 'Zusatz' : name}
+          {isEmptyString(name) ? 'Zusatz' : name}
         </IonLabel>
         <IonLabel className='text-base' onClick={onToggleShowCardContent}>
           {displayCurrencyValue(amount)}
@@ -86,7 +87,7 @@ export const AdditionCard = ({
                 <IconButton icon={calculatorSharp} onClick={() => setShowConvertModal(`additions.${index}.amount`)} />
               </div>
               <div className='flex flex-col px-4 py-2'>
-                <IonLabel className='text-xs' color={cn({ danger: path([index, 'payerIds'], additionErrors) })}>
+                <IonLabel className='text-xs' color={cn({ danger: additionErrors?.[index]?.payerIds })}>
                   Beteiligte*
                 </IonLabel>
                 <FormCheckboxGroup name={`additions.${index}.payerIds`} selectOptions={members} control={control} />

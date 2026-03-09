@@ -1,5 +1,5 @@
 import { CSSProperties } from 'react'
-import { getEuroValue, isNegative, isPositive } from './common'
+import { getEuroValue } from './common'
 
 // see variables.css
 export const ION_COLORS = {
@@ -15,9 +15,9 @@ export const COLLATOR = new Intl.Collator('de', { sensitivity: 'accent' })
 
 export const getCurrentColor = (current: number) => {
   let color: CSSProperties['color'] = 'inherit'
-  if (isPositive(current)) {
+  if (current > 0) {
     color = ION_COLORS.successShade
-  } else if (isNegative(current)) {
+  } else if (current < 0) {
     color = ION_COLORS.danger
   }
   return color

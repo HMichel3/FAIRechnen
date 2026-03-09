@@ -1,9 +1,10 @@
 import { Table, TH, TR } from '@ag-media/react-pdf-table'
 import { StyleSheet, View } from '@react-pdf/renderer'
-import { isEmpty, sort } from 'ramda'
 import { ReactElement } from 'react'
+import { isEmpty, sort } from 'remeda'
 import { MemberWithAmounts } from '../../types/common'
-import { displayCurrencyValue, isLast } from '../../utils/common'
+import { displayCurrencyValue } from '../../utils/display'
+import { isLast } from '../../utils/guard'
 import { COLLATOR, getCurrentColor, ION_COLORS } from '../../utils/pdf'
 import { PDFCell } from './PDFComponents'
 
@@ -32,7 +33,7 @@ type MembersTableProps = {
 }
 
 export const MembersTable = ({ header, membersWithAmounts }: MembersTableProps) => {
-  const sortedMembers = sort((a, b) => COLLATOR.compare(a.name, b.name), membersWithAmounts)
+  const sortedMembers = sort(membersWithAmounts, (a, b) => COLLATOR.compare(a.name, b.name))
   const [firstMember, ...restMembers] = sortedMembers
 
   return (

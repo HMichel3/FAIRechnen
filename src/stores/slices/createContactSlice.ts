@@ -1,7 +1,8 @@
-import { isEmpty } from 'ramda'
+import { isEmpty } from 'remeda'
 import { NewMember } from '../../types/common'
 import { Member } from '../../types/store'
-import { findItemIndex, isNameInArray, rejectById } from '../../utils/common'
+import { findItemIndex, rejectById } from '../../utils/common'
+import { isNameInArray } from '../../utils/guard'
 import { PersistImmer } from '../usePersistedStore'
 import { withMetaData } from '../utils'
 

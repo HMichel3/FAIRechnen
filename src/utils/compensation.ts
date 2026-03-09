@@ -1,17 +1,21 @@
 import { produce } from 'immer'
-import { descend, isEmpty, join, prop, sort } from 'ramda'
+import { evolve, filter, map, multiply, pipe, prop, sortBy } from 'remeda'
 import { CompensationWithoutTimestamp, MemberWithAmounts } from '../types/common'
-import { findItemIndex, isNegative, isPositive } from './common'
+import { findItemIndex } from './common'
 
 export const generatePossibleCompensations = (membersWithAmounts: MemberWithAmounts[]) => {
-  const debtors = membersWithAmounts
-    .filter(m => isNegative(m.current))
-    .map(m => ({ ...m, current: -m.current }))
-    .toSorted(descend(prop('current')))
-  const creditors = membersWithAmounts
-    .filter(m => isPositive(m.current))
-    .map(m => ({ ...m }))
-    .toSorted(descend(prop('current')))
+  const debtors = pipe(
+    membersWithAmounts,
+    filter(m => m.current < 0),
+    map(evolve({ current: multiply(-1) })),
+    sortBy([prop('current'), 'desc'])
+  )
+  const creditors = pipe(
+    membersWithAmounts,
+    filter(m => m.current > 0),
+    map(m => ({ ...m })),
+    sortBy([prop('current'), 'desc'])
+  )
   const compensations: CompensationWithoutTimestamp[] = []
   let debtorIndex = 0
   let creditorIndex = 0
@@ -19,7 +23,7 @@ export const generatePossibleCompensations = (membersWithAmounts: MemberWithAmou
     const debtor = debtors[debtorIndex]
     const creditor = creditors[creditorIndex]
     const amountToPay = Math.min(debtor.current, creditor.current)
-    const id = join('--', [debtor.id, creditor.id].toSorted())
+    const id = [debtor.id, creditor.id].sort().join('--')
     compensations.push({ id, payerId: debtor.id, receiverId: creditor.id, amount: amountToPay })
     debtor.current -= amountToPay
     creditor.current -= amountToPay
@@ -30,18 +34,22 @@ export const generatePossibleCompensations = (membersWithAmounts: MemberWithAmou
       creditorIndex++
     }
   }
-  return sort(descend(prop('amount')), compensations)
+  return sortBy(compensations, [prop('amount'), 'desc'])
 }
 
 export const generateCompensationChain = (membersWithAmounts: MemberWithAmounts[]) => {
   const addedCompensations: CompensationWithoutTimestamp[] = []
   for (let result; (result = generatePossibleCompensations(membersWithAmounts)); ) {
-    if (isEmpty(result)) break
+    if (result.length === 0) {
+      break
+    }
     const { amount, payerId, receiverId } = result[0]
     membersWithAmounts = produce(membersWithAmounts, draft => {
       const payerIndex = findItemIndex(payerId, draft)
       const receiverIndex = findItemIndex(receiverId, draft)
-      if (payerIndex === -1 || receiverIndex === -1) return
+      if (payerIndex === -1 || receiverIndex === -1) {
+        return
+      }
       draft[payerIndex].current += amount
       draft[receiverIndex].current += -amount
     })

@@ -1,5 +1,5 @@
 import { StyleSheet, View } from '@react-pdf/renderer'
-import { displayCurrencyValue } from '../../utils/common'
+import { displayCurrencyValue } from '../../utils/display'
 import { ION_COLORS } from '../../utils/pdf'
 import { PDFText } from './PDFComponents'
 

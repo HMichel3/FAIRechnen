@@ -1,7 +1,6 @@
-import { IonCheckbox, IonChip } from '@ionic/react'
-import { produce } from 'immer'
-import { includes, indexOf } from 'ramda'
+import { CheckboxCustomEvent, IonCheckbox, IonChip } from '@ionic/react'
 import { Control, FieldValues, Path, useController } from 'react-hook-form'
+import { filter, unique } from 'remeda'
 
 type FormCheckboxGroupProps<T extends FieldValues> = {
   name: Path<T>
@@ -18,27 +17,17 @@ export const FormCheckboxGroup = <T extends FieldValues>({
     field: { value, onChange },
   } = useController({ name, control })
 
-  const onCheckboxChange = (event: CustomEvent, memberId: string) => {
+  const onCheckboxChange = (event: CheckboxCustomEvent, optionId: string) => {
     const { checked } = event.detail
-    if (!checked) {
-      const valueWithoutId = produce<string[]>(value, draft => {
-        const memberIdIndex = indexOf(memberId, value)
-        if (memberIdIndex === -1) return
-        draft.splice(memberIdIndex, 1)
-      })
-      return onChange(valueWithoutId)
-    }
-    const valueWithId = produce<string[]>(value, draft => {
-      draft.push(memberId)
-    })
-    onChange(valueWithId)
+    const newValue = checked ? unique([...value, optionId]) : filter(value, id => id !== optionId)
+    onChange(newValue)
   }
 
   return (
     <div className='my-2 flex flex-wrap gap-2'>
       {selectOptions.map(option => (
         <IonChip className='m-0' key={option.id}>
-          <IonCheckbox checked={includes(option.id, value)} onIonChange={event => onCheckboxChange(event, option.id)}>
+          <IonCheckbox checked={value.includes(option.id)} onIonChange={event => onCheckboxChange(event, option.id)}>
             {option.name}
           </IonCheckbox>
         </IonChip>

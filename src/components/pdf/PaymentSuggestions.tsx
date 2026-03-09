@@ -1,8 +1,10 @@
 import { Link, StyleSheet, View } from '@react-pdf/renderer'
-import { groupBy, prop, sort, toPairs } from 'ramda'
+import { entries, groupByProp, indexBy, pipe, sort } from 'remeda'
 import { CompensationWithoutTimestamp } from '../../types/common'
 import { Member } from '../../types/store'
-import { displayCurrencyValue, findItem, getTotalAmountFromArray, isNotEmptyString } from '../../utils/common'
+import { findItem, getTotalAmountFromArray } from '../../utils/common'
+import { displayCurrencyValue } from '../../utils/display'
+import { isNotEmptyString } from '../../utils/guard'
 import { COLLATOR, getPayPalUrl, ION_COLORS } from '../../utils/pdf'
 import { PDFText } from './PDFComponents'
 import { PDFIcons } from './PDFIcons'
@@ -58,12 +60,17 @@ type PaymentSuggestionsProps = {
 }
 
 export const PaymentSuggestions = ({ name, members, compensationChain }: PaymentSuggestionsProps) => {
-  const groupedByPayer = groupBy(prop('payerId'), compensationChain)
-  const sortedPayers = sort((a, b) => {
-    const nameA = findItem(a[0], members)?.name ?? ''
-    const nameB = findItem(b[0], members)?.name ?? ''
-    return COLLATOR.compare(nameA, nameB)
-  }, toPairs(groupedByPayer))
+  const memberMap = indexBy(members, member => member.id)
+  const sortedPayers = pipe(
+    compensationChain,
+    groupByProp('payerId'),
+    entries(),
+    sort(([idA], [idB]) => {
+      const nameA = memberMap[idA]?.name ?? ''
+      const nameB = memberMap[idB]?.name ?? ''
+      return COLLATOR.compare(nameA, nameB)
+    })
+  )
 
   return (
     <View style={styles.wrapper}>

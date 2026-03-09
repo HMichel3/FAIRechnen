@@ -1,9 +1,10 @@
 import { personCircleSharp } from 'ionicons/icons'
-import { isEmptyish } from 'remeda'
+import { isEmpty } from 'remeda'
 import { useOverlay } from '../../hooks/useOverlay'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { Member } from '../../types/store'
-import { isLast, isNotEmptyString, sortByName } from '../../utils/common'
+import { sortByName } from '../../utils/common'
+import { isLast, isNotEmptyString } from '../../utils/guard'
 import { DeleteAlert } from '../alerts/DeleteAlert'
 import { ContactInfo } from '../info/ContactInfo'
 import { FullscreenText } from '../ui/FullscreenText'
@@ -16,7 +17,7 @@ export const ContactPageList = () => {
 
   const sortedContacts = sortByName(contacts)
 
-  if (isEmptyish(sortedContacts)) {
+  if (isEmpty(sortedContacts)) {
     return <FullscreenText>Füge neue Kontakte hinzu!</FullscreenText>
   }
 

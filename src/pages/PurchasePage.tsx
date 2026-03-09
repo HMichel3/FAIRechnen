@@ -1,10 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { IonContent, IonLabel, IonPage, IonSegment, IonSegmentButton, IonToolbar } from '@ionic/react'
 import { AnimatePresence } from 'motion/react'
-import { map, pick, prop } from 'ramda'
 import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { RouteComponentProps } from 'react-router'
+import { pick } from 'remeda'
 import { z } from 'zod'
 import { HintAlert } from '../components/alerts/HintAlert'
 import { AlertModal } from '../components/modals/AlertModal'
@@ -19,7 +19,8 @@ import { usePersistedStore } from '../stores/usePersistedStore'
 import { useStore } from '../stores/useStore'
 import { NewPurchase } from '../types/common'
 import { Member, Purchase } from '../types/store'
-import { displayCurrencyValue, findItem, getTotalAmountFromArray } from '../utils/common'
+import { findItem, getTotalAmountFromArray } from '../utils/common'
+import { displayCurrencyValue } from '../utils/display'
 
 export type PurchaseFormPropertyName =
   | 'name'
@@ -57,7 +58,7 @@ const validationSchema = z.object({
 
 const defaultValues = (members: Member[], selectedPurchase?: Purchase): NewPurchase => {
   if (!selectedPurchase) {
-    const memberIds = map(prop('id'), members)
+    const memberIds = members.map(member => member.id)
     return {
       name: '',
       amount: 0,
@@ -68,7 +69,7 @@ const defaultValues = (members: Member[], selectedPurchase?: Purchase): NewPurch
     }
   }
 
-  return pick(['name', 'amount', 'purchaserId', 'beneficiaryIds', 'description', 'additions'], selectedPurchase)
+  return pick(selectedPurchase, ['name', 'amount', 'purchaserId', 'beneficiaryIds', 'description', 'additions'])
 }
 
 export const PurchasePage = ({

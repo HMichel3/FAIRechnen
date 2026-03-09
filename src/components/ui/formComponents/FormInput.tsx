@@ -1,5 +1,4 @@
 import { IonInput } from '@ionic/react'
-import { trim } from 'ramda'
 import { KeyboardEventHandler } from 'react'
 import { Control, FieldValues, Path, useController } from 'react-hook-form'
 import { cn } from '../../../utils/common'
@@ -26,7 +25,7 @@ export const FormInput = <T extends FieldValues>({ label, name, control, classNa
       label={label}
       value={value}
       onIonInput={onChange}
-      onIonBlur={() => onChange(trim(value))}
+      onIonBlur={() => onChange(value.trim())}
       autocapitalize='sentences'
       onKeyDown={onKeyDown}
     />

@@ -1,6 +1,6 @@
 import { IonText } from '@ionic/react'
 import { Member } from '../../types/store'
-import { isNotEmptyString } from '../../utils/common'
+import { isNotEmptyString } from '../../utils/guard'
 
 type ContactInfoProps = {
   contact: Member

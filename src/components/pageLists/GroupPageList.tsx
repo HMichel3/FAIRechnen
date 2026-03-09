@@ -1,12 +1,12 @@
 import { IonReorderGroup } from '@ionic/react'
 import { peopleSharp } from 'ionicons/icons'
 import { useEffect, useState } from 'react'
-import { clone, hasAtLeast, isEmptyish } from 'remeda'
+import { clone, hasAtLeast, isEmpty } from 'remeda'
 import { useOverlay } from '../../hooks/useOverlay'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { Group } from '../../types/store'
-import { isGroupActive } from '../../utils/common'
 import { determineLines } from '../../utils/display'
+import { isGroupActive } from '../../utils/guard'
 import { DeleteAlert } from '../alerts/DeleteAlert'
 import { GroupInfo } from '../info/GroupInfo'
 import { ArchivedGroups } from '../others/ArchivedGroups'
@@ -28,13 +28,13 @@ export const GroupPageList = ({ reorder }: GroupPageListProps) => {
 
   // needed to prevent an error while reordering restored groups
   const copiedGroups = clone(groups)
-  const isGroupArchiveEmpty = isEmptyish(groupArchive)
+  const isGroupArchiveEmpty = isEmpty(groupArchive)
 
   useEffect(() => {
     setShowGroupArchive(false)
   }, [isGroupArchiveEmpty])
 
-  if (isEmptyish(copiedGroups) && isGroupArchiveEmpty) {
+  if (isEmpty(copiedGroups) && isGroupArchiveEmpty) {
     return <FullscreenText>Füge neue Gruppen hinzu!</FullscreenText>
   }
 

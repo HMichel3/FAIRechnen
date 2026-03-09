@@ -1,5 +1,6 @@
 import { NewMember } from '../../types/common'
-import { findItem, findItemIndex, isNameInArray, rejectById } from '../../utils/common'
+import { findItem, findItemIndex, rejectById } from '../../utils/common'
+import { isNameInArray } from '../../utils/guard'
 import { PersistImmer } from '../usePersistedStore'
 import { withMetaData } from '../utils'
 

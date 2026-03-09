@@ -1,7 +1,12 @@
 import { IonText } from '@ionic/react'
 import { Group } from '../../types/store'
-import { calculateGroupTotalAmount, displayCurrencyValue, displayTimestamp } from '../../utils/common'
-import { displayHistoryQuantity, displayMemberQuantity } from '../../utils/display'
+import { calculateGroupTotalAmount } from '../../utils/calculation'
+import {
+  displayCurrencyValue,
+  displayHistoryQuantity,
+  displayMemberQuantity,
+  displayTimestamp,
+} from '../../utils/display'
 
 type GroupInfoProps = {
   group: Group

@@ -1,10 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { IonChip, IonContent, IonIcon, IonPage, IonText } from '@ionic/react'
 import { checkmarkCircleSharp, closeCircleSharp, personCircleSharp } from 'ionicons/icons'
-import { isEmpty, isNotEmpty, last } from 'ramda'
 import { useEffect } from 'react'
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
-import { hasAtLeast } from 'remeda'
+import { hasAtLeast, isEmpty, last } from 'remeda'
 import { z } from 'zod'
 import { FormInput } from '../components/ui/formComponents/FormInput'
 import { IconButton } from '../components/ui/IconButton'
@@ -14,7 +13,8 @@ import { useDismiss } from '../hooks/useDissmiss'
 import { usePersistedStore } from '../stores/usePersistedStore'
 import { useStore } from '../stores/useStore'
 import { Member } from '../types/store'
-import { cn, filterNonEmptyNames, findItemIndexByName, isLast, isNameInArray, normalizeString } from '../utils/common'
+import { cn, filterNonEmptyNames, findItemIndexByName, normalizeString } from '../utils/common'
+import { isLast, isNameInArray, isNotEmptyString } from '../utils/guard'
 
 const validationSchema = z.object({
   groupName: z.string().trim().min(1),
@@ -57,7 +57,7 @@ export const AddGroupPage = () => {
   const onDismiss = useDismiss('/tabs/groups')
 
   useEffect(() => {
-    if (isNotEmpty(last(memberFields)?.name)) {
+    if (isNotEmptyString(last(memberFields)?.name)) {
       append({ name: '', payPalMe: '' })
     }
   }, [memberFields, append])
@@ -126,7 +126,7 @@ export const AddGroupPage = () => {
                       key={field.id}
                       className={cn(
                         'flex flex-col rounded-2xl border border-neutral-400 p-4',
-                        isNotEmpty(field.name) ? 'bg-zinc-900' : 'border-dashed bg-transparent opacity-60'
+                        isNotEmptyString(field.name) ? 'bg-zinc-900' : 'border-dashed bg-transparent opacity-60'
                       )}
                     >
                       <div className='flex items-center gap-3'>

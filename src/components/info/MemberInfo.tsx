@@ -1,6 +1,8 @@
 import { IonText } from '@ionic/react'
 import { MemberWithAmounts } from '../../types/common'
-import { cn, displayCurrencyValue, isNegative, isNotEmptyString, isPositive } from '../../utils/common'
+import { cn } from '../../utils/common'
+import { displayCurrencyValue } from '../../utils/display'
+import { isNotEmptyString } from '../../utils/guard'
 
 type MemberInfoProps = {
   member: MemberWithAmounts
@@ -23,7 +25,7 @@ export const MemberInfo = ({ member }: MemberInfoProps) => {
       </div>
       <IonText
         className='shrink-0 whitespace-nowrap'
-        color={cn({ success: isPositive(member.current), danger: isNegative(member.current) })}
+        color={cn({ success: member.current > 0, danger: member.current < 0 })}
       >
         {displayCurrencyValue(member.current)}
       </IonText>

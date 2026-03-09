@@ -2,13 +2,13 @@ import { IonChip, IonIcon, IonLabel } from '@ionic/react'
 import { cartSharp, serverSharp, walletSharp } from 'ionicons/icons'
 import { motion } from 'motion/react'
 import { useState } from 'react'
-import { isEmptyish } from 'remeda'
+import { isEmpty } from 'remeda'
 import { useOverlay } from '../../hooks/useOverlay'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { useStore } from '../../stores/useStore'
 import { fadeOutLeftVariants } from '../../utils/animation'
-import { cn, getCompensationInfo, getIncomeInfo, getPurchaseInfo, isLast } from '../../utils/common'
-import { isIncome, isPurchase } from '../../utils/payment'
+import { cn, getCompensationInfo, getIncomeInfo, getPurchaseInfo } from '../../utils/common'
+import { isIncome, isLast, isPurchase } from '../../utils/guard'
 import { HintAlert } from '../alerts/HintAlert'
 import { PaymentInfo } from '../info/PaymentInfo'
 import { FullscreenText } from '../ui/FullscreenText'
@@ -34,7 +34,7 @@ export const PaymentSegment = () => {
     return showCompensations
   })
 
-  if (isEmptyish(sortedPayments)) {
+  if (isEmpty(sortedPayments)) {
     return (
       <FullscreenText>
         Füge neue Einkäufe, Einkommen

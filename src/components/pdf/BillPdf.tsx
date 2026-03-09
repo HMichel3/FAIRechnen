@@ -1,9 +1,10 @@
 import { Document, Image, Page, StyleSheet, View } from '@react-pdf/renderer'
-import { isNotEmpty } from 'ramda'
+import { hasAtLeast } from 'remeda'
 import pdfLogo from '../../../resources/icon-pdf.png'
 import { CompensationWithoutTimestamp, MemberWithAmounts, Payment } from '../../types/common'
 import { Income, Purchase, SelectedGroup } from '../../types/store'
-import { calculateGroupTotalAmount, displayTimestamp } from '../../utils/common'
+import { calculateGroupTotalAmount } from '../../utils/calculation'
+import { displayTimestamp } from '../../utils/display'
 import { HistoryList } from './HistoryList'
 import { MembersTable } from './MembersTable'
 import { OverviewSection } from './OverviewSection'
@@ -45,16 +46,16 @@ export const BillPdf = ({
             totalAmount={groupTotalAmount}
           />
         </View>
-        {isNotEmpty(compensationChain) && (
+        {hasAtLeast(compensationChain, 1) && (
           <View>
             <SectionHeader>Zahlungsvorschläge</SectionHeader>
             <PaymentSuggestions name={name} members={membersWithAmounts} compensationChain={compensationChain} />
           </View>
         )}
-        {isNotEmpty(membersWithAmounts) && (
+        {hasAtLeast(membersWithAmounts, 1) && (
           <MembersTable header={<SectionHeader>Mitglieder</SectionHeader>} membersWithAmounts={membersWithAmounts} />
         )}
-        {isNotEmpty(sortedPayments) && (
+        {hasAtLeast(sortedPayments, 1) && (
           <HistoryList
             header={<SectionHeader>Historie</SectionHeader>}
             sortedPayments={sortedPayments}

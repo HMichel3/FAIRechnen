@@ -1,12 +1,12 @@
 import { motion } from 'motion/react'
-import { isEmpty } from 'ramda'
 import { Dispatch, SetStateAction, useEffect } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { useStore } from '../../stores/useStore'
 import { NewCompensation } from '../../types/common'
 import { Compensation } from '../../types/store'
 import { fadeInOutTopVariants } from '../../utils/animation'
-import { deleteItem } from '../../utils/common'
+import { rejectById } from '../../utils/common'
+import { isEmptyString } from '../../utils/guard'
 import { FormCurrency } from '../ui/formComponents/FormCurrency'
 import { FormSelect } from '../ui/formComponents/FormSelect'
 
@@ -28,7 +28,7 @@ export const AddManualCompensation = ({ setManualCompensation }: AddManualCompen
   const payerId = useWatch({ control, name: 'payerId' })
   const receiverId = useWatch({ control, name: 'receiverId' })
   const amount = useWatch({ control, name: 'amount' })
-  const membersWithoutPayer = deleteItem(payerId, members)
+  const membersWithoutPayer = rejectById(payerId, members)
   const isPayerEqualToReceiver = payerId === receiverId
 
   useEffect(() => {
@@ -38,7 +38,7 @@ export const AddManualCompensation = ({ setManualCompensation }: AddManualCompen
   }, [isPayerEqualToReceiver, setValue])
 
   useEffect(() => {
-    if (isEmpty(payerId) || isEmpty(receiverId) || amount <= 0) {
+    if (isEmptyString(payerId) || isEmptyString(receiverId) || amount <= 0) {
       setManualCompensation(null)
       return
     }

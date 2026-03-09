@@ -1,8 +1,8 @@
 import { FilePicker } from '@capawesome/capacitor-file-picker'
 import { IonAlert, IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar } from '@ionic/react'
 import { addSharp, closeSharp, peopleSharp, repeatSharp, swapHorizontalSharp } from 'ionicons/icons'
-import { isEmpty, not } from 'ramda'
 import { useState } from 'react'
+import { isEmpty } from 'remeda'
 import { HintAlert } from '../components/alerts/HintAlert'
 import { GroupPageList } from '../components/pageLists/GroupPageList'
 import { FabButton } from '../components/ui/FabButton'
@@ -11,8 +11,9 @@ import { useOverlay } from '../hooks/useOverlay'
 import { usePersistedStore } from '../stores/usePersistedStore'
 import { useStore } from '../stores/useStore'
 import { Group } from '../types/store'
-import { isIdInArray, parseError } from '../utils/common'
+import { parseError } from '../utils/common'
 import { extractGroupFromFile } from '../utils/file'
+import { isIdInArray } from '../utils/guard'
 
 export const GroupPage = () => {
   const groups = usePersistedStore(s => s.groups)
@@ -53,7 +54,7 @@ export const GroupPage = () => {
             <IconButton
               icon={reorder ? closeSharp : repeatSharp}
               disabled={groups.length < 2}
-              onClick={() => setReorder(not)}
+              onClick={() => setReorder(prev => !prev)}
             />
           </IonButtons>
         </IonToolbar>

@@ -1,6 +1,5 @@
 import { IonContent, IonItem, IonPage, IonRadio, IonRadioGroup } from '@ionic/react'
 import { AnimatePresence } from 'motion/react'
-import { isNotEmpty } from 'ramda'
 import { useRef, useState } from 'react'
 import { RouteComponentProps } from 'react-router'
 import { hasAtLeast } from 'remeda'
@@ -31,7 +30,7 @@ export const AddCompensationPage = ({
   const [manualCompensation, setManualCompensation] = useState<NewCompensation | null>(null)
   const pageContentRef = useRef<HTMLIonContentElement>(null)
   const { current: possibleCompensations } = useRef(generatePossibleCompensations(membersWithAmounts))
-  const [checkedRadio, setCheckedRadio] = useState<string>(isNotEmpty(possibleCompensations) ? 'all' : 'manual')
+  const [checkedRadio, setCheckedRadio] = useState<string>(hasAtLeast(possibleCompensations, 1) ? 'all' : 'manual')
   const onDismiss = useDismiss(`/groups/${groupId}`)
 
   const onCheckRadio = (value: string) => {

@@ -1,9 +1,9 @@
 import { StyleSheet, View } from '@react-pdf/renderer'
-import { isNotEmpty } from 'ramda'
 import { ElementType } from 'react'
+import { hasAtLeast } from 'remeda'
 import { Addition } from '../../types/store'
-import { displayCurrencyValue, displayTimestamp, isNotEmptyString } from '../../utils/common'
-import { displayAdditionQuantity } from '../../utils/payment'
+import { displayAdditionQuantity, displayCurrencyValue, displayTimestamp } from '../../utils/display'
+import { isNotEmptyString } from '../../utils/guard'
 import { ION_COLORS } from '../../utils/pdf'
 import { PDFText } from './PDFComponents'
 import { PDFIconProps } from './PDFIcons'
@@ -29,7 +29,7 @@ export const PaymentInfo = ({
   additions,
   description,
 }: PaymentInfoProps) => {
-  const hasAdditions = additions && isNotEmpty(additions)
+  const hasAdditions = additions && hasAtLeast(additions, 1)
   const showDetailRow = details || hasAdditions
 
   return (

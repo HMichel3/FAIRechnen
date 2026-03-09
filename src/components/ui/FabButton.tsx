@@ -1,5 +1,4 @@
 import { IonFab, IonFabButton, IonFabList, IonIcon, IonText } from '@ionic/react'
-import { equals } from 'ramda'
 import { ComponentProps } from 'react'
 import { createPortal } from 'react-dom'
 import { useFabButton } from '../../hooks/useFabButton'
@@ -21,19 +20,19 @@ const FabButtonText = ({ horizontal, label, description, icon, disabled, onClick
   const className = cn(
     'flex flex-col justify-center text-nowrap bg-[var(--ion-item-background)]',
     disabled && 'opacity-50',
-    equals(horizontal, 'start')
+    horizontal === 'start'
       ? 'ml-[-40px] w-[292px] items-start rounded-e-3xl pl-10 pr-4'
       : 'ml-[-263px] mr-[-40px] w-[290px] items-end rounded-s-3xl pl-4 pr-10'
   )
 
   return (
     <div className='flex gap-3'>
-      {equals(horizontal, 'start') && Button}
+      {horizontal === 'start' && Button}
       <div className={className}>
         <IonText>{label}</IonText>
         <IonText className='text-sm text-neutral-400'>{description}</IonText>
       </div>
-      {equals(horizontal, 'end') && Button}
+      {horizontal === 'end' && Button}
     </div>
   )
 }

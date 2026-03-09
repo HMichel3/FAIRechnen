@@ -1,5 +1,5 @@
 import { IonText } from '@ionic/react'
-import { displayCurrencyValue, displayTimestamp } from '../../utils/common'
+import { displayCurrencyValue, displayTimestamp } from '../../utils/display'
 
 type PaymentInfoProps = {
   name: string

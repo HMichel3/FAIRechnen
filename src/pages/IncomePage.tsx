@@ -1,9 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { IonContent, IonLabel, IonPage } from '@ionic/react'
 import { calculatorSharp } from 'ionicons/icons'
-import { map, pick, prop } from 'ramda'
 import { useForm } from 'react-hook-form'
 import { RouteComponentProps } from 'react-router'
+import { pick } from 'remeda'
 import { z } from 'zod'
 import { AlertModal } from '../components/modals/AlertModal'
 import { ConvertModal } from '../components/modals/ConvertModal'
@@ -40,7 +40,7 @@ const validationSchema = z.object({
 
 const defaultValues = (members: Member[], selectedIncome?: Income): NewIncome => {
   if (!selectedIncome) {
-    const memberIds = map(prop('id'), members)
+    const memberIds = members.map(member => member.id)
     return {
       name: '',
       amount: 0,
@@ -50,7 +50,7 @@ const defaultValues = (members: Member[], selectedIncome?: Income): NewIncome =>
     }
   }
 
-  return pick(['name', 'amount', 'earnerId', 'beneficiaryIds', 'description'], selectedIncome)
+  return pick(selectedIncome, ['name', 'amount', 'earnerId', 'beneficiaryIds', 'description'])
 }
 
 export const IncomePage = ({
