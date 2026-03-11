@@ -16,6 +16,7 @@ import { IconButton } from '../components/ui/IconButton'
 import { PageFooter } from '../components/ui/PageFooter'
 import { PageHeader } from '../components/ui/PageHeader'
 import { useDismiss } from '../hooks/useDissmiss'
+import { useGroupData } from '../hooks/useGroupData'
 import { useOverlay } from '../hooks/useOverlay'
 import { usePersistedStore } from '../stores/usePersistedStore'
 import { useStore } from '../stores/useStore'
@@ -55,26 +56,26 @@ const defaultValues = (members: Member[], selectedIncome?: Income): NewIncome =>
 
 export const IncomePage = ({
   match: {
-    params: { id: groupId, incomeId },
+    params: { incomeId },
   },
 }: IncomePageProps) => {
-  const { members, incomes } = useStore(s => s.selectedGroup)
+  const groupData = useGroupData()
   const addIncome = usePersistedStore(s => s.addIncome)
   const editIncome = usePersistedStore(s => s.editIncome)
   const showAnimation = useStore(s => s.showAnimation)
-  const selectedIncome = findItem(incomeId, incomes)
+  const selectedIncome = findItem(incomeId, groupData.incomes)
   const { handleSubmit, formState, control, setValue } = useForm({
     resolver: zodResolver(validationSchema),
-    defaultValues: defaultValues(members, selectedIncome),
+    defaultValues: defaultValues(groupData.members, selectedIncome),
   })
   const convertOverlay = useOverlay<IncomeFormPropertyName>()
-  const onDismiss = useDismiss(`/groups/${groupId}`)
+  const onDismiss = useDismiss(`/groups/${groupData.id}`)
 
   const onSubmit = handleSubmit(newIncome => {
     if (selectedIncome) {
-      editIncome(groupId, selectedIncome.id, newIncome)
+      editIncome(groupData.id, selectedIncome.id, newIncome)
     } else {
-      addIncome(groupId, newIncome)
+      addIncome(groupData.id, newIncome)
     }
     showAnimation()
     onDismiss()
@@ -93,7 +94,7 @@ export const IncomePage = ({
             </div>
             <div className='flex flex-col border-b border-[#898989] bg-[#1e1e1e] px-4 py-2'>
               <IonLabel className='text-xs'>Verdiener*</IonLabel>
-              <FormRadioGroup name='earnerId' control={control} selectOptions={members} />
+              <FormRadioGroup name='earnerId' control={control} selectOptions={groupData.members} />
             </div>
             <div
               className={cn('flex flex-col border-b border-[#898989] bg-[#1e1e1e] px-4 py-2', {
@@ -103,7 +104,7 @@ export const IncomePage = ({
               <IonLabel className='text-xs' color={cn({ danger: formState.errors.beneficiaryIds })}>
                 Beteiligte*
               </IonLabel>
-              <FormCheckboxGroup name='beneficiaryIds' control={control} selectOptions={members} />
+              <FormCheckboxGroup name='beneficiaryIds' control={control} selectOptions={groupData.members} />
             </div>
             <FormTextarea label='Beschreibung' name='description' control={control} />
           </div>
@@ -113,7 +114,7 @@ export const IncomePage = ({
       <AlertModal
         overlay={convertOverlay}
         component={ConvertModal}
-        componentProps={{ onSubmit: amount => setValue(convertOverlay.selected!, amount) }}
+        componentProps={{ groupData, onSubmit: amount => setValue(convertOverlay.selected!, amount) }}
       />
     </IonPage>
   )

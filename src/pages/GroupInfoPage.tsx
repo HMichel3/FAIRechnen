@@ -26,8 +26,7 @@ import {
   walletSharp,
 } from 'ionicons/icons'
 import { AnimatePresence } from 'motion/react'
-import { useEffect, useMemo, useState } from 'react'
-import { RouteComponentProps } from 'react-router'
+import { useState } from 'react'
 import { stringify } from 'superjson'
 import { AlertModal } from '../components/modals/AlertModal'
 import { EditGroupNameModal } from '../components/modals/EditGroupNameModal'
@@ -36,86 +35,43 @@ import { MemberSegment } from '../components/segments/MemberSegment'
 import { PaymentSegment } from '../components/segments/PaymentSegment'
 import { FabButton } from '../components/ui/FabButton'
 import { IconButton } from '../components/ui/IconButton'
+import { useGroupData } from '../hooks/useGroupData'
 import { useOverlay } from '../hooks/useOverlay'
-import { usePersistedStore } from '../stores/usePersistedStore'
-import { useStore } from '../stores/useStore'
 import { Group } from '../types/store'
-import { calculateMembersWithAmounts } from '../utils/calculation'
 import { cn, createFileName } from '../utils/common'
-import { generateCompensationChain } from '../utils/compensation'
 import { blobToBase64 } from '../utils/file'
-import { mergeAndSortPayments } from '../utils/payment'
 
-type GroupInfoPageProps = RouteComponentProps<{
-  id: string
-}>
-
-export const GroupInfoPage = ({
-  match: {
-    params: { id: groupId },
-  },
-}: GroupInfoPageProps) => {
-  const group = usePersistedStore(s => s.getGroup(groupId))
-  const setSelectedGroup = useStore(s => s.setSelectedGroup)
-  const clearSelectedGroup = useStore(s => s.clearSelectedGroup)
+export const GroupInfoPage = () => {
+  const groupData = useGroupData()
   const editGroupNameOverlay = useOverlay<Group>()
   const [showSegment, setShowSegment] = useState('members')
 
-  const membersWithAmounts = useMemo(
-    () => calculateMembersWithAmounts(group.members, group.purchases, group.incomes, group.compensations),
-    [group.members, group.purchases, group.incomes, group.compensations]
-  )
-
-  const sortedPayments = useMemo(
-    () => mergeAndSortPayments(group.purchases, group.incomes, group.compensations),
-    [group.purchases, group.incomes, group.compensations]
-  )
-
-  const compensationChain = useMemo(() => generateCompensationChain(membersWithAmounts), [membersWithAmounts])
-
-  // saves the selectedGroup onMount to make it accessible through the application
-  useEffect(() => {
-    setSelectedGroup({ ...group, membersWithAmounts, sortedPayments })
-  }, [group, setSelectedGroup, membersWithAmounts, sortedPayments])
-
-  // onUnmount
-  useEffect(() => () => clearSelectedGroup(), [clearSelectedGroup])
-
   const onShareGroupOverview = async () => {
-    const pdfBlob = await pdf(
-      <BillPdf
-        name={group.name}
-        purchases={group.purchases}
-        incomes={group.incomes}
-        membersWithAmounts={membersWithAmounts}
-        sortedPayments={sortedPayments}
-        compensationChain={compensationChain}
-      />
-    ).toBlob()
-    const fileName = createFileName(group.name, 'pdf')
+    const pdfBlob = await pdf(<BillPdf {...groupData} />).toBlob()
+    const fileName = createFileName(groupData.name, 'pdf')
     const { uri: filePath } = await Filesystem.writeFile({
       path: fileName,
       data: await blobToBase64(pdfBlob),
       directory: Directory.Cache,
     })
     await Share.share({
-      title: `FAIRechnen - ${group.name} (PDF)`,
-      dialogTitle: `${group.name} teilen`,
+      title: `FAIRechnen - ${groupData.name} (PDF)`,
+      dialogTitle: `${groupData.name} teilen`,
       files: [filePath],
     })
   }
 
   const onShareGroupData = async () => {
-    const fileName = createFileName(group.name, 'json')
+    const fileName = createFileName(groupData.name, 'json')
     const { uri: filePath } = await Filesystem.writeFile({
       path: fileName,
-      data: stringify(group),
+      data: stringify(groupData.originalGroup),
       directory: Directory.Cache,
       encoding: Encoding.UTF8,
     })
     await Share.share({
-      title: `FAIRechnen - ${group.name} (JSON)`,
-      dialogTitle: `${group.name} teilen`,
+      title: `FAIRechnen - ${groupData.name} (JSON)`,
+      dialogTitle: `${groupData.name} teilen`,
       files: [filePath],
     })
   }
@@ -127,9 +83,9 @@ export const GroupInfoPage = ({
           <IonButtons slot='start'>
             <IonBackButton />
           </IonButtons>
-          <IonTitle>{group.name}</IonTitle>
+          <IonTitle>{groupData.name}</IonTitle>
           <IonButtons slot='end'>
-            <IconButton icon={pencilSharp} onClick={() => editGroupNameOverlay.onSelect(group)} />
+            <IconButton icon={pencilSharp} onClick={() => editGroupNameOverlay.onSelect(groupData)} />
           </IonButtons>
         </IonToolbar>
         <IonToolbar>
@@ -140,7 +96,7 @@ export const GroupInfoPage = ({
                 <IonBadge
                   className={cn('bg-transparent text-[#a5a5a5]', { 'text-[#428cff]': showSegment === 'members' })}
                 >
-                  {group.members.length}
+                  {groupData.members.length}
                 </IonBadge>
               </IonLabel>
             </IonSegmentButton>
@@ -150,7 +106,7 @@ export const GroupInfoPage = ({
                 <IonBadge
                   className={cn('bg-transparent text-[#a5a5a5]', { 'text-[#428cff]': showSegment === 'payments' })}
                 >
-                  {group.purchases.length + group.incomes.length + group.compensations.length}
+                  {groupData.paymentQuantity}
                 </IonBadge>
               </IonLabel>
             </IonSegmentButton>
@@ -160,8 +116,8 @@ export const GroupInfoPage = ({
       <IonContent>
         <AnimatePresence mode='wait'>
           {/* key is needed for AnimatePresence to work correctly on 2 different components */}
-          {showSegment === 'members' && <MemberSegment key='members' />}
-          {showSegment === 'payments' && <PaymentSegment key='payments' />}
+          {showSegment === 'members' && <MemberSegment key='members' groupData={groupData} />}
+          {showSegment === 'payments' && <PaymentSegment key='payments' groupData={groupData} />}
         </AnimatePresence>
         <FabButton horizontal='start' icon={shareSocialSharp}>
           {[
@@ -185,28 +141,28 @@ export const GroupInfoPage = ({
               label: 'Mitglied hinzufügen',
               description: 'Neue Person, die sich beteiligt',
               icon: personSharp,
-              routerLink: `/groups/${groupId}/member`,
+              routerLink: `/groups/${groupData.id}/member`,
             },
             {
               label: 'Zahlung hinzufügen',
               description: 'Neue Zahlung zwischen den Personen',
               icon: walletSharp,
-              routerLink: `/groups/${groupId}/compensation`,
-              disabled: group.members.length < 2,
+              routerLink: `/groups/${groupData.id}/compensation`,
+              disabled: groupData.members.length < 2,
             },
             {
               label: 'Einkommen hinzufügen',
               description: 'Geld wurde eingenommen (z.B. Pfand)',
               icon: serverSharp,
-              routerLink: `/groups/${groupId}/income`,
-              disabled: group.members.length < 1,
+              routerLink: `/groups/${groupData.id}/income`,
+              disabled: groupData.members.length < 1,
             },
             {
               label: 'Einkauf hinzufügen',
               description: 'Geld wurde ausgegeben',
               icon: cartSharp,
-              routerLink: `/groups/${groupId}/purchase`,
-              disabled: group.members.length < 1,
+              routerLink: `/groups/${groupData.id}/purchase`,
+              disabled: groupData.members.length < 1,
             },
           ]}
         </FabButton>
@@ -216,17 +172,7 @@ export const GroupInfoPage = ({
           componentProps={{ selected: editGroupNameOverlay.selected! }}
         />
         {/* can be used to preview the PDF in the browser for making easy adjustments */}
-        {/* {renderPdf(
-          <BillPdf
-            name={group.name}
-            purchases={group.purchases}
-            incomes={group.incomes}
-            membersWithAmounts={membersWithAmounts}
-            sortedPayments={sortedPayments}
-            compensationChain={compensationChain}
-          />,
-          true
-        )} */}
+        {/* {renderPdf(<BillPdf {...groupData} />, true)} */}
       </IonContent>
     </IonPage>
   )

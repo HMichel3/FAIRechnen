@@ -7,8 +7,8 @@ import { isLast } from './guard'
 export const displayMemberQuantity = (memberQuantity: number) =>
   memberQuantity === 1 ? `1 Mitglied` : `${memberQuantity} Mitglieder`
 
-export const displayHistoryQuantity = (historyQuantity: number) =>
-  historyQuantity === 1 ? `1 Eintrag` : `${historyQuantity} Einträge`
+export const displayPaymentQuantity = (paymentQuantity: number) =>
+  paymentQuantity === 1 ? `1 Eintrag` : `${paymentQuantity} Einträge`
 
 export const determineLines = (index: number, groups: Group[], groupArchive: Group[]) => {
   if (!isLast(index, groups)) return 'inset'

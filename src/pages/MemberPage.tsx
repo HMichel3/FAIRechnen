@@ -9,6 +9,7 @@ import { FormInput } from '../components/ui/formComponents/FormInput'
 import { PageFooter } from '../components/ui/PageFooter'
 import { PageHeader } from '../components/ui/PageHeader'
 import { useDismiss } from '../hooks/useDissmiss'
+import { useGroupData } from '../hooks/useGroupData'
 import { MemberSliceResult } from '../stores/slices/createMemberSlice'
 import { usePersistedStore } from '../stores/usePersistedStore'
 import { useStore } from '../stores/useStore'
@@ -39,21 +40,21 @@ const defaultValues = (selectedMember?: Member): NewMember => {
 
 export const MemberPage = ({
   match: {
-    params: { id: groupId, memberId },
+    params: { memberId },
   },
 }: MemberPageProps) => {
-  const { members } = useStore(s => s.selectedGroup)
+  const groupData = useGroupData()
   const addMember = usePersistedStore(s => s.addMember)
   const editMember = usePersistedStore(s => s.editMember)
   const contacts = usePersistedStore(s => s.contacts)
   const showAnimation = useStore(s => s.showAnimation)
-  const selectedMember = findItem(memberId, members)
+  const selectedMember = findItem(memberId, groupData.members)
   const { handleSubmit, setValue, control, setError, formState } = useForm({
     resolver: zodResolver(validationSchema),
     defaultValues: defaultValues(selectedMember),
   })
   const [currentContactId, setCurrentContactId] = useState('')
-  const onDismiss = useDismiss(`/groups/${groupId}`)
+  const onDismiss = useDismiss(`/groups/${groupData.id}`)
 
   const resetCurrentContactId = () => {
     if (isNotEmptyString(currentContactId)) {
@@ -64,9 +65,9 @@ export const MemberPage = ({
   const onSubmit = handleSubmit(newMember => {
     let result: MemberSliceResult
     if (selectedMember) {
-      result = editMember(groupId, selectedMember.id, newMember)
+      result = editMember(groupData.id, selectedMember.id, newMember)
     } else {
-      result = addMember(groupId, newMember)
+      result = addMember(groupData.id, newMember)
     }
     if (!result.success) {
       setError('name', { type: 'manual', message: 'Der Name wird bereits verwendet!' })

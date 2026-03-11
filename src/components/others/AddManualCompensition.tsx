@@ -1,9 +1,8 @@
 import { motion } from 'motion/react'
 import { Dispatch, SetStateAction, useEffect } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
-import { useStore } from '../../stores/useStore'
 import { NewCompensation } from '../../types/common'
-import { Compensation } from '../../types/store'
+import { Compensation, Member } from '../../types/store'
 import { fadeInOutTopVariants } from '../../utils/animation'
 import { rejectById } from '../../utils/common'
 import { isEmptyString } from '../../utils/guard'
@@ -11,6 +10,7 @@ import { FormCurrency } from '../ui/formComponents/FormCurrency'
 import { FormSelect } from '../ui/formComponents/FormSelect'
 
 type AddManualCompensationProps = {
+  members: Member[]
   setManualCompensation: Dispatch<SetStateAction<NewCompensation | null>>
 }
 
@@ -22,8 +22,7 @@ type CompensationFormValues = {
 
 const defaultValues: CompensationFormValues = { payerId: '', receiverId: '', amount: 0 }
 
-export const AddManualCompensation = ({ setManualCompensation }: AddManualCompensationProps) => {
-  const { members } = useStore(s => s.selectedGroup)
+export const AddManualCompensation = ({ members, setManualCompensation }: AddManualCompensationProps) => {
   const { setValue, control } = useForm({ defaultValues })
   const payerId = useWatch({ control, name: 'payerId' })
   const receiverId = useWatch({ control, name: 'receiverId' })

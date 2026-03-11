@@ -3,9 +3,9 @@ import { cartSharp, serverSharp, walletSharp } from 'ionicons/icons'
 import { motion } from 'motion/react'
 import { useState } from 'react'
 import { isEmpty } from 'remeda'
+import { GroupData } from '../../hooks/useGroupData'
 import { useOverlay } from '../../hooks/useOverlay'
 import { usePersistedStore } from '../../stores/usePersistedStore'
-import { useStore } from '../../stores/useStore'
 import { fadeOutLeftVariants } from '../../utils/animation'
 import { cn, getCompensationInfo, getIncomeInfo, getPurchaseInfo } from '../../utils/common'
 import { isIncome, isLast, isPurchase } from '../../utils/guard'
@@ -14,17 +14,20 @@ import { PaymentInfo } from '../info/PaymentInfo'
 import { FullscreenText } from '../ui/FullscreenText'
 import { SlidingListItem } from '../ui/SlidingListItem'
 
-export const PaymentSegment = () => {
+type PaymentSegmentProps = {
+  groupData: GroupData
+}
+
+export const PaymentSegment = ({ groupData }: PaymentSegmentProps) => {
   const deletePurchase = usePersistedStore(s => s.deletePurchase)
   const deleteIncome = usePersistedStore(s => s.deleteIncome)
   const deleteCompensation = usePersistedStore(s => s.deleteCompensation)
-  const { id: groupId, sortedPayments, members } = useStore(s => s.selectedGroup)
   const cantEditCompensationOverlay = useOverlay()
   const [showPurchases, setShowPurchases] = useState(true)
   const [showIncomes, setShowIncomes] = useState(true)
   const [showCompensations, setShowCompensations] = useState(true)
 
-  const filteredPayments = sortedPayments.filter(payment => {
+  const filteredPayments = groupData.sortedPayments.filter(payment => {
     if (isPurchase(payment)) {
       return showPurchases
     }
@@ -34,7 +37,7 @@ export const PaymentSegment = () => {
     return showCompensations
   })
 
-  if (isEmpty(sortedPayments)) {
+  if (isEmpty(groupData.sortedPayments)) {
     return (
       <FullscreenText>
         Füge neue Einkäufe, Einkommen
@@ -72,39 +75,39 @@ export const PaymentSegment = () => {
       <div className='pb-20'>
         {filteredPayments.map((payment, index) => {
           if (isPurchase(payment)) {
-            const { purchaser } = getPurchaseInfo(payment, members)
+            const { purchaser } = getPurchaseInfo(payment, groupData.members)
             return (
               <SlidingListItem
                 key={payment.id}
                 icon={cartSharp}
                 label={<PaymentInfo {...payment} subtitle={`Von ${purchaser?.name}`} />}
-                routerLink={`/groups/${groupId}/purchase/${payment.id}`}
-                onDelete={() => deletePurchase(groupId, payment.id)}
+                routerLink={`/groups/${groupData.id}/purchase/${payment.id}`}
+                onDelete={() => deletePurchase(groupData.id, payment.id)}
                 lines={isLast(index, filteredPayments) ? 'none' : 'inset'}
               />
             )
           }
           if (isIncome(payment)) {
-            const { earner } = getIncomeInfo(payment, members)
+            const { earner } = getIncomeInfo(payment, groupData.members)
             return (
               <SlidingListItem
                 key={payment.id}
                 icon={serverSharp}
                 label={<PaymentInfo {...payment} subtitle={`Von ${earner?.name}`} />}
-                routerLink={`/groups/${groupId}/income/${payment.id}`}
-                onDelete={() => deleteIncome(groupId, payment.id)}
+                routerLink={`/groups/${groupData.id}/income/${payment.id}`}
+                onDelete={() => deleteIncome(groupData.id, payment.id)}
                 lines={isLast(index, filteredPayments) ? 'none' : 'inset'}
               />
             )
           }
-          const { payer, receiver } = getCompensationInfo(payment, members)
+          const { payer, receiver } = getCompensationInfo(payment, groupData.members)
           return (
             <SlidingListItem
               key={payment.id}
               icon={walletSharp}
               label={<PaymentInfo {...payment} name={payer!.name} subtitle={`An ${receiver?.name}`} />}
               onClick={() => cantEditCompensationOverlay.onOpen()}
-              onDelete={() => deleteCompensation(groupId, payment.id)}
+              onDelete={() => deleteCompensation(groupData.id, payment.id)}
               lines={isLast(index, filteredPayments) ? 'none' : 'inset'}
             />
           )

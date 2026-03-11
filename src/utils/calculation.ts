@@ -3,8 +3,8 @@ import { MemberWithAmounts } from '../types/common'
 import { Compensation, Income, Member, Purchase } from '../types/store'
 import { getTotalAmountFromArray } from './common'
 
-export const calculateGroupTotalAmount = (group: { purchases: Purchase[]; incomes: Income[] }) =>
-  getTotalAmountFromArray(group.purchases) - getTotalAmountFromArray(group.incomes)
+export const calculateGroupTotalAmount = (purchases: Purchase[], incomes: Income[]) =>
+  getTotalAmountFromArray(purchases) - getTotalAmountFromArray(incomes)
 
 const calculatePurchaseAmounts = (memberId: string, purchases: Purchase[]) =>
   reduce(

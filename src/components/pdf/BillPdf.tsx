@@ -2,8 +2,6 @@ import { Document, Image, Page, StyleSheet, View } from '@react-pdf/renderer'
 import { hasAtLeast } from 'remeda'
 import pdfLogo from '../../../resources/icon-pdf.png'
 import { CompensationWithoutTimestamp, MemberWithAmounts, Payment } from '../../types/common'
-import { Income, Purchase, SelectedGroup } from '../../types/store'
-import { calculateGroupTotalAmount } from '../../utils/calculation'
 import { displayTimestamp } from '../../utils/display'
 import { HistoryList } from './HistoryList'
 import { MembersTable } from './MembersTable'
@@ -13,24 +11,14 @@ import { PaymentSuggestions } from './PaymentSuggestions'
 import { SectionHeader } from './SectionHeader'
 
 type BillPdfProps = {
-  name: SelectedGroup['name']
-  purchases: Purchase[]
-  incomes: Income[]
+  name: string
   membersWithAmounts: MemberWithAmounts[]
   sortedPayments: Payment[]
+  totalAmount: number
   compensationChain: CompensationWithoutTimestamp[]
 }
 
-export const BillPdf = ({
-  name,
-  purchases,
-  incomes,
-  membersWithAmounts,
-  sortedPayments,
-  compensationChain,
-}: BillPdfProps) => {
-  const groupTotalAmount = calculateGroupTotalAmount({ purchases, incomes })
-
+export const BillPdf = ({ name, membersWithAmounts, sortedPayments, totalAmount, compensationChain }: BillPdfProps) => {
   return (
     <Document>
       <Page size='A4' style={styles.page}>
@@ -43,7 +31,7 @@ export const BillPdf = ({
           <OverviewSection
             memberQuantity={membersWithAmounts.length}
             historyQuantity={sortedPayments.length}
-            totalAmount={groupTotalAmount}
+            totalAmount={totalAmount}
           />
         </View>
         {hasAtLeast(compensationChain, 1) && (

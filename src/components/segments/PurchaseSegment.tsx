@@ -3,8 +3,8 @@ import { calculatorSharp } from 'ionicons/icons'
 import { motion } from 'motion/react'
 import { Control, useFormState } from 'react-hook-form'
 import { PurchaseFormPropertyName } from '../../pages/PurchasePage'
-import { useStore } from '../../stores/useStore'
 import { NewPurchase } from '../../types/common'
+import { Member } from '../../types/store'
 import { fadeOutRightVariants } from '../../utils/animation'
 import { cn } from '../../utils/common'
 import { FormCheckboxGroup } from '../ui/formComponents/FormCheckboxGroup'
@@ -16,11 +16,11 @@ import { IconButton } from '../ui/IconButton'
 
 type PurchaseSegmentProps = {
   control: Control<NewPurchase>
+  members: Member[]
   setShowConvertModal: (value: PurchaseFormPropertyName) => void
 }
 
-export const PurchaseSegment = ({ control, setShowConvertModal }: PurchaseSegmentProps) => {
-  const { members } = useStore(s => s.selectedGroup)
+export const PurchaseSegment = ({ control, members, setShowConvertModal }: PurchaseSegmentProps) => {
   const { errors } = useFormState({ control })
 
   return (

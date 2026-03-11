@@ -14,6 +14,7 @@ import { PurchaseSegment } from '../components/segments/PurchaseSegment'
 import { PageFooter } from '../components/ui/PageFooter'
 import { PageHeader } from '../components/ui/PageHeader'
 import { useDismiss } from '../hooks/useDissmiss'
+import { useGroupData } from '../hooks/useGroupData'
 import { useOverlay } from '../hooks/useOverlay'
 import { usePersistedStore } from '../stores/usePersistedStore'
 import { useStore } from '../stores/useStore'
@@ -74,23 +75,23 @@ const defaultValues = (members: Member[], selectedPurchase?: Purchase): NewPurch
 
 export const PurchasePage = ({
   match: {
-    params: { id: groupId, purchaseId },
+    params: { purchaseId },
   },
 }: PurchasePageProps) => {
+  const groupData = useGroupData()
   const addPurchase = usePersistedStore(s => s.addPurchase)
   const editPurchase = usePersistedStore(s => s.editPurchase)
-  const { members, purchases } = useStore(s => s.selectedGroup)
   const showAnimation = useStore(s => s.showAnimation)
-  const selectedPurchase = findItem(purchaseId, purchases)
+  const selectedPurchase = findItem(purchaseId, groupData.purchases)
   const { handleSubmit, watch, setValue, formState, control } = useForm({
     resolver: zodResolver(validationSchema),
-    defaultValues: defaultValues(members, selectedPurchase),
+    defaultValues: defaultValues(groupData.members, selectedPurchase),
   })
   const convertOverlay = useOverlay<PurchaseFormPropertyName>()
   const cantSavePurchaseOverlay = useOverlay()
   const [showSegment, setShowSegment] = useState('purchase')
   const pageContentRef = useRef<HTMLIonContentElement>(null)
-  const onDismiss = useDismiss(`/groups/${groupId}`)
+  const onDismiss = useDismiss(`/groups/${groupData.id}`)
 
   useEffect(() => {
     if (formState.errors.name || formState.errors.amount || formState.errors.beneficiaryIds)
@@ -104,9 +105,9 @@ export const PurchasePage = ({
       return
     }
     if (selectedPurchase) {
-      editPurchase(groupId, selectedPurchase.id, newPurchase)
+      editPurchase(groupData.id, selectedPurchase.id, newPurchase)
     } else {
-      addPurchase(groupId, newPurchase)
+      addPurchase(groupData.id, newPurchase)
     }
     showAnimation()
     onDismiss()
@@ -131,14 +132,19 @@ export const PurchasePage = ({
           <AnimatePresence mode='wait'>
             {/* key is needed for AnimatePresence to work correctly on 2 different components */}
             {showSegment === 'purchase' && (
-              <PurchaseSegment key='purchase' control={control} setShowConvertModal={convertOverlay.onSelect} />
+              <PurchaseSegment
+                key='purchase'
+                control={control}
+                members={groupData.members}
+                setShowConvertModal={convertOverlay.onSelect}
+              />
             )}
             {showSegment === 'additions' && (
               <AdditionSegment
                 key='additions'
                 pageContentRef={pageContentRef}
                 control={control}
-                members={members}
+                members={groupData.members}
                 setShowConvertModal={convertOverlay.onSelect}
               />
             )}
@@ -149,7 +155,7 @@ export const PurchasePage = ({
       <AlertModal
         overlay={convertOverlay}
         component={ConvertModal}
-        componentProps={{ onSubmit: amount => setValue(convertOverlay.selected!, amount) }}
+        componentProps={{ groupData, onSubmit: amount => setValue(convertOverlay.selected!, amount) }}
       />
       <HintAlert
         overlay={cantSavePurchaseOverlay}

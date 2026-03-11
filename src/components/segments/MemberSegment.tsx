@@ -1,9 +1,9 @@
 import { personSharp } from 'ionicons/icons'
 import { motion } from 'motion/react'
 import { isEmpty } from 'remeda'
+import { GroupData } from '../../hooks/useGroupData'
 import { useOverlay } from '../../hooks/useOverlay'
 import { usePersistedStore } from '../../stores/usePersistedStore'
-import { useStore } from '../../stores/useStore'
 import { fadeOutRightVariants } from '../../utils/animation'
 import { isLast, isMemberInvolved } from '../../utils/guard'
 import { HintAlert } from '../alerts/HintAlert'
@@ -11,8 +11,11 @@ import { MemberInfo } from '../info/MemberInfo'
 import { FullscreenText } from '../ui/FullscreenText'
 import { SlidingListItem } from '../ui/SlidingListItem'
 
-export const MemberSegment = () => {
-  const { id: groupId, purchases, incomes, compensations, membersWithAmounts } = useStore(s => s.selectedGroup)
+type MemberSegmentProps = {
+  groupData: GroupData
+}
+
+export const MemberSegment = ({ groupData }: MemberSegmentProps) => {
   const deleteMember = usePersistedStore(s => s.deleteMember)
   const cantDeleteMemberOverlay = useOverlay()
 
@@ -21,27 +24,32 @@ export const MemberSegment = () => {
       cantDeleteMemberOverlay.onOpen()
       return
     }
-    deleteMember(groupId, memberId)
+    deleteMember(groupData.id, memberId)
   }
 
-  if (isEmpty(membersWithAmounts)) {
+  if (isEmpty(groupData.membersWithAmounts)) {
     return <FullscreenText>Füge neue Mitglieder hinzu!</FullscreenText>
   }
 
   return (
     <motion.div className='h-full' {...fadeOutRightVariants}>
       <div className='pb-20'>
-        {membersWithAmounts.map((member, index) => {
-          const memberInvolved = isMemberInvolved(member.id, purchases, incomes, compensations)
+        {groupData.membersWithAmounts.map((member, index) => {
+          const memberInvolved = isMemberInvolved(
+            member.id,
+            groupData.purchases,
+            groupData.incomes,
+            groupData.compensations
+          )
           return (
             <SlidingListItem
               key={member.id}
               icon={personSharp}
               label={<MemberInfo member={member} />}
-              routerLink={`/groups/${groupId}/member/${member.id}`}
+              routerLink={`/groups/${groupData.id}/member/${member.id}`}
               onDelete={() => onDeleteMember(member.id, memberInvolved)}
               isActive={memberInvolved}
-              lines={isLast(index, membersWithAmounts) ? 'none' : 'inset'}
+              lines={isLast(index, groupData.membersWithAmounts) ? 'none' : 'inset'}
             />
           )
         })}

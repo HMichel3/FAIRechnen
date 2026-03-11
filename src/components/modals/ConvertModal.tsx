@@ -1,7 +1,7 @@
 import { IonInput, IonText } from '@ionic/react'
 import { useState } from 'react'
+import { GroupData } from '../../hooks/useGroupData'
 import { usePersistedStore } from '../../stores/usePersistedStore'
-import { useStore } from '../../stores/useStore'
 import { parseCommaNumber } from '../../utils/common'
 import { displayCurrencyValue } from '../../utils/display'
 import { CurrencyInput } from '../ui/noFormComponents/CurrencyInput'
@@ -9,12 +9,12 @@ import { NumberInput } from '../ui/noFormComponents/NumberInput'
 import { AlertModal } from './AlertModal'
 
 type ConvertModalProps = {
+  groupData: GroupData
   onSubmit: (amount: number) => void
   onDismiss: () => void
 }
 
-export const ConvertModal = ({ onSubmit, onDismiss }: ConvertModalProps) => {
-  const { id: groupId, factor = '1' } = useStore(s => s.selectedGroup)
+export const ConvertModal = ({ groupData, onSubmit, onDismiss }: ConvertModalProps) => {
   const setGroupFactor = usePersistedStore(s => s.setGroupFactor)
   const [amount, setAmount] = useState(0)
 
@@ -23,12 +23,16 @@ export const ConvertModal = ({ onSubmit, onDismiss }: ConvertModalProps) => {
       <AlertModal.Header title='Betrag umrechnen' />
       <AlertModal.Body>
         <CurrencyInput label='Betrag' value={amount} onChange={setAmount} />
-        <NumberInput label='Umrechnungsfaktor' value={factor} onChange={value => setGroupFactor(groupId, value)} />
+        <NumberInput
+          label='Umrechnungsfaktor'
+          value={groupData.factor}
+          onChange={value => setGroupFactor(groupData.id, value)}
+        />
         <IonInput
           fill='solid'
           labelPlacement='floating'
           label='Wert'
-          value={displayCurrencyValue(amount * parseCommaNumber(factor))}
+          value={displayCurrencyValue(amount * parseCommaNumber(groupData.factor))}
           readonly
         />
         <div className='mt-2'>
@@ -39,7 +43,7 @@ export const ConvertModal = ({ onSubmit, onDismiss }: ConvertModalProps) => {
       </AlertModal.Body>
       <AlertModal.Footer
         onDismiss={onDismiss}
-        onSubmit={() => onSubmit(Math.round(amount * parseCommaNumber(factor)))}
+        onSubmit={() => onSubmit(Math.round(amount * parseCommaNumber(groupData.factor)))}
       />
     </>
   )

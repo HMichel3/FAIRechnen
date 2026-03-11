@@ -1,6 +1,7 @@
 import { IonIcon, IonItem, IonLabel } from '@ionic/react'
 import { archiveSharp, chevronDownSharp, chevronUpSharp } from 'ionicons/icons'
 import { AnimatePresence, motion } from 'motion/react'
+import { useState } from 'react'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { Group } from '../../types/store'
 import { fadeInOutTopVariants } from '../../utils/animation'
@@ -8,13 +9,12 @@ import { SlidingListItem } from '../ui/SlidingListItem'
 
 type ArchivedGroupsProps = {
   groupArchive: Group[]
-  showGroupArchive: boolean
-  setShowGroupArchive: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export const ArchivedGroups = ({ groupArchive, showGroupArchive, setShowGroupArchive }: ArchivedGroupsProps) => {
+export const ArchivedGroups = ({ groupArchive }: ArchivedGroupsProps) => {
   const restoreGroup = usePersistedStore(s => s.restoreGroup)
   const deleteArchivedGroup = usePersistedStore(s => s.deleteArchivedGroup)
+  const [showGroupArchive, setShowGroupArchive] = useState(false)
 
   return (
     <>

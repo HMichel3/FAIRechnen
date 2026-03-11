@@ -1,7 +1,6 @@
 import { IonReorderGroup } from '@ionic/react'
 import { peopleSharp } from 'ionicons/icons'
-import { useEffect, useState } from 'react'
-import { clone, hasAtLeast, isEmpty } from 'remeda'
+import { hasAtLeast, isEmpty } from 'remeda'
 import { useOverlay } from '../../hooks/useOverlay'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { Group } from '../../types/store'
@@ -24,51 +23,40 @@ export const GroupPageList = ({ reorder }: GroupPageListProps) => {
   const deleteGroup = usePersistedStore(s => s.deleteGroup)
   const archiveGroup = usePersistedStore(s => s.archiveGroup)
   const deleteGroupOverlay = useOverlay<Group>()
-  const [showGroupArchive, setShowGroupArchive] = useState(false)
 
-  // needed to prevent an error while reordering restored groups
-  const copiedGroups = clone(groups)
-  const isGroupArchiveEmpty = isEmpty(groupArchive)
-
-  useEffect(() => {
-    setShowGroupArchive(false)
-  }, [isGroupArchiveEmpty])
-
-  if (isEmpty(copiedGroups) && isGroupArchiveEmpty) {
+  if (isEmpty(groups) && isEmpty(groupArchive)) {
     return <FullscreenText>Füge neue Gruppen hinzu!</FullscreenText>
   }
 
   return (
     <>
       <div className='pb-20'>
-        {hasAtLeast(copiedGroups, 1) && (
+        {hasAtLeast(groups, 1) && (
           <IonReorderGroup
             disabled={!reorder}
-            onIonReorderEnd={({ detail }) => setGroups(detail.complete(copiedGroups))}
+            onIonReorderEnd={({ detail }) => {
+              // needed to prevent an error while reordering restored groups
+              const reorderedGroups = detail.complete([...groups])
+              setGroups(reorderedGroups)
+            }}
           >
-            {copiedGroups.map((group, index) => (
+            {groups.map((group, index) => (
               <SlidingListItem
                 key={group.id}
                 icon={peopleSharp}
-                label={<GroupInfo group={group} />}
+                label={<GroupInfo groupId={group.id} />}
                 routerLink={`/groups/${group.id}`}
                 onDelete={() => deleteGroupOverlay.onSelect(group)}
                 onArchive={() => archiveGroup(group.id)}
                 reorder={reorder}
                 isActive={isGroupActive(group)}
-                lines={determineLines(index, copiedGroups, groupArchive)}
+                lines={determineLines(index, groups, groupArchive)}
                 detail
               />
             ))}
           </IonReorderGroup>
         )}
-        {hasAtLeast(groupArchive, 1) && (
-          <ArchivedGroups
-            groupArchive={groupArchive}
-            showGroupArchive={showGroupArchive}
-            setShowGroupArchive={setShowGroupArchive}
-          />
-        )}
+        {hasAtLeast(groupArchive, 1) && <ArchivedGroups groupArchive={groupArchive} />}
       </div>
       <DeleteAlert
         overlay={deleteGroupOverlay}

@@ -1,37 +1,29 @@
 import { IonContent, IonItem, IonPage, IonRadio, IonRadioGroup } from '@ionic/react'
 import { AnimatePresence } from 'motion/react'
 import { useRef, useState } from 'react'
-import { RouteComponentProps } from 'react-router'
 import { hasAtLeast } from 'remeda'
 import { PaymentInfo } from '../components/info/PaymentInfo'
 import { AddManualCompensation } from '../components/others/AddManualCompensition'
 import { PageFooter } from '../components/ui/PageFooter'
 import { PageHeader } from '../components/ui/PageHeader'
 import { useDismiss } from '../hooks/useDissmiss'
+import { useGroupData } from '../hooks/useGroupData'
 import { usePersistedStore } from '../stores/usePersistedStore'
 import { useStore } from '../stores/useStore'
 import { CompensationWithoutTimestamp, NewCompensation } from '../types/common'
 import { findItem, getCompensationInfo } from '../utils/common'
 import { generateCompensationChain, generatePossibleCompensations } from '../utils/compensation'
 
-type AddCompensationPageProps = RouteComponentProps<{
-  id: string
-}>
-
-export const AddCompensationPage = ({
-  match: {
-    params: { id: groupId },
-  },
-}: AddCompensationPageProps) => {
+export const AddCompensationPage = () => {
+  const groupData = useGroupData()
   const addCompensation = usePersistedStore(s => s.addCompensation)
   const addCompensations = usePersistedStore(s => s.addCompensations)
-  const { membersWithAmounts, members } = useStore(s => s.selectedGroup)
   const showAnimation = useStore(s => s.showAnimation)
   const [manualCompensation, setManualCompensation] = useState<NewCompensation | null>(null)
   const pageContentRef = useRef<HTMLIonContentElement>(null)
-  const { current: possibleCompensations } = useRef(generatePossibleCompensations(membersWithAmounts))
+  const { current: possibleCompensations } = useRef(generatePossibleCompensations(groupData.membersWithAmounts))
   const [checkedRadio, setCheckedRadio] = useState<string>(hasAtLeast(possibleCompensations, 1) ? 'all' : 'manual')
-  const onDismiss = useDismiss(`/groups/${groupId}`)
+  const onDismiss = useDismiss(`/groups/${groupData.id}`)
 
   const onCheckRadio = (value: string) => {
     setCheckedRadio(value)
@@ -47,14 +39,14 @@ export const AddCompensationPage = ({
     } else {
       newCompensation = findItem(checkedRadio, possibleCompensations)!
     }
-    addCompensation(groupId, newCompensation)
+    addCompensation(groupData.id, newCompensation)
     showAnimation()
     onDismiss()
   }
 
   const onAllCompensations = () => {
-    const newCompensations = generateCompensationChain(membersWithAmounts)
-    addCompensations(groupId, newCompensations)
+    const newCompensations = generateCompensationChain(groupData.membersWithAmounts)
+    addCompensations(groupData.id, newCompensations)
     showAnimation()
     onDismiss()
   }
@@ -72,7 +64,7 @@ export const AddCompensationPage = ({
             </IonItem>
           )}
           {possibleCompensations.map(compensation => {
-            const { payer, receiver } = getCompensationInfo(compensation, members)
+            const { payer, receiver } = getCompensationInfo(compensation, groupData.members)
             return (
               <IonItem key={compensation.id} lines='full'>
                 <IonRadio value={compensation.id} labelPlacement='end' justify='start'>
@@ -88,7 +80,9 @@ export const AddCompensationPage = ({
           </IonItem>
         </IonRadioGroup>
         <AnimatePresence mode='wait'>
-          {checkedRadio === 'manual' && <AddManualCompensation setManualCompensation={setManualCompensation} />}
+          {checkedRadio === 'manual' && (
+            <AddManualCompensation members={groupData.members} setManualCompensation={setManualCompensation} />
+          )}
         </AnimatePresence>
       </IonContent>
       <PageFooter
