@@ -39,18 +39,6 @@ ion-fab[horizontal='end'] {
   right: calc(1rem + var(--ion-safe-area-right));
 }
 
-.form-radio-group {
-  .radio-group-wrapper {
-    @apply my-2 flex flex-wrap gap-2;
-  }
-
-  ion-radio::part(container) {
-    --size: 18px;
-    width: var(--size);
-    height: var(--size);
-  }
-}
-
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }

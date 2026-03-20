@@ -13,7 +13,7 @@ export const FormRadioGroup = <T extends FieldValues>({ name, control, selectOpt
   } = useController({ name, control })
 
   return (
-    <IonRadioGroup className='form-radio-group' value={value}>
+    <IonRadioGroup className='my-2 flex flex-wrap gap-2' value={value}>
       {selectOptions.map(option => (
         <IonChip className='m-0' key={option.id} onClick={() => onChange(option.id)}>
           <IonRadio value={option.id}>{option.name}</IonRadio>

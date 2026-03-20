@@ -1,8 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { IonContent, IonLabel, IonPage, IonSegment, IonSegmentButton, IonToolbar } from '@ionic/react'
 import { AnimatePresence } from 'motion/react'
-import { useEffect, useRef, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useRef, useState } from 'react'
+import { useForm, useWatch } from 'react-hook-form'
 import { RouteComponentProps } from 'react-router'
 import { pick } from 'remeda'
 import { z } from 'zod'
@@ -83,7 +83,7 @@ export const PurchasePage = ({
   const editPurchase = usePersistedStore(s => s.editPurchase)
   const showAnimation = useStore(s => s.showAnimation)
   const selectedPurchase = findItem(purchaseId, groupData.purchases)
-  const { handleSubmit, watch, setValue, formState, control } = useForm({
+  const { handleSubmit, setValue, control } = useForm({
     resolver: zodResolver(validationSchema),
     defaultValues: defaultValues(groupData.members, selectedPurchase),
   })
@@ -92,26 +92,31 @@ export const PurchasePage = ({
   const [showSegment, setShowSegment] = useState('purchase')
   const pageContentRef = useRef<HTMLIonContentElement>(null)
   const onDismiss = useDismiss(`/groups/${groupData.id}`)
+  const watchedAmount = useWatch({ control, name: 'amount' })
+  const watchedAdditions = useWatch({ control, name: 'additions' })
 
-  useEffect(() => {
-    if (formState.errors.name || formState.errors.amount || formState.errors.beneficiaryIds)
-      return setShowSegment('purchase')
-    if (formState.errors.additions) setShowSegment('additions')
-  }, [formState.errors])
-
-  const onSubmit = handleSubmit(newPurchase => {
-    if (getTotalAmountFromArray(newPurchase.additions) > newPurchase.amount) {
-      cantSavePurchaseOverlay.onOpen()
-      return
+  const onSubmit = handleSubmit(
+    newPurchase => {
+      if (getTotalAmountFromArray(newPurchase.additions) > newPurchase.amount) {
+        cantSavePurchaseOverlay.onOpen()
+        return
+      }
+      if (selectedPurchase) {
+        editPurchase(groupData.id, selectedPurchase.id, newPurchase)
+      } else {
+        addPurchase(groupData.id, newPurchase)
+      }
+      showAnimation()
+      onDismiss()
+    },
+    errors => {
+      if (errors.name || errors.amount || errors.beneficiaryIds) {
+        setShowSegment('purchase')
+      } else if (errors.additions) {
+        setShowSegment('additions')
+      }
     }
-    if (selectedPurchase) {
-      editPurchase(groupData.id, selectedPurchase.id, newPurchase)
-    } else {
-      addPurchase(groupData.id, newPurchase)
-    }
-    showAnimation()
-    onDismiss()
-  })
+  )
 
   return (
     <IonPage>
@@ -119,10 +124,10 @@ export const PurchasePage = ({
         <IonToolbar>
           <IonSegment value={showSegment}>
             <IonSegmentButton value='purchase' onClick={() => setShowSegment('purchase')}>
-              <IonLabel>Einkauf ({displayCurrencyValue(watch('amount'))})</IonLabel>
+              <IonLabel>Einkauf ({displayCurrencyValue(watchedAmount)})</IonLabel>
             </IonSegmentButton>
             <IonSegmentButton value='additions' onClick={() => setShowSegment('additions')}>
-              <IonLabel>Zusätze ({displayCurrencyValue(getTotalAmountFromArray(watch('additions')))})</IonLabel>
+              <IonLabel>Zusätze ({displayCurrencyValue(getTotalAmountFromArray(watchedAdditions))})</IonLabel>
             </IonSegmentButton>
           </IonSegment>
         </IonToolbar>

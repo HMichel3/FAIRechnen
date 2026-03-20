@@ -3,19 +3,19 @@ import { ComponentProps, ComponentType, PropsWithChildren } from 'react'
 import { cn } from '../../utils/common'
 import './alertModal.css'
 
-type AlertRootProps<CProps extends Record<string, unknown>> = {
+type AlertModalProps<CProps extends Record<string, unknown>> = {
   overlay: { isOpen: boolean; onDidDismiss: () => void; onDismiss: () => void }
   component: ComponentType<CProps>
   componentProps?: Omit<CProps, 'onDismiss'>
 } & Omit<ComponentProps<typeof IonModal>, 'isOpen' | 'onDidDismiss' | 'children'>
 
-const AlertRoot = <CProps extends Record<string, unknown>>({
+export const AlertModal = <CProps extends Record<string, unknown>>({
   overlay,
   component: Component,
   componentProps,
   className,
   ...props
-}: AlertRootProps<CProps>) => {
+}: AlertModalProps<CProps>) => {
   return (
     <IonModal
       className={cn('custom-alert-modal', className)}
@@ -89,8 +89,6 @@ const AlertFooter = (props: AlertFooterProps) => {
   )
 }
 
-export const AlertModal = Object.assign(AlertRoot, {
-  Header: AlertHeader,
-  Body: AlertBody,
-  Footer: AlertFooter,
-})
+AlertModal.Header = AlertHeader
+AlertModal.Body = AlertBody
+AlertModal.Footer = AlertFooter

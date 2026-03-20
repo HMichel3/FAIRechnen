@@ -26,7 +26,7 @@ import {
   walletSharp,
 } from 'ionicons/icons'
 import { AnimatePresence } from 'motion/react'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { stringify } from 'superjson'
 import { AlertModal } from '../components/modals/AlertModal'
 import { EditGroupNameModal } from '../components/modals/EditGroupNameModal'
@@ -46,8 +46,9 @@ export const GroupInfoPage = () => {
   const editGroupNameOverlay = useOverlay<Group>()
   const [showSegment, setShowSegment] = useState('members')
 
-  const onShareGroupOverview = async () => {
-    const pdfBlob = await pdf(<BillPdf {...groupData} />).toBlob()
+  const onShareGroupOverview = useCallback(async () => {
+    const generatedAt = Date.now()
+    const pdfBlob = await pdf(<BillPdf {...groupData} generatedAt={generatedAt} />).toBlob()
     const fileName = createFileName(groupData.name, 'pdf')
     const { uri: filePath } = await Filesystem.writeFile({
       path: fileName,
@@ -59,7 +60,7 @@ export const GroupInfoPage = () => {
       dialogTitle: `${groupData.name} teilen`,
       files: [filePath],
     })
-  }
+  }, [groupData])
 
   const onShareGroupData = async () => {
     const fileName = createFileName(groupData.name, 'json')

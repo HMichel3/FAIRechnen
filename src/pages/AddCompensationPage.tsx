@@ -1,6 +1,6 @@
 import { IonContent, IonItem, IonPage, IonRadio, IonRadioGroup } from '@ionic/react'
 import { AnimatePresence } from 'motion/react'
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { hasAtLeast } from 'remeda'
 import { PaymentInfo } from '../components/info/PaymentInfo'
 import { AddManualCompensation } from '../components/others/AddManualCompensition'
@@ -21,8 +21,13 @@ export const AddCompensationPage = () => {
   const showAnimation = useStore(s => s.showAnimation)
   const [manualCompensation, setManualCompensation] = useState<NewCompensation | null>(null)
   const pageContentRef = useRef<HTMLIonContentElement>(null)
-  const { current: possibleCompensations } = useRef(generatePossibleCompensations(groupData.membersWithAmounts))
-  const [checkedRadio, setCheckedRadio] = useState<string>(hasAtLeast(possibleCompensations, 1) ? 'all' : 'manual')
+  const possibleCompensations = useMemo(
+    () => generatePossibleCompensations(groupData.membersWithAmounts),
+    [groupData.membersWithAmounts]
+  )
+  const [checkedRadio, setCheckedRadio] = useState<string>(() =>
+    hasAtLeast(possibleCompensations, 1) ? 'all' : 'manual'
+  )
   const onDismiss = useDismiss(`/groups/${groupData.id}`)
 
   const onCheckRadio = (value: string) => {

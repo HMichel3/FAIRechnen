@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { IonChip, IonContent, IonIcon, IonPage, IonText } from '@ionic/react'
 import { checkmarkCircleSharp, closeCircleSharp, personCircleSharp } from 'ionicons/icons'
 import { useEffect } from 'react'
-import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
+import { FormProvider, useFieldArray, useForm, useWatch } from 'react-hook-form'
 import { hasAtLeast, isEmpty, last } from 'remeda'
 import { z } from 'zod'
 import { FormInput } from '../components/ui/formComponents/FormInput'
@@ -52,8 +52,8 @@ export const AddGroupPage = () => {
   const showAnimation = useStore(s => s.showAnimation)
   const methods = useForm({ resolver: zodResolver(validationSchema), defaultValues })
   const { fields, append, remove } = useFieldArray({ control: methods.control, name: 'members' })
-  const watchMembers = methods.watch('members')
-  const memberFields = fields.map((field, index) => ({ ...field, ...watchMembers[index] }))
+  const watchedMembers = useWatch({ control: methods.control, name: 'members' })
+  const memberFields = fields.map((field, index) => ({ ...field, ...watchedMembers[index] }))
   const onDismiss = useDismiss('/tabs/groups')
 
   useEffect(() => {

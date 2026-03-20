@@ -97,4 +97,4 @@ export const sortByName = <T extends { name: string }>(array: T[]) => {
   return sortBy(array, item => item.name.toLowerCase())
 }
 
-export const parseCommaNumber = (value: string) => maskitoParseNumber(value || '0', ',')
+export const parseCommaNumber = (value: string) => maskitoParseNumber(value || '0', { decimalSeparator: ',' })

@@ -4,7 +4,7 @@ import { useMaskito } from '@maskito/react'
 import { cn } from '../../../utils/common'
 
 const digitsOnlyMask = maskitoNumberOptionsGenerator({
-  precision: Infinity,
+  maximumFractionDigits: Infinity,
   min: 0,
   thousandSeparator: '',
   decimalSeparator: ',',

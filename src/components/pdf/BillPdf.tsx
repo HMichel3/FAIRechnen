@@ -16,9 +16,20 @@ type BillPdfProps = {
   sortedPayments: Payment[]
   totalAmount: number
   compensationChain: CompensationWithoutTimestamp[]
+  generatedAt: number
 }
 
-export const BillPdf = ({ name, membersWithAmounts, sortedPayments, totalAmount, compensationChain }: BillPdfProps) => {
+export const BillPdf = ({
+  name,
+  membersWithAmounts,
+  sortedPayments,
+  totalAmount,
+  compensationChain,
+  generatedAt,
+}: BillPdfProps) => {
+  const renderedAtTimestamp = displayTimestamp(generatedAt)
+  const currentYear = new Date(generatedAt).getFullYear()
+
   return (
     <Document>
       <Page size='A4' style={styles.page}>
@@ -52,7 +63,7 @@ export const BillPdf = ({ name, membersWithAmounts, sortedPayments, totalAmount,
         )}
         <View style={styles.footer} fixed>
           <PDFText variant='p4'>
-            © {new Date().getFullYear()} FAIRechnen • {displayTimestamp(Date.now())}
+            © {currentYear} FAIRechnen • {renderedAtTimestamp}
           </PDFText>
           <PDFText variant='p4' render={({ pageNumber, totalPages }) => `Seite ${pageNumber} von ${totalPages}`} />
         </View>
