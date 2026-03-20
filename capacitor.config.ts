@@ -16,9 +16,9 @@ const config: CapacitorConfig = {
       style: Style.Dark,
       backgroundColor: '#1f1f1f', // --ion-toolbar-background
     },
-  },
-  android: {
-    adjustMarginsForEdgeToEdge: 'force', // Helps layout compensate correctly
+    SystemBars: {
+      insetsHandling: 'disable',
+    },
   },
 }
 

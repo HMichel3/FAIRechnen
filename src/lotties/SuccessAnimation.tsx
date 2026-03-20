@@ -1,8 +1,23 @@
-import Lottie from 'lottie-react'
+import { useLottie } from 'lottie-react'
 import { AnimatePresence, motion } from 'motion/react'
 import { useStore } from '../stores/useStore'
 import { fadeOutVariants } from '../utils/animation'
-import checkmarkAnimation from './checkmark.json'
+import animationData from './checkmark.json'
+
+type CheckmarkPlayerProps = {
+  onComplete: () => void
+}
+
+const CheckmarkPlayer = ({ onComplete }: CheckmarkPlayerProps) => {
+  const { View } = useLottie({
+    className: 'h-auto w-[250px]',
+    animationData,
+    onComplete,
+    loop: false,
+  })
+
+  return View
+}
 
 export const SuccessAnimation = () => {
   const isAnimationVisible = useStore(s => s.isAnimationVisible)
@@ -12,12 +27,7 @@ export const SuccessAnimation = () => {
     <AnimatePresence>
       {isAnimationVisible && (
         <motion.div className='absolute inset-0 grid place-items-center' {...fadeOutVariants}>
-          <Lottie
-            className='h-auto w-[250px]'
-            animationData={checkmarkAnimation}
-            loop={false}
-            onComplete={hideAnimation}
-          />
+          <CheckmarkPlayer onComplete={hideAnimation} />
         </motion.div>
       )}
     </AnimatePresence>
