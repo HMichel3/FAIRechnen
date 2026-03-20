@@ -13,6 +13,7 @@ import { peopleCircleSharp, peopleSharp } from 'ionicons/icons'
 import { useEffect } from 'react'
 import { Redirect, Route } from 'react-router-dom'
 import { SideMenu } from './components/ui/SideMenu'
+import { useAppExit } from './hooks/useAppExit'
 import { SuccessAnimation } from './lotties/SuccessAnimation'
 import { AddCompensationPage } from './pages/AddCompensationPage'
 import { AddContactPage } from './pages/AddContactPage'
@@ -69,6 +70,8 @@ const TabsLayout = () => {
 }
 
 const AppContent = () => {
+  useAppExit()
+
   return (
     <>
       <SideMenu />

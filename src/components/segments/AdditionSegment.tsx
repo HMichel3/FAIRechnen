@@ -30,8 +30,8 @@ export const AdditionSegment = ({ pageContentRef, control, members, setShowConve
     <motion.div {...fadeOutLeftVariants}>
       <div className='mx-[10px] mt-[10px] flex items-center justify-between gap-2'>
         <div className='flex flex-col'>
-          <IonLabel className='text-sm'>Artikel, welche nur für einzelne Mitglieder sind</IonLabel>
-          <IonLabel className='text-xs'>(werden vor der Verrechnung des Einkaufs abgezogen)</IonLabel>
+          <IonLabel className='text-sm'>Persönliche Artikel</IonLabel>
+          <IonLabel className='text-xs'>(werden vor der Aufteilung abgezogen)</IonLabel>
         </div>
         <IconButton icon={addSharp} onClick={onAddAddition} fill='solid' />
       </div>
