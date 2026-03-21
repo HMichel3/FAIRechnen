@@ -3,7 +3,7 @@ import { Device } from '@capacitor/device'
 import { EdgeToEdge } from '@capawesome/capacitor-android-edge-to-edge-support'
 import { maskitoParseNumber } from '@maskito/kit'
 import { ClassValue, clsx } from 'clsx'
-import { filter, indexBy, isNonNullish, map, pipe, sortBy, sumBy, uniqueBy } from 'remeda'
+import { filter, indexBy, isNonNullish, join, map, pipe, sortBy, sumBy, uniqueBy, values } from 'remeda'
 import { twMerge } from 'tailwind-merge'
 import { CompensationWithoutTimestamp } from '../types/common'
 import { Income, Member, Purchase } from '../types/store'
@@ -24,6 +24,9 @@ export const findItemIndexByName = <T extends { name: string }>(name: string, ar
 export const getTotalAmountFromArray = <T extends { amount: number }>(array: T[]) => sumBy(array, item => item.amount)
 
 export const normalizeString = (value: string) => value.toLowerCase().trim()
+
+export const createKeyFromProperties = <T extends Record<string, string>>(properties: T) =>
+  pipe(properties, values(), map(normalizeString), join('|'))
 
 export const getEuroValue = (value: number) => value / 100
 
@@ -92,6 +95,9 @@ export const filterDuplicateNames = <T extends { name: string }>(array: T[]) =>
   uniqueBy(array, item => normalizeString(item.name))
 
 export const rejectById = <T extends { id: string }>(id: string, array: T[]) => array.filter(item => item.id !== id)
+
+export const filterByIds = <T extends { id: string }>(ids: string[], array: T[]) =>
+  array.filter(item => ids.includes(item.id))
 
 export const sortByName = <T extends { name: string }>(array: T[]) => {
   return sortBy(array, item => item.name.toLowerCase())

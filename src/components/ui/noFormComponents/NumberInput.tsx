@@ -33,7 +33,7 @@ export const NumberInput = ({ label, value, onChange, className }: NumberInputPr
       labelPlacement='floating'
       label={label}
       value={value}
-      onIonInput={e => onChange(e.target.value as string)}
+      onIonInput={event => onChange(event.detail.value as string)}
       inputMode='numeric'
     />
   )

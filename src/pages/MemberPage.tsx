@@ -10,6 +10,7 @@ import { PageFooter } from '../components/ui/PageFooter'
 import { PageHeader } from '../components/ui/PageHeader'
 import { useDismiss } from '../hooks/useDissmiss'
 import { useGroupData } from '../hooks/useGroupData'
+import { useSortedContacts } from '../hooks/useSortedContacts'
 import { MemberSliceResult } from '../stores/slices/createMemberSlice'
 import { usePersistedStore } from '../stores/usePersistedStore'
 import { useStore } from '../stores/useStore'
@@ -46,7 +47,7 @@ export const MemberPage = ({
   const groupData = useGroupData()
   const addMember = usePersistedStore(s => s.addMember)
   const editMember = usePersistedStore(s => s.editMember)
-  const contacts = usePersistedStore(s => s.contacts)
+  const contacts = useSortedContacts()
   const showAnimation = useStore(s => s.showAnimation)
   const selectedMember = findItem(memberId, groupData.members)
   const { handleSubmit, setValue, control, setError, formState } = useForm({
@@ -103,7 +104,7 @@ export const MemberPage = ({
               label='Aus Kontakten wählen'
               interface='popover'
               value={currentContactId}
-              onIonChange={event => onSelectContact(event.target.value)}
+              onIonChange={event => onSelectContact(event.detail.value)}
             >
               <IonSelectOption value=''>-- Keine Auswahl --</IonSelectOption>
               {contacts.map(contact => (

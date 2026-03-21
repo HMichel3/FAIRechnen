@@ -1,17 +1,14 @@
 import { IonInput } from '@ionic/react'
-import { KeyboardEventHandler } from 'react'
+import { ComponentProps } from 'react'
 import { Control, FieldValues, Path, useController } from 'react-hook-form'
 import { cn } from '../../../utils/common'
 
-type FormInputProps<T extends FieldValues> = {
-  label: string
+type FormInputProps<T extends FieldValues> = ComponentProps<typeof IonInput> & {
   name: Path<T>
   control: Control<T>
-  className?: string
-  onKeyDown?: KeyboardEventHandler<HTMLIonInputElement>
 }
 
-export const FormInput = <T extends FieldValues>({ label, name, control, className, onKeyDown }: FormInputProps<T>) => {
+export const FormInput = <T extends FieldValues>({ name, control, className, ...props }: FormInputProps<T>) => {
   const {
     field: { value, onChange },
     fieldState: { invalid },
@@ -22,12 +19,11 @@ export const FormInput = <T extends FieldValues>({ label, name, control, classNa
       className={cn({ 'ion-invalid ion-touched': invalid }, className)}
       fill='solid'
       labelPlacement='floating'
-      label={label}
       value={value}
       onIonInput={onChange}
       onIonBlur={() => onChange(value.trim())}
       autocapitalize='sentences'
-      onKeyDown={onKeyDown}
+      {...props}
     />
   )
 }

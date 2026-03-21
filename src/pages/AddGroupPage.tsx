@@ -1,20 +1,20 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { IonChip, IonContent, IonIcon, IonPage, IonText } from '@ionic/react'
-import { checkmarkCircleSharp, closeCircleSharp, personCircleSharp } from 'ionicons/icons'
-import { useEffect } from 'react'
+import { IonContent, IonList, IonPage, IonSelect, IonSelectOption, IonText } from '@ionic/react'
+import { closeCircleOutline } from 'ionicons/icons'
+import { useEffect, useMemo, useRef } from 'react'
 import { FormProvider, useFieldArray, useForm, useWatch } from 'react-hook-form'
-import { hasAtLeast, isEmpty, last } from 'remeda'
+import { filter, forEach, hasAtLeast, isEmpty, last, map, pick, pipe } from 'remeda'
 import { z } from 'zod'
 import { FormInput } from '../components/ui/formComponents/FormInput'
 import { IconButton } from '../components/ui/IconButton'
 import { PageFooter } from '../components/ui/PageFooter'
 import { PageHeader } from '../components/ui/PageHeader'
 import { useDismiss } from '../hooks/useDissmiss'
+import { useSortedContacts } from '../hooks/useSortedContacts'
 import { usePersistedStore } from '../stores/usePersistedStore'
 import { useStore } from '../stores/useStore'
-import { Member } from '../types/store'
-import { cn, filterNonEmptyNames, findItemIndexByName, normalizeString } from '../utils/common'
-import { isLast, isNameInArray, isNotEmptyString } from '../utils/guard'
+import { cn, createKeyFromProperties, filterNonEmptyNames, normalizeString } from '../utils/common'
+import { isLast, isNotEmptyString } from '../utils/guard'
 
 const validationSchema = z.object({
   groupName: z.string().trim().min(1),
@@ -44,32 +44,66 @@ const validationSchema = z.object({
 
 type GroupFormValues = z.infer<typeof validationSchema>
 
-const defaultValues: GroupFormValues = { groupName: '', members: [{ name: '', payPalMe: '' }] }
+const defaultValues: GroupFormValues = {
+  groupName: '',
+  members: [{ name: '', payPalMe: '' }],
+}
 
 export const AddGroupPage = () => {
-  const contacts = usePersistedStore(s => s.contacts)
+  const contacts = useSortedContacts()
   const addGroup = usePersistedStore(s => s.addGroup)
   const showAnimation = useStore(s => s.showAnimation)
   const methods = useForm({ resolver: zodResolver(validationSchema), defaultValues })
-  const { fields, append, remove } = useFieldArray({ control: methods.control, name: 'members' })
+  const { fields, append, remove, replace } = useFieldArray({ control: methods.control, name: 'members' })
   const watchedMembers = useWatch({ control: methods.control, name: 'members' })
-  const memberFields = fields.map((field, index) => ({ ...field, ...watchedMembers[index] }))
   const onDismiss = useDismiss('/tabs/groups')
+  const contentRef = useRef<HTMLIonContentElement>(null)
+
+  const selectedContactIds = useMemo(() => {
+    const memberKeys = new Set(map(watchedMembers, createKeyFromProperties))
+    return pipe(
+      contacts,
+      filter(contact => memberKeys.has(createKeyFromProperties(pick(contact, ['name', 'payPalMe'])))),
+      map(contact => contact.id)
+    )
+  }, [watchedMembers, contacts])
 
   useEffect(() => {
-    if (isNotEmptyString(last(memberFields)?.name)) {
+    if (isNotEmptyString(last(watchedMembers)?.name)) {
       append({ name: '', payPalMe: '' })
+      setTimeout(() => {
+        contentRef.current?.scrollToBottom(300)
+      }, 100)
     }
-  }, [memberFields, append])
+  }, [watchedMembers, append])
 
-  const toggleContact = (contact: Member) => {
-    const memberFieldIndex = findItemIndexByName(contact.name, memberFields)
-    if (memberFieldIndex !== -1) {
-      remove(memberFieldIndex)
-      return
-    }
-    const newMemberField = { name: contact.name, payPalMe: contact.payPalMe }
-    methods.setValue(`members.${memberFields.length - 1}`, newMemberField)
+  const onSelectContacts = (contactIds: string[]) => {
+    const selectedIds = new Set(contactIds)
+    const allContactKeys = new Map(
+      contacts.map(contact => [createKeyFromProperties(pick(contact, ['name', 'payPalMe'])), contact.id])
+    )
+    const newMembers: { name: string; payPalMe: string }[] = []
+    const newContactIdsToAdd = new Set(contactIds)
+    forEach(watchedMembers, member => {
+      if (isEmpty(normalizeString(member.name))) return
+      const memberKey = createKeyFromProperties(pick(member, ['name', 'payPalMe']))
+      const contactId = allContactKeys.get(memberKey)
+      if (contactId) {
+        if (selectedIds.has(contactId)) {
+          newMembers.push(member)
+          newContactIdsToAdd.delete(contactId)
+        }
+      } else {
+        newMembers.push(member)
+      }
+    })
+    const newlySelectedContacts = pipe(
+      contacts,
+      filter(contact => newContactIdsToAdd.has(contact.id)),
+      map(pick(['name', 'payPalMe']))
+    )
+    newMembers.push(...newlySelectedContacts, { name: '', payPalMe: '' })
+    replace(newMembers)
   }
 
   const onSubmit = methods.handleSubmit(({ groupName, members }) => {
@@ -82,71 +116,51 @@ export const AddGroupPage = () => {
     <FormProvider {...methods}>
       <IonPage>
         <PageHeader title='Neue Gruppe' onDismiss={onDismiss} />
-        <IonContent>
+        <IonContent ref={contentRef}>
           <form id='group-form' onSubmit={onSubmit}>
-            <div className='my-2 flex flex-col gap-4'>
+            <div className='my-2 flex flex-col gap-2'>
               <FormInput label='Gruppenname*' name='groupName' control={methods.control} />
+              <IonText className='flex p-4 text-sm'>Mitglieder ({filterNonEmptyNames(watchedMembers).length})</IonText>
               {hasAtLeast(contacts, 1) && (
-                <div className='flex flex-col gap-2 px-4'>
-                  <IonText>Aus Kontakten wählen</IonText>
-                  <div className='no-scrollbar flex gap-2 overflow-x-auto'>
-                    {contacts.map(contact => {
-                      const isActive = isNameInArray(contact.name, memberFields)
-                      return (
-                        <div
-                          key={contact.id}
-                          onClick={() => toggleContact(contact)}
-                          className='flex w-16 flex-none flex-col items-center gap-2 text-neutral-400'
-                        >
-                          <IonIcon
-                            icon={isActive ? checkmarkCircleSharp : personCircleSharp}
-                            className='text-4xl'
-                            color={cn({ primary: isActive })}
-                          />
-                          <IonText
-                            className='line-clamp-2 text-center text-sm leading-tight'
-                            color={cn({ primary: isActive })}
-                          >
-                            {contact.name}
-                          </IonText>
-                        </div>
-                      )
-                    })}
-                  </div>
-                </div>
+                <IonSelect
+                  fill='solid'
+                  labelPlacement='floating'
+                  label='Aus Kontakten wählen'
+                  multiple={true}
+                  interface='modal'
+                  value={selectedContactIds}
+                  onIonChange={event => onSelectContacts(event.detail.value)}
+                  className='w-full'
+                  cancelText='Auswahl übernehmen'
+                >
+                  {contacts.map(contact => (
+                    <IonSelectOption key={contact.id} value={contact.id}>
+                      {contact.name}
+                    </IonSelectOption>
+                  ))}
+                </IonSelect>
               )}
-              <div className='flex flex-col gap-2 px-4'>
-                <div className='flex items-center justify-between'>
-                  <IonText>Gruppenmitglieder</IonText>
-                  <IonChip className='pointer-events-none m-0'>{filterNonEmptyNames(memberFields).length}</IonChip>
-                </div>
-                <div className='flex flex-col gap-2'>
-                  {memberFields.map((field, index) => (
-                    <div
-                      key={field.id}
-                      className={cn(
-                        'flex flex-col rounded-2xl border border-neutral-400 p-4',
-                        isNotEmptyString(field.name) ? 'bg-zinc-900' : 'border-dashed bg-transparent opacity-60'
-                      )}
-                    >
-                      <div className='flex items-center gap-3'>
-                        <div className='flex-1'>
+              <IonList className='bg-transparent p-0'>
+                {fields.map((field, index) => {
+                  const hasName = isNotEmptyString(watchedMembers[index]?.name)
+                  return (
+                    <div key={field.id} className={cn({ 'bg-[#1e1e1e]/50': hasName })}>
+                      <div className='flex p-2 pr-0'>
+                        <div className='flex gap-2'>
                           <FormInput label='Name' name={`members.${index}.name`} control={methods.control} />
                           <FormInput label='PayPal.Me' name={`members.${index}.payPalMe`} control={methods.control} />
                         </div>
-                        {!isLast(index, memberFields) && (
-                          <IconButton
-                            icon={closeCircleSharp}
-                            color='danger'
-                            size='large'
-                            onClick={() => remove(index)}
-                          />
-                        )}
+                        <IconButton
+                          color='danger'
+                          icon={closeCircleOutline}
+                          onClick={() => remove(index)}
+                          disabled={isLast(index, fields)}
+                        />
                       </div>
                     </div>
-                  ))}
-                </div>
-              </div>
+                  )
+                })}
+              </IonList>
             </div>
           </form>
         </IonContent>
