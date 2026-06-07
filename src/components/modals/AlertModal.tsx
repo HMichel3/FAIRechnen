@@ -23,7 +23,9 @@ export const AlertModal = <CProps extends Record<string, unknown>>({
       onDidDismiss={overlay.onDidDismiss}
       {...props}
     >
-      <Component onDismiss={overlay.onDismiss} {...(componentProps as CProps)} />
+      <div className='custom-alert-content-wrapper'>
+        <Component onDismiss={overlay.onDismiss} {...(componentProps as CProps)} />
+      </div>
     </IonModal>
   )
 }

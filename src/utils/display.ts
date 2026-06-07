@@ -35,12 +35,29 @@ export const displayTimestamp = (timestamp: number, options?: { noYear?: boolean
   return format(timestamp, formatString, { locale: de })
 }
 
+const isForAllMembers = (members: Member[], beneficiaries: Member[]) => difference(members, beneficiaries).length === 0
+
 export const displayBeneficiaryNames = (beneficiaries: Member[], members: Member[], additionPayers?: Member[]) => {
-  const isForAllMembers = difference(members, beneficiaries).length === 0
-  if (isForAllMembers) return 'Alle'
+  if (isForAllMembers(members, beneficiaries)) {
+    return 'Alle'
+  }
   const beneficiaryNames = beneficiaries.map(m => m.name)
   const additionalNames = additionPayers?.map(({ name }) => `(${name})`) ?? []
   return [...beneficiaryNames, ...additionalNames].join(', ')
+}
+
+export const displayBeneficiaries = (beneficiaries: Member[], members: Member[], additionPayers?: Member[]) => {
+  if (isForAllMembers(members, beneficiaries)) {
+    return 'Alle'
+  }
+  const additionCount = additionPayers?.length ?? 0
+  if (beneficiaries.length === 1 && additionCount === 0) {
+    return beneficiaries[0].name
+  }
+  if (additionCount > 0) {
+    return `${beneficiaries.length} (+${additionCount}) von ${members.length}`
+  }
+  return `${beneficiaries.length} von ${members.length}`
 }
 
 export const displayAdditionQuantity = (additionQuantity: number) =>

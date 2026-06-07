@@ -10,7 +10,6 @@ import {
 } from '@ionic/react'
 import { IonReactRouter } from '@ionic/react-router'
 import { peopleCircleSharp, peopleSharp } from 'ionicons/icons'
-import { useEffect } from 'react'
 import { Redirect, Route } from 'react-router-dom'
 import { SideMenu } from './components/ui/SideMenu'
 import { useAppExit } from './hooks/useAppExit'
@@ -25,7 +24,6 @@ import { IncomePage } from './pages/IncomePage'
 import { MemberPage } from './pages/MemberPage'
 import { PurchasePage } from './pages/PurchasePage'
 import { usePersistedStore } from './stores/usePersistedStore'
-import { determineEdgeToEdge } from './utils/common'
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css'
@@ -93,10 +91,6 @@ const AppContent = () => {
 
 export const App = () => {
   const hasHydrated = usePersistedStore(s => s._hasHydrated)
-
-  useEffect(() => {
-    determineEdgeToEdge()
-  }, [])
 
   // Wait for zustand to be loaded with data from database
   if (!hasHydrated) return null

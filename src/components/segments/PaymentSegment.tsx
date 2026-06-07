@@ -8,6 +8,7 @@ import { useOverlay } from '../../hooks/useOverlay'
 import { usePersistedStore } from '../../stores/usePersistedStore'
 import { fadeOutLeftVariants } from '../../utils/animation'
 import { cn, getCompensationInfo, getIncomeInfo, getPurchaseInfo } from '../../utils/common'
+import { displayBeneficiaries } from '../../utils/display'
 import { isIncome, isLast, isPurchase } from '../../utils/guard'
 import { HintAlert } from '../alerts/HintAlert'
 import { PaymentInfo } from '../info/PaymentInfo'
@@ -75,12 +76,18 @@ export const PaymentSegment = ({ groupData }: PaymentSegmentProps) => {
       <div className='pb-20'>
         {filteredPayments.map((payment, index) => {
           if (isPurchase(payment)) {
-            const { purchaser } = getPurchaseInfo(payment, groupData.members)
+            const { purchaser, beneficiaries, additionPayers } = getPurchaseInfo(payment, groupData.members)
             return (
               <SlidingListItem
                 key={payment.id}
                 icon={cartSharp}
-                label={<PaymentInfo {...payment} subtitle={`Von ${purchaser?.name}`} />}
+                label={
+                  <PaymentInfo
+                    {...payment}
+                    subtitle={`Von ${purchaser?.name}`}
+                    details={`Für ${displayBeneficiaries(beneficiaries, groupData.members, additionPayers)}`}
+                  />
+                }
                 routerLink={`/groups/${groupData.id}/purchase/${payment.id}`}
                 onDelete={() => deletePurchase(groupData.id, payment.id)}
                 lines={isLast(index, filteredPayments) ? 'none' : 'inset'}
@@ -88,12 +95,18 @@ export const PaymentSegment = ({ groupData }: PaymentSegmentProps) => {
             )
           }
           if (isIncome(payment)) {
-            const { earner } = getIncomeInfo(payment, groupData.members)
+            const { earner, beneficiaries } = getIncomeInfo(payment, groupData.members)
             return (
               <SlidingListItem
                 key={payment.id}
                 icon={serverSharp}
-                label={<PaymentInfo {...payment} subtitle={`Von ${earner?.name}`} />}
+                label={
+                  <PaymentInfo
+                    {...payment}
+                    subtitle={`Von ${earner?.name}`}
+                    details={`Für ${displayBeneficiaries(beneficiaries, groupData.members)}`}
+                  />
+                }
                 routerLink={`/groups/${groupData.id}/income/${payment.id}`}
                 onDelete={() => deleteIncome(groupData.id, payment.id)}
                 lines={isLast(index, filteredPayments) ? 'none' : 'inset'}

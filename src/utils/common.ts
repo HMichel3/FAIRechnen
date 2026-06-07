@@ -1,6 +1,3 @@
-import { Capacitor } from '@capacitor/core'
-import { Device } from '@capacitor/device'
-import { EdgeToEdge } from '@capawesome/capacitor-android-edge-to-edge-support'
 import { maskitoParseNumber } from '@maskito/kit'
 import { ClassValue, clsx } from 'clsx'
 import { filter, indexBy, isNonNullish, join, map, pipe, sortBy, sumBy, uniqueBy, values } from 'remeda'
@@ -65,19 +62,6 @@ export const getCompensationInfo = (compensation: CompensationWithoutTimestamp, 
   return {
     payer: payerId ? memberMap[payerId] : undefined,
     receiver: receiverId ? memberMap[receiverId] : undefined,
-  }
-}
-
-export const determineEdgeToEdge = async () => {
-  if (Capacitor.getPlatform() !== 'android') {
-    return
-  }
-  const { osVersion } = await Device.getInfo()
-  const version = parseInt(osVersion, 10)
-  if (version >= 15) {
-    await EdgeToEdge.enable() // Enable only on Android 15+
-  } else {
-    await EdgeToEdge.disable() // Prevents layout issues on older Android versions
   }
 }
 
